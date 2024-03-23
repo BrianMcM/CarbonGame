@@ -5,6 +5,7 @@ import java.lang.Math;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -18,6 +19,10 @@ public class GameScreen implements Screen {
     OrthogonalTiledMapRenderer renderer;
     Map mapLoader;
     private final int tileSize = 16;
+    //textures
+    public Texture border = new Texture(Gdx.files.internal("border.png"));
+    private float borderX = 0;
+    private float borderY = 0;
 
     //Use constructor instead of create here
     public GameScreen(final CarbonGame game) {
@@ -31,9 +36,10 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         //player
-        player = new Player(100, cellToWorld(5), cellToWorld(20));
-        player.cellX = 5;
-        player.cellY = 20;
+        player = new Player(100, 5, 20);
+        for (Station station : mapLoader.stations) {
+            station.setPlayer(player);
+        }
     }
 
     @Override
@@ -49,7 +55,14 @@ public class GameScreen implements Screen {
         game.batch.begin();
         //player sprite
         game.batch.draw(player.img, player.x, player.y, tileSize, tileSize);
+        //cell selector for mouse
+        game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
         game.batch.end();
+
+        //track mouse movement for cell border
+        borderX = cellToWorld(worldToCell(Gdx.input.getX())) - (float) tileSize /2; //find cell of where mouse is pointing
+        //no idea why 56 works here
+        borderY = cellToWorld(56 - worldToCell(Gdx.input.getY())) - (float) tileSize /2; // and return global position of the cell center
 
         //click input movement
         if (Gdx.input.justTouched()) {
@@ -67,14 +80,20 @@ public class GameScreen implements Screen {
             //if walkable start player movement
             if (mapLoader.navLayer.getCell(touchedCellX, touchedCellY).isWalkable()) {
                 startPlayerPath(touchPos.x, touchPos.y);
+                return;
+            }
+            for (Station station : mapLoader.stations) {
+                if (station.cellX == touchedCellX && station.cellY == touchedCellY) {
+                    station.select();
+                }
             }
         }
 
         //player movement
         if (player.move) {
-            player.x -= player.normX * player.walkSpeed * Gdx.graphics.getDeltaTime();
-            player.y -= player.normY * player.walkSpeed * Gdx.graphics.getDeltaTime();
-            if (Math.abs(player.x - player.targetX) < player.tolerance && Math.abs(player.y - player.targetY) < player.tolerance) {
+            player.x -= player.normX * player.mode * 50 * Gdx.graphics.getDeltaTime();
+            player.y -= player.normY * player.mode * 50 * Gdx.graphics.getDeltaTime();
+            if (Math.abs(player.x - player.targetX) < player.mode && Math.abs(player.y - player.targetY) < player.mode) {
                 player.nextCell();
             }
         }

@@ -12,11 +12,11 @@ public class Player {
     public int energy;
     private int gems = 0;
     //Cell position
-    public int cellX;
-    public int cellY;
+    public int cellX = 0;
+    public int cellY = 0;
     //physical position for movement
-    public float x;
-    public float y;
+    public float x = 0;
+    public float y = 0;
     public float targetX = 0;
     public float targetY = 0;
     public float normX = 0;
@@ -25,22 +25,15 @@ public class Player {
 
     private final int tileSize = 16;
     //Movement Variables
-    public int walkSpeed = 50;
-    public int bikeSpeed = 100;
-    public int cabSpeed = 150;
-    public int tolerance;
-    public int speed;
+    public int mode = 1; //speed = 50 * mode, tolerance = mode
     public int energyDrain;
     //texture
     public Texture img = new Texture(Gdx.files.internal("testShapes/square.png"));
     public boolean move = false;
 
-    public Player(int e, float posx, float posy) {
+    public Player(int e, int x, int y) {
         energy = e;
-        x = posx;
-        y = posy;
-        speed = walkSpeed;
-        tolerance = speed / 50;
+        setCell(x, y);
     }
 
     public void addGem() {
@@ -101,6 +94,11 @@ public class Player {
 
     public GridCell pathFirst() {
         return path.get(0);
+    }
+
+    //station interaction
+    public void setMode(int num) {
+        mode = num;
     }
 
     //UNIVERSAL FUNCTIONS
