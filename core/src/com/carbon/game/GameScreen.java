@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
+import org.xguzm.pathfinding.grid.GridCell;
 
 public class GameScreen implements Screen {
     final CarbonGame game;
@@ -16,13 +17,11 @@ public class GameScreen implements Screen {
     //class objects
     Player player;
     //map
-    OrthogonalTiledMapRenderer renderer;
+    OrthogonalTiledMapRenderer mapRenderer;
     Map mapLoader;
     private final int tileSize = 16;
     //textures
     public Texture border = new Texture(Gdx.files.internal("border.png"));
-    private float borderX = 0;
-    private float borderY = 0;
 
     //Use constructor instead of create here
     public GameScreen(final CarbonGame game) {
@@ -31,7 +30,7 @@ public class GameScreen implements Screen {
         mapLoader = new Map();
 
         float unitScale = 1f;
-        renderer = new OrthogonalTiledMapRenderer(mapLoader.map, unitScale);
+        mapRenderer = new OrthogonalTiledMapRenderer(mapLoader.map, unitScale);
         //camera
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -46,9 +45,20 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0.2f, 1);
         //render tile map
-        renderer.render();
+        mapRenderer.render();
         camera.update();
-        renderer.setView(camera);
+        mapRenderer.setView(camera);
+
+        //track mouse movement for cell border
+        int mouseCellX = worldToCell(Gdx.input.getX());
+        int mouseCellY = worldToCell(Gdx.input.getY());
+        GridCell mouseCell = mapLoader.navLayer.getCell(mouseCellX, 56 - mouseCellY);
+
+        float borderX = cellToWorld(mouseCellX) - (float) tileSize /2; //find cell of where mouse is pointing
+        //no idea why 56 works here
+        float borderY = cellToWorld(56 - mouseCellY) - (float) tileSize /2; // and return global position of the cell center
+        //cell your mouse is on
+
 
         game.batch.setProjectionMatrix(camera.combined);
         //sprite batch
@@ -56,13 +66,16 @@ public class GameScreen implements Screen {
         //player sprite
         game.batch.draw(player.img, player.x, player.y, tileSize, tileSize);
         //cell selector for mouse
-        game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
-        game.batch.end();
+        if (!player.move) {
+            if (mouseCell != null) {
+                if (mouseCell.isWalkable()) {
+                    game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
+                } else if (mapLoader.stations.contains()){
 
-        //track mouse movement for cell border
-        borderX = cellToWorld(worldToCell(Gdx.input.getX())) - (float) tileSize /2; //find cell of where mouse is pointing
-        //no idea why 56 works here
-        borderY = cellToWorld(56 - worldToCell(Gdx.input.getY())) - (float) tileSize /2; // and return global position of the cell center
+                }
+            }
+        }
+        game.batch.end();
 
         //click input movement
         if (Gdx.input.justTouched()) {
@@ -82,11 +95,9 @@ public class GameScreen implements Screen {
                 startPlayerPath(touchPos.x, touchPos.y);
                 return;
             }
-            for (Station station : mapLoader.stations) {
-                if (station.cellX == touchedCellX && station.cellY == touchedCellY) {
-                    station.select();
-                }
-            }
+            //if (mapLoader.stations.contains(mouseCell)) {
+               // mouseCell.
+            //}
         }
 
         //player movement
@@ -135,7 +146,8 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         player.dispose();
-        renderer.dispose();
+        mapRenderer.dispose();
         mapLoader.dispose();
+        border.dispose();
     }
 }

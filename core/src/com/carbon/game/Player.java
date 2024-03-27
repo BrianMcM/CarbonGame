@@ -25,7 +25,7 @@ public class Player {
 
     private final int tileSize = 16;
     //Movement Variables
-    public int mode = 1; //speed = 50 * mode, tolerance = mode
+    public int mode = 2; //speed = 50 * mode, tolerance = mode
     public int energyDrain;
     //texture
     public Texture img = new Texture(Gdx.files.internal("testShapes/square.png"));

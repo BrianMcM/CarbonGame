@@ -2,7 +2,7 @@ package com.carbon.game;
 
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import org.xguzm.pathfinding.gdxbridge.NavTmxMapLoader;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import org.xguzm.pathfinding.gdxbridge.NavigationTiledMapLayer;
 import org.xguzm.pathfinding.grid.GridCell;
 import org.xguzm.pathfinding.grid.finders.AStarGridFinder;
@@ -19,7 +19,7 @@ public class Map {
     ArrayList<Station> stations;
 
     public Map() {
-        map = new NavTmxMapLoader().load("testMap/new.tmx");
+        map = new TmxMapLoader().load("testMap/new.tmx");
         TiledMapTileLayer mapLayer = (TiledMapTileLayer) map.getLayers().get("navigation");
 
         navLayer = new NavigationTiledMapLayer(convertToGrid(mapLayer));
@@ -55,8 +55,9 @@ public class Map {
         int height = layer.getHeight();
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                if (notNull(layer.getCell(x, y))) {;
-                    stations.add(new Station(x, y, 2));
+                if (notNull(layer.getCell(x, y))) {
+                    GridCell stationCell = new GridCell(x, y);
+                    stations.add(new Station(stationCell, 2));
                 }
             }
         }

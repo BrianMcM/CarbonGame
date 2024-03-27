@@ -1,14 +1,14 @@
 package com.carbon.game;
 
+import org.xguzm.pathfinding.grid.GridCell;
+
 public class Station {
     private Player player;
     public int type;
-    public int cellX;
-    public int cellY;
+    public GridCell cell;
 
-    public Station(int x, int y, int type) {
-        cellX = x;
-        cellY = y;
+    public Station(GridCell c, int type) {
+        cell = c;
         this.type = type;
     }
 
@@ -17,7 +17,7 @@ public class Station {
     }
 
     public void select() {
-        if (Math.abs(player.cellX - cellX) > 1 || Math.abs(player.cellY - cellY) > 1) {
+        if (Math.abs(player.cellX - cell.getX()) > 1 || Math.abs(player.cellY - cell.getY()) > 1) {
             System.out.println("Too far");
             return;
         }
