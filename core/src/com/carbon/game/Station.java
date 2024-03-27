@@ -4,12 +4,12 @@ import org.xguzm.pathfinding.grid.GridCell;
 
 public class Station {
     private Player player;
-    public int type;
+    public int type = 2;
     public GridCell cell;
 
-    public Station(GridCell c, int type) {
+    public Station(GridCell c, String layer) {
         cell = c;
-        this.type = type;
+        //System.out.println(layer);
     }
 
     public void setPlayer (Player p) {
@@ -21,7 +21,18 @@ public class Station {
             System.out.println("Too far");
             return;
         }
+        if (type == 1) {
+            bike();
+        } else {
+            transit();
+        }
+    }
+
+    private void bike() {
         System.out.println("bike");
-        player.setMode(type);
+    }
+
+    private void transit() {
+        System.out.println("transit");
     }
 }

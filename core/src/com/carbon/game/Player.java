@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import org.xguzm.pathfinding.grid.GridCell;
 import java.util.List;
 
-public class Player {
+public class Player extends GridLogic{
     //value variables
     public int carbon = 0;
     public int energy;
@@ -23,7 +23,6 @@ public class Player {
     public float normY = 0;
     private List<GridCell> path;
 
-    private final int tileSize = 16;
     //Movement Variables
     public int mode = 2; //speed = 50 * mode, tolerance = mode
     public int energyDrain;
@@ -101,13 +100,6 @@ public class Player {
         mode = num;
     }
 
-    //UNIVERSAL FUNCTIONS
-    public int worldToCell(float num) {
-        return (int) num/tileSize;
-    }
-    public float cellToWorld(int num) {
-        return (float) num * tileSize;
-    }
     //DISPOSE
     public void dispose() {
         img.dispose();

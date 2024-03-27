@@ -7,71 +7,73 @@ import org.xguzm.pathfinding.gdxbridge.NavigationTiledMapLayer;
 import org.xguzm.pathfinding.grid.GridCell;
 import org.xguzm.pathfinding.grid.finders.AStarGridFinder;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
-public class Map {
+public class Map extends GridLogic{
     public TiledMap map;
-    public NavigationTiledMapLayer navLayer;
+    private final int width;
+    private final int height;
+    public NavigationTiledMapLayer gridLayer;
     public AStarGridFinder<GridCell> finder;
-    private final int tileSize = 16;
-
-    ArrayList<Station> stations;
+    public HashMap<GridCell, Station> stations = new HashMap<GridCell, Station>();
 
     public Map() {
         map = new TmxMapLoader().load("testMap/new.tmx");
-        TiledMapTileLayer mapLayer = (TiledMapTileLayer) map.getLayers().get("navigation");
+        TiledMapTileLayer navLayer = (TiledMapTileLayer) map.getLayers().get("navigation");
 
-        navLayer = new NavigationTiledMapLayer(convertToGrid(mapLayer));
+        width = navLayer.getWidth();
+        height = navLayer.getHeight();
+
+        TiledMapTileLayer bikeStationLayer = (TiledMapTileLayer) map.getLayers().get("bikeStations");
+        TiledMapTileLayer trainStationLayer = (TiledMapTileLayer) map.getLayers().get("trainStations");
+        TiledMapTileLayer busStationLayer = (TiledMapTileLayer) map.getLayers().get("busStations");
+
+        GridCell[][] grid = new GridCell[navLayer.getWidth()][navLayer.getHeight()];
+        convertToGrid(navLayer, grid);
+        convertToGrid(bikeStationLayer, grid);
+        convertToGrid(trainStationLayer, grid);
+        convertToGrid(busStationLayer, grid);
+
+        finishGrid(grid);
+
+        gridLayer = new NavigationTiledMapLayer(grid);
         finder = new AStarGridFinder<>(GridCell.class);
-
-        TiledMapTileLayer stationLayer = (TiledMapTileLayer) map.getLayers().get("stations");
-        stations = new ArrayList<Station>();
-        listStationCells(stationLayer);
     }
 
-    public GridCell[][] convertToGrid(TiledMapTileLayer layer) {
-        int width = layer.getWidth();
-        int height = layer.getHeight();
-
-        GridCell[][] grid = new GridCell[width][height];
-
+    public void convertToGrid(TiledMapTileLayer layer, GridCell[][] grid) {
+        boolean walkable = Objects.equals(layer.getName(), "navigation");
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 //assigning walkable layers
-                boolean walkable = notNull(layer.getCell(x, y));
-                grid[x][y] = new GridCell(x, y, walkable);
+                if (notNull(layer.getCell(x, y))) {
+                    GridCell gc = new GridCell(x, y, walkable);
+                    grid[x][y] = gc;
+                    if (!Objects.equals(layer.getName(), "navLayer")) {
+                        stations.put(gc, new Station(gc, layer.getName()));
+                    }
+                }
             }
         }
-        return grid;
+    }
+
+    public void finishGrid(GridCell[][] grid) {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (grid[x][y] == null) {
+                    grid[x][y] =  new GridCell(x, y, false);
+                }
+            }
+        }
     }
 
     private boolean notNull(TiledMapTileLayer.Cell cell) {
         return cell != null;
     }
 
-    public void listStationCells(TiledMapTileLayer layer) {
-        int width = layer.getWidth();
-        int height = layer.getHeight();
-        for (int x = 0; x < width; x++) {
-            for (int y = 0; y < height; y++) {
-                if (notNull(layer.getCell(x, y))) {
-                    GridCell stationCell = new GridCell(x, y);
-                    stations.add(new Station(stationCell, 2));
-                }
-            }
-        }
-    }
-
-    public int worldToCell(float num) {
-        return (int) num/tileSize;
-    }
-    public float cellToWorld(int num) {
-        return (float) num * tileSize;
-    }
-
     public List<GridCell> path(float startX, float startY, float endX, float endY) {
-        return finder.findPath(worldToCell(startX), worldToCell(startY), worldToCell(endX), worldToCell(endY), navLayer);
+        return finder.findPath(worldToCell(startX), worldToCell(startY), worldToCell(endX), worldToCell(endY), gridLayer);
     }
 
     public void dispose() {

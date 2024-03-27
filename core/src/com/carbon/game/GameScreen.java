@@ -11,7 +11,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import org.xguzm.pathfinding.grid.GridCell;
 
-public class GameScreen implements Screen {
+public class GameScreen extends GridLogic implements Screen {
     final CarbonGame game;
     OrthographicCamera camera;
     //class objects
@@ -19,7 +19,6 @@ public class GameScreen implements Screen {
     //map
     OrthogonalTiledMapRenderer mapRenderer;
     Map mapLoader;
-    private final int tileSize = 16;
     //textures
     public Texture border = new Texture(Gdx.files.internal("border.png"));
 
@@ -36,7 +35,7 @@ public class GameScreen implements Screen {
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         //player
         player = new Player(100, 5, 20);
-        for (Station station : mapLoader.stations) {
+        for (Station station : mapLoader.stations.values()) {
             station.setPlayer(player);
         }
     }
@@ -52,8 +51,9 @@ public class GameScreen implements Screen {
         //track mouse movement for cell border
         int mouseCellX = worldToCell(Gdx.input.getX());
         int mouseCellY = worldToCell(Gdx.input.getY());
-        GridCell mouseCell = mapLoader.navLayer.getCell(mouseCellX, 56 - mouseCellY);
+        GridCell mouseCell = mapLoader.gridLayer.getCell(mouseCellX, 56 - mouseCellY);
 
+        int tileSize = 16;
         float borderX = cellToWorld(mouseCellX) - (float) tileSize /2; //find cell of where mouse is pointing
         //no idea why 56 works here
         float borderY = cellToWorld(56 - mouseCellY) - (float) tileSize /2; // and return global position of the cell center
@@ -70,8 +70,6 @@ public class GameScreen implements Screen {
             if (mouseCell != null) {
                 if (mouseCell.isWalkable()) {
                     game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
-                } else if (mapLoader.stations.contains()){
-
                 }
             }
         }
@@ -91,13 +89,13 @@ public class GameScreen implements Screen {
             int touchedCellX = worldToCell(touchPos.x);
             int touchedCellY = worldToCell(touchPos.y);
             //if walkable start player movement
-            if (mapLoader.navLayer.getCell(touchedCellX, touchedCellY).isWalkable()) {
+            if (mapLoader.gridLayer.getCell(touchedCellX, touchedCellY).isWalkable()) {
                 startPlayerPath(touchPos.x, touchPos.y);
                 return;
             }
-            //if (mapLoader.stations.contains(mouseCell)) {
-               // mouseCell.
-            //}
+            if (mapLoader.stations.containsKey(mouseCell)) {
+                mapLoader.stations.get(mouseCell).select();
+            }
         }
 
         //player movement
@@ -114,14 +112,6 @@ public class GameScreen implements Screen {
         player.setPath(mapLoader.path(player.x, player.y, tx, ty));
         player.setTargets();
     }
-
-    public int worldToCell(float num) {
-        return (int) num/tileSize;
-    }
-    public float cellToWorld(int num) {
-        return (float) num * tileSize;
-    }
-
 
     @Override
     public void resize(int width, int height) {
