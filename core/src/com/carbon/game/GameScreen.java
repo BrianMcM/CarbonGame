@@ -4,6 +4,7 @@ import java.lang.Math;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -57,7 +58,6 @@ public class GameScreen extends GridLogic implements Screen {
         float borderX = cellToWorld(mouseCellX) - (float) tileSize /2; //find cell of where mouse is pointing
         //no idea why 56 works here
         float borderY = cellToWorld(56 - mouseCellY) - (float) tileSize /2; // and return global position of the cell center
-        //cell your mouse is on
 
 
         game.batch.setProjectionMatrix(camera.combined);
@@ -70,6 +70,10 @@ public class GameScreen extends GridLogic implements Screen {
             if (mouseCell != null) {
                 if (mouseCell.isWalkable()) {
                     game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
+                } else if (mapLoader.stations.containsKey(mouseCell)) {
+                    game.batch.setColor(Color.YELLOW);
+                    game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
+                    game.batch.setColor(Color.WHITE);
                 }
             }
         }
