@@ -108,8 +108,7 @@ public class Map extends GridLogic{
         GridCell firstCell = gridLayer.getCell(first[0], first[1]);
         line.addStation(stations.get(firstCell));
 
-        List<GridCell> linePath = new List<GridCell>();
-        linePath = finder.findPath(first[0], first[1], last[0], last[1], trainGridLayer);
+        List<GridCell> linePath = finder.findPath(first[0], first[1], last[0], last[1], trainGridLayer);
         line.setPath(linePath);
         for (GridCell gridCell : linePath) {
             int xCoord = gridCell.getX();
