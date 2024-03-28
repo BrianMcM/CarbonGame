@@ -9,9 +9,6 @@ public class Station {
 
     public Station(GridCell c, String layer) {
         cell = c;
-        System.out.println(c.getX());
-        System.out.println(c.getY());
-        System.out.println("-------------");
     }
 
     public void setPlayer (Player p) {

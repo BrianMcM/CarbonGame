@@ -7,6 +7,7 @@ import org.xguzm.pathfinding.gdxbridge.NavigationTiledMapLayer;
 import org.xguzm.pathfinding.grid.GridCell;
 import org.xguzm.pathfinding.grid.finders.AStarGridFinder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -19,6 +20,7 @@ public class Map extends GridLogic{
     public NavigationTiledMapLayer trainGridLayer;
     public AStarGridFinder<GridCell> finder;
     public HashMap<GridCell, Station> stations = new HashMap<>();
+    public ArrayList<TrainLine> trainLines = new ArrayList<TrainLine>();
 
     public Map() {
         map = new TmxMapLoader().load("testMap/new.tmx");
@@ -80,6 +82,7 @@ public class Map extends GridLogic{
             }
         }
     }
+    //end redo
 
     public void finishGrid(GridCell[][] grid) {
         for (int x = 0; x < width; x++) {
@@ -95,13 +98,18 @@ public class Map extends GridLogic{
         return cell != null;
     }
 
-    public List<GridCell> path(float startX, float startY, float endX, float endY) {
-        return finder.findPath(worldToCell(startX), worldToCell(startY), worldToCell(endX), worldToCell(endY), gridLayer);
+    public List<GridCell> path(int startX, int startY, int endX, int endY) {
+        return finder.findPath(startX, startY, endX, endY, gridLayer);
     }
 
     public void setTrainLine(String name, int[] first, int[] last) {
         TrainLine line = new TrainLine(name);
-        List<GridCell> linePath = finder.findPath(first[0], first[1], last[0], last[1], trainGridLayer);
+        trainLines.add(line);
+        GridCell firstCell = gridLayer.getCell(first[0], first[1]);
+        line.addStation(stations.get(firstCell));
+
+        List<GridCell> linePath = new List<GridCell>();
+        linePath = finder.findPath(first[0], first[1], last[0], last[1], trainGridLayer);
         line.setPath(linePath);
         for (GridCell gridCell : linePath) {
             int xCoord = gridCell.getX();
@@ -111,11 +119,14 @@ public class Map extends GridLogic{
                 line.addStation(stations.get(gCell));
             }
         }
-        //test
-        line.print();
+        line.addTrain(1);
+        //line.addTrain(-1);
     }
 
     public void dispose() {
         map.dispose();
+        for (TrainLine line : trainLines) {
+            line.dispose();
+        }
     }
 }

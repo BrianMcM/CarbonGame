@@ -77,6 +77,19 @@ public class GameScreen extends GridLogic implements Screen {
                 }
             }
         }
+        //trains
+        for (TrainLine line : mapLoader.trainLines) {
+            for (Train train : line.trains) {
+                if (train.move) {
+                    train.x -= train.normX * train.speed * Gdx.graphics.getDeltaTime();
+                    train.y -= train.normY * train.speed * Gdx.graphics.getDeltaTime();
+                    if (Math.abs(train.x - train.targetX) < train.buffer && Math.abs(train.y - train.targetY) < train.buffer) {
+                        train.arriveAtTarget();
+                    }
+                }
+                game.batch.draw(train.img, train.x, train.y, tileSize, tileSize);
+            }
+        }
         game.batch.end();
 
         //click input movement
@@ -94,7 +107,7 @@ public class GameScreen extends GridLogic implements Screen {
             int touchedCellY = worldToCell(touchPos.y);
             //if walkable start player movement
             if (mapLoader.gridLayer.getCell(touchedCellX, touchedCellY).isWalkable()) {
-                startPlayerPath(touchPos.x, touchPos.y);
+                startPlayerPath(touchedCellX, touchedCellY);
                 return;
             }
             if (mapLoader.stations.containsKey(mouseCell)) {
@@ -112,8 +125,8 @@ public class GameScreen extends GridLogic implements Screen {
         }
     }
 
-    private void startPlayerPath(float tx, float ty) {
-        player.setPath(mapLoader.path(player.x, player.y, tx, ty));
+    private void startPlayerPath(int tx, int ty) {
+        player.setPath(mapLoader.path(player.cellX, player.cellY, tx, ty));
         player.setTargets();
     }
 

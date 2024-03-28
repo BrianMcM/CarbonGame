@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import org.xguzm.pathfinding.grid.GridCell;
 import java.util.List;
 
-public class Player extends GridLogic{
+public class Player extends GridLogic implements Moving{
     //value variables
     public int carbon = 0;
     public int energy;
@@ -77,8 +77,8 @@ public class Player extends GridLogic{
     public void setTargets() {
         targetX = cellToWorld(pathFirst().getX());
         targetY = cellToWorld(pathFirst().getY());
-        normX = Integer.compare(pathFirst().getX(), cellX) * -1;
-        normY = Integer.compare(pathFirst().getY(), cellY) * -1;
+        normX = Integer.compare(cellX, pathFirst().getX());
+        normY = Integer.compare(cellY, pathFirst().getY());
         //if diagonal reduce speed in half
         if (normX != 0 && normY != 0) {
             normX /= 1.5F;

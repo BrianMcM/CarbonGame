@@ -9,6 +9,7 @@ public class TrainLine {
     String name;
     ArrayList<Station> stationList;
     List<GridCell> path;
+    ArrayList<Train> trains = new ArrayList<Train>();
     public TrainLine(String name) {
         this.name = name;
         stationList = new ArrayList<Station>();
@@ -16,6 +17,10 @@ public class TrainLine {
 
     public void addStation(Station s) {
         stationList.add(s);
+    }
+
+    public void addTrain(int dir) {
+        trains.add(new Train(this, dir));
     }
 
     public Station nextStation(Station current) {
@@ -31,9 +36,9 @@ public class TrainLine {
         this.path = path;
     }
 
-    //test
-    public void print() {
-        System.out.println(path);
-        System.out.println(stationList);
+    public void dispose() {
+        for (Train train : trains) {
+            train.dispose();
+        }
     }
 }
