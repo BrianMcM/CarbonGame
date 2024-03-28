@@ -6,6 +6,7 @@ public class Station {
     private Player player;
     public int type = 2;
     public GridCell cell;
+    public boolean occupied = false;
 
     public Station(GridCell c, String layer) {
         cell = c;
@@ -32,6 +33,7 @@ public class Station {
     }
 
     private void transit() {
+        occupied = true;
         System.out.println("transit");
     }
 }

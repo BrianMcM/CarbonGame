@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class Train extends GridLogic implements Moving{
     public Station currentStation;
-    int pathIndex;
+    private int pathIndex;
     public TrainLine line;
     public float x = 0;
     public float y = 0;
@@ -13,8 +13,8 @@ public class Train extends GridLogic implements Moving{
     public float targetY = 0;
     public float normX = 0;
     public float normY = 0;
-    public int buffer = 4;
-    public int speed = 200;
+    public int buffer = 5;
+    public float speed = (float) 200;
     boolean move = true;
     public int direction;
     public Texture img = new Texture(Gdx.files.internal("testShapes/circle.png"));
@@ -24,7 +24,6 @@ public class Train extends GridLogic implements Moving{
         direction = dir;
         if (dir == 1) {
             pathIndex = 0;
-
         } else {
             pathIndex = line.stationList.size() - 1;
         }
@@ -34,10 +33,10 @@ public class Train extends GridLogic implements Moving{
 
     public void arriveAtTarget() {
         pathIndex += direction;
-        x = cellToWorld(line.path.get(pathIndex).getX());
-        y = cellToWorld(line.path.get(pathIndex).getY());
+        x = cellToWorld(line.getPath().get(pathIndex)[0]);
+        y = cellToWorld(line.getPath().get(pathIndex)[1]);
         move = false;
-        if (pathIndex == 0 || pathIndex == line.path.size() - 1) {
+        if (pathIndex == 0 || pathIndex == line.getPath().size() - 1) {
             direction *= -1;
             pathIndex += direction;
         }
@@ -45,8 +44,8 @@ public class Train extends GridLogic implements Moving{
     }
 
     public void setTargets() {
-        targetX = cellToWorld(line.path.get(pathIndex + direction).getX());
-        targetY = cellToWorld(line.path.get(pathIndex + direction).getY());
+        targetX = cellToWorld(line.getPath().get(pathIndex + direction)[0]);
+        targetY = cellToWorld(line.getPath().get(pathIndex + direction)[1]);
         normX = Float.compare(x, targetX);
         normY = Float.compare(y, targetY);
         //if diagonal reduce speed in half

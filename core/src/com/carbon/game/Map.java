@@ -99,6 +99,7 @@ public class Map extends GridLogic{
     }
 
     public List<GridCell> path(int startX, int startY, int endX, int endY) {
+
         return finder.findPath(startX, startY, endX, endY, gridLayer);
     }
 
@@ -119,7 +120,6 @@ public class Map extends GridLogic{
             }
         }
         line.addTrain(1);
-        //line.addTrain(-1);
     }
 
     public void dispose() {

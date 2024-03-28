@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TrainLine {
-    String name;
-    ArrayList<Station> stationList;
-    List<GridCell> path;
-    ArrayList<Train> trains = new ArrayList<Train>();
+    public String name;
+    public ArrayList<Station> stationList;
+    private final ArrayList<int[]> path = new ArrayList<int[]>();
+    public ArrayList<Train> trains = new ArrayList<Train>();
     public TrainLine(String name) {
         this.name = name;
         stationList = new ArrayList<Station>();
@@ -32,8 +32,14 @@ public class TrainLine {
         }
     }
 
-    public void setPath(List<GridCell> path) {
-        this.path = path;
+    public void setPath(List<GridCell> p) {
+        for (GridCell gc : p) {
+            path.add(new int[]{gc.getX(), gc.getY()});
+        }
+    }
+
+    public ArrayList<int[]> getPath() {
+        return path;
     }
 
     public void dispose() {
