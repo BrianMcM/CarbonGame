@@ -3,16 +3,13 @@ package com.carbon.game;
 import org.xguzm.pathfinding.grid.GridCell;
 
 public class Station {
-    private Player player;
+    private final Player player;
     public int type = 2;
     public GridCell cell;
     public boolean occupied = false;
 
-    public Station(GridCell c, String layer) {
+    public Station(GridCell c, String layer, Player p) {
         cell = c;
-    }
-
-    public void setPlayer (Player p) {
         player = p;
     }
 
@@ -35,5 +32,15 @@ public class Station {
     private void transit() {
         occupied = true;
         System.out.println("transit");
+    }
+
+    public void trainArrived(Train train) {
+        player.hide = true;
+        occupied = false;
+    }
+
+    public void playerExit() {
+        player.setCell(cell.getX() - 1, cell.getY());
+        player.hide = false;
     }
 }

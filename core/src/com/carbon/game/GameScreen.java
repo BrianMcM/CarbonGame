@@ -26,19 +26,16 @@ public class GameScreen extends GridLogic implements Screen {
     //Use constructor instead of create here
     public GameScreen(final CarbonGame game) {
         this.game = game;
+        //player
+        player = new Player(100, 5, 20);
         //load map
-        mapLoader = new Map();
+        mapLoader = new Map(this, player);
 
         float unitScale = 1f;
         mapRenderer = new OrthogonalTiledMapRenderer(mapLoader.map, unitScale);
         //camera
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        //player
-        player = new Player(100, 5, 20);
-        for (Station station : mapLoader.stations.values()) {
-            station.setPlayer(player);
-        }
     }
 
     @Override
@@ -64,9 +61,11 @@ public class GameScreen extends GridLogic implements Screen {
         //sprite batch
         game.batch.begin();
         //player sprite
-        game.batch.draw(player.img, player.x, player.y, tileSize, tileSize);
+        if (!player.hide) {
+            game.batch.draw(player.img, player.x, player.y, tileSize, tileSize);
+        }
         //cell selector for mouse
-        if (!player.move) {
+        if (!player.move && !player.hide) {
             if (mouseCell != null) {
                 if (mouseCell.isWalkable()) {
                     game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
@@ -97,6 +96,10 @@ public class GameScreen extends GridLogic implements Screen {
             //end trip at next cell, take no other inputs
             if (player.move) {
                 player.finishEarly();
+                return;
+            }
+            if (player.hide) { //on transit
+                player.transit.letPlayerOff = true;
                 return;
             }
             Vector3 touchPos = new Vector3();

@@ -7,12 +7,11 @@ import org.xguzm.pathfinding.gdxbridge.NavigationTiledMapLayer;
 import org.xguzm.pathfinding.grid.GridCell;
 import org.xguzm.pathfinding.grid.finders.AStarGridFinder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class Map extends GridLogic{
+    public GameScreen screen;
+    public Player player;
     public TiledMap map;
     private final int width;
     private final int height;
@@ -22,7 +21,10 @@ public class Map extends GridLogic{
     public HashMap<GridCell, Station> stations = new HashMap<>();
     public ArrayList<TrainLine> trainLines = new ArrayList<TrainLine>();
 
-    public Map() {
+    public Map(GameScreen screen, Player player) {
+        this.screen = screen;
+        this.player = player;
+
         map = new TmxMapLoader().load("testMap/new.tmx");
         TiledMapTileLayer navLayer = (TiledMapTileLayer) map.getLayers().get("navigation");
 
@@ -63,7 +65,7 @@ public class Map extends GridLogic{
                     GridCell gc = new GridCell(x, y, walkable);
                     grid[x][y] = gc;
                     if (!Objects.equals(layer.getName(), "navigation")) {
-                        stations.put(gc, new Station(gc, layer.getName()));
+                        stations.put(gc, new Station(gc, layer.getName(), player));
                     }
                 }
             }
@@ -104,19 +106,19 @@ public class Map extends GridLogic{
     }
 
     public void setTrainLine(String name, int[] first, int[] last) {
-        TrainLine line = new TrainLine(name);
+        TrainLine line = new TrainLine(name, this);
         trainLines.add(line);
         GridCell firstCell = gridLayer.getCell(first[0], first[1]);
-        line.addStation(stations.get(firstCell));
+        line.addStation(Arrays.toString(first), stations.get(firstCell));
 
         List<GridCell> linePath = finder.findPath(first[0], first[1], last[0], last[1], trainGridLayer);
-        line.setPath(linePath);
+        line.setPath(first, linePath);
         for (GridCell gridCell : linePath) {
             int xCoord = gridCell.getX();
             int yCoord = gridCell.getY();
             GridCell gCell = gridLayer.getCell(xCoord, yCoord);
             if (stations.containsKey(gCell)) {
-                line.addStation(stations.get(gCell));
+                line.addStation(Arrays.toString(new int[]{xCoord, yCoord}), stations.get(gCell));
             }
         }
         line.addTrain(1);

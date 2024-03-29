@@ -22,13 +22,14 @@ public class Player extends GridLogic implements Moving{
     public float normX = 0;
     public float normY = 0;
     private List<GridCell> path;
+    public boolean hide = false;
 
     //Movement Variables
     public int mode = 2; //speed = 50 * mode, tolerance = mode
-    public int energyDrain;
     //texture
     public Texture img = new Texture(Gdx.files.internal("testShapes/square.png"));
     public boolean move = false;
+    public Train transit = null;
 
     public Player(int e, int x, int y) {
         energy = e;
@@ -98,6 +99,10 @@ public class Player extends GridLogic implements Moving{
     //station interaction
     public void setMode(int num) {
         mode = num;
+    }
+
+    public void onTransit() {
+        hide = true;
     }
 
     //DISPOSE
