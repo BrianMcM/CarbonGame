@@ -20,7 +20,7 @@ public class Map extends GridLogic{
     public AStarGridFinder<GridCell> finder;
     public HashMap<GridCell, String> stationList = new HashMap<>();
     public HashMap<GridCell, TrainStation> trainStations = new HashMap<>();
-    public HashMap<GridCell, BikeStation> bikeStations = new HashMap<>();
+    public HashMap<GridCell, BikeStand> bikeStations = new HashMap<>();
     public HashMap<GridCell, BusStation> busStations = new HashMap<>();
     public ArrayList<TrainLine> trainLines = new ArrayList<TrainLine>();
     public ArrayList<BusRoute> busRoutes = new ArrayList<BusRoute>();
@@ -84,7 +84,7 @@ public class Map extends GridLogic{
                     }
                     stationList.put(gc, layer.getName());
                     if (Objects.equals(layer.getName(), "bikeStations")) {
-                        bikeStations.put(gc, new BikeStation(gc, player));
+                        bikeStations.put(gc, new BikeStand(gc, player));
                         continue;
                     }
                     if (Objects.equals(layer.getName(), "trainStations")) {
