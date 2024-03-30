@@ -1,71 +1,137 @@
 package com.carbon.game;
 
 import java.lang.Math;
+import java.util.Objects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.Timer;
+import org.xguzm.pathfinding.grid.GridCell;
 
-public class GameScreen implements Screen {
-    final CarbonGame game;
-    OrthographicCamera camera;
+public class GameScreen extends GridLogic implements Screen {
+    final private CarbonGame game;
+    public OrthographicCamera camera;
     //class objects
-    Player player;
+    public Player player;
     //map
-    OrthogonalTiledMapRenderer renderer;
-    Map mapLoader;
-    private final int tileSize = 16;
+    public OrthogonalTiledMapRenderer mapRenderer;
+    public OrthogonalTiledMapRenderer metroRenderer;
+    public Map mapLoader;
     //textures
     public Texture border = new Texture(Gdx.files.internal("border.png"));
-    private float borderX = 0;
-    private float borderY = 0;
+    public int[] building = null;
+    public boolean metroVision = false;
+    private boolean canClick = true;
 
     //Use constructor instead of create here
     public GameScreen(final CarbonGame game) {
         this.game = game;
-        //load map
-        mapLoader = new Map();
+        player = new Player(this, 100, 5, 20);
+        mapLoader = new Map(this, player);
 
         float unitScale = 1f;
-        renderer = new OrthogonalTiledMapRenderer(mapLoader.map, unitScale);
+        mapRenderer = new OrthogonalTiledMapRenderer(mapLoader.map, unitScale);
+        metroRenderer = new OrthogonalTiledMapRenderer(mapLoader.metro, unitScale);
         //camera
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        //player
-        player = new Player(100, 5, 20);
-        for (Station station : mapLoader.stations) {
-            station.setPlayer(player);
-        }
     }
 
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0.2f, 1);
+
         //render tile map
-        renderer.render();
-        camera.update();
-        renderer.setView(camera);
+        if (metroVision) {
+            metroRenderer.render();
+            camera.update();
+            metroRenderer.setView(camera);
+        } else {
+            mapRenderer.render();
+            camera.update();
+            mapRenderer.setView(camera);
+        }
+        //track mouse movement for cell border
+        int mouseCellX = worldToCell(Gdx.input.getX());
+        int mouseCellY = worldToCell(Gdx.input.getY());
+        GridCell mouseCell = mapLoader.gridLayer.getCell(mouseCellX, 56 - mouseCellY);
+
+        int tileSize = 16;
+        float borderX = cellToWorld(mouseCellX) - (float) tileSize /2; //find cell of where mouse is pointing
+        //no idea why 56 works here
+        float borderY = cellToWorld(56 - mouseCellY) - (float) tileSize /2; // and return global position of the cell center
 
         game.batch.setProjectionMatrix(camera.combined);
         //sprite batch
         game.batch.begin();
         //player sprite
-        game.batch.draw(player.img, player.x, player.y, tileSize, tileSize);
+        if (!player.hide) {
+            game.batch.draw(player.img, player.position.x, player.position.y, tileSize, tileSize);
+        } else {
+            if (building != null) {
+                game.batch.setColor(Color.YELLOW);
+                game.batch.draw(border, cellToWorld(building[0]) - (float) tileSize /2, cellToWorld(building[1]) - (float) tileSize /2, tileSize * 2, tileSize * 2);
+                game.batch.setColor(Color.WHITE);
+            }
+        }
         //cell selector for mouse
-        game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
+        if (!player.move && !player.hide) {
+            if (mouseCell != null) {
+                if (mouseCell.isWalkable()) {
+                    game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
+                } else if (mapLoader.stationList.containsKey(mouseCell)) {
+                    game.batch.setColor(Color.YELLOW);
+                    if (player.mode == 1) {
+                        game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
+                    } else if (player.mode == 2) {
+                        if (mapLoader.bikeStands.containsKey(mouseCell)) {
+                            game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
+                        }
+                    }
+                    game.batch.setColor(Color.WHITE);
+                }
+            }
+        }
+        //transit section
+        for (Route route : mapLoader.Routes) {
+            for (Transit transit : route.transitList) {
+                if (transit.move) {
+                    float update = transit.speed * Gdx.graphics.getDeltaTime();
+                    transit.position.x -= transit.norm.x * update;
+                    transit.position.y -= transit.norm.y * update;
+                    if (Math.abs(transit.position.x - transit.target.x) < transit.buffer && Math.abs(transit.position.y - transit.target.y) < transit.buffer) {
+                        transit.arriveAtTarget();
+                    }
+                }
+                if ((metroVision && route.train) || (!metroVision && !route.train)) {
+                    game.batch.draw(transit.img, transit.position.x, transit.position.y, tileSize, tileSize);
+                }
+            }
+        }
         game.batch.end();
-
-        //track mouse movement for cell border
-        borderX = cellToWorld(worldToCell(Gdx.input.getX())) - (float) tileSize /2; //find cell of where mouse is pointing
-        //no idea why 56 works here
-        borderY = cellToWorld(56 - worldToCell(Gdx.input.getY())) - (float) tileSize /2; // and return global position of the cell center
 
         //click input movement
         if (Gdx.input.justTouched()) {
+            if (!canClick) {
+                return;
+            } else {
+                canClick = false;
+                clickCoolDown();
+            }
+            if (building != null) {
+                player.exit();
+                return;
+            }
+            if (player.transit != null) {
+                player.transit.letPlayerOff = true;
+                return;
+            }
             //end trip at next cell, take no other inputs
             if (player.move) {
                 player.finishEarly();
@@ -78,39 +144,42 @@ public class GameScreen implements Screen {
             int touchedCellX = worldToCell(touchPos.x);
             int touchedCellY = worldToCell(touchPos.y);
             //if walkable start player movement
-            if (mapLoader.navLayer.getCell(touchedCellX, touchedCellY).isWalkable()) {
-                startPlayerPath(touchPos.x, touchPos.y);
+            if (mapLoader.gridLayer.getCell(touchedCellX, touchedCellY).isWalkable()) {
+                player.setPath(mapLoader.path(player.cellX, player.cellY, touchedCellX, touchedCellY));
                 return;
             }
-            for (Station station : mapLoader.stations) {
-                if (station.cellX == touchedCellX && station.cellY == touchedCellY) {
-                    station.select();
+            if (mapLoader.stationList.containsKey(mouseCell)) {
+                if (Objects.equals(mapLoader.stationList.get(mouseCell), "bikeStations")) {
+                    mapLoader.bikeStands.get(mouseCell).select();
+                } else {
+                    mapLoader.Stations.get(mouseCell).select();
                 }
             }
         }
-
         //player movement
         if (player.move) {
-            player.x -= player.normX * player.mode * 50 * Gdx.graphics.getDeltaTime();
-            player.y -= player.normY * player.mode * 50 * Gdx.graphics.getDeltaTime();
-            if (Math.abs(player.x - player.targetX) < player.mode && Math.abs(player.y - player.targetY) < player.mode) {
+            float update = player.mode * 50 * Gdx.graphics.getDeltaTime();
+            player.position.x -= player.norm.x * update;
+            player.position.y -= player.norm.y * update;
+            if (Math.abs(player.position.x - player.target.x) < player.mode && Math.abs(player.position.y - player.target.y) < player.mode) {
                 player.nextCell();
             }
         }
     }
 
-    private void startPlayerPath(float tx, float ty) {
-        player.setPath(mapLoader.path(player.x, player.y, tx, ty));
-        player.setTargets();
+    private void clickCoolDown() {
+        Timer timer = new Timer();
+        timer.scheduleTask(new Timer.Task() {
+            @Override
+            public void run () {
+                allowClick();
+            }
+        }, (float) 0.2, 0, 0);
     }
 
-    public int worldToCell(float num) {
-        return (int) num/tileSize;
+    private void allowClick() {
+        canClick = true;
     }
-    public float cellToWorld(int num) {
-        return (float) num * tileSize;
-    }
-
 
     @Override
     public void resize(int width, int height) {
@@ -135,7 +204,9 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         player.dispose();
-        renderer.dispose();
+        mapRenderer.dispose();
+        metroRenderer.dispose();
         mapLoader.dispose();
+        border.dispose();
     }
 }

@@ -3,10 +3,12 @@ package com.carbon.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
+import com.badlogic.gdx.math.Vector2;
 import org.xguzm.pathfinding.grid.GridCell;
 import java.util.List;
 
-public class Player {
+public class Player extends GridLogic implements Moving{
+    public GameScreen screen;
     //value variables
     public int carbon = 0;
     public int energy;
@@ -15,23 +17,21 @@ public class Player {
     public int cellX = 0;
     public int cellY = 0;
     //physical position for movement
-    public float x = 0;
-    public float y = 0;
-    public float targetX = 0;
-    public float targetY = 0;
-    public float normX = 0;
-    public float normY = 0;
+    public Vector2 position = new Vector2(0,0);
+    public Vector2 target = new Vector2(0,0);
+    public Vector2 norm = new Vector2(0,0);
     private List<GridCell> path;
+    public boolean hide = false;
 
-    private final int tileSize = 16;
     //Movement Variables
-    public int mode = 1; //speed = 50 * mode, tolerance = mode
-    public int energyDrain;
+    public int mode = 1; // 1-walking, 2-bike, 3-car
     //texture
     public Texture img = new Texture(Gdx.files.internal("testShapes/square.png"));
     public boolean move = false;
+    public Transit transit = null;
 
-    public Player(int e, int x, int y) {
+    public Player(GameScreen screen, int e, int x, int y) {
+        this.screen = screen;
         energy = e;
         setCell(x, y);
     }
@@ -43,16 +43,15 @@ public class Player {
     public void setCell(int cx, int cy) {
         cellX = cx;
         cellY = cy;
-        x = cellToWorld(cx);
-        y = cellToWorld(cy);
+        position.set(v_cellToWorld(cx, cy));
+        move = false;
     }
 
     //MOVEMENT FUNCTIONS
     public void arriveAtTarget() {
         cellX = pathFirst().getX();
         cellY = pathFirst().getY();
-        x = targetX;
-        y = targetY;
+        position.set(target);
         move = false;
     }
 
@@ -64,6 +63,7 @@ public class Player {
 
     public void setPath(List<GridCell> list) {
         path = list;
+        setTargets();
     }
 
     public void nextCell() {
@@ -76,15 +76,10 @@ public class Player {
     }
 
     public void setTargets() {
-        targetX = cellToWorld(pathFirst().getX());
-        targetY = cellToWorld(pathFirst().getY());
-        normX = Integer.compare(pathFirst().getX(), cellX) * -1;
-        normY = Integer.compare(pathFirst().getY(), cellY) * -1;
-        //if diagonal reduce speed in half
-        if (normX != 0 && normY != 0) {
-            normX /= 1.5F;
-            normY /= 1.5F;
-        }
+        target.set(v_cellToWorld(pathFirst().getX(), pathFirst().getY()));
+        norm.x = Integer.compare(cellX, pathFirst().getX());
+        norm.y = Integer.compare(cellY, pathFirst().getY());
+        norm.nor();
         move = true;
     }
 
@@ -96,19 +91,13 @@ public class Player {
         return path.get(0);
     }
 
-    //station interaction
-    public void setMode(int num) {
-        mode = num;
+    public void exit() {
+        screen.metroVision = false;
+        screen.building = null;
+        hide = false;
+        transit = null;
     }
 
-    //UNIVERSAL FUNCTIONS
-    public int worldToCell(float num) {
-        return (int) num/tileSize;
-    }
-    public float cellToWorld(int num) {
-        return (float) num * tileSize;
-    }
-    //DISPOSE
     public void dispose() {
         img.dispose();
     }
