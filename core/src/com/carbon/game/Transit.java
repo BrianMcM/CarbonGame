@@ -9,27 +9,37 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.Timer;
 
-public class Bus extends GridLogic implements Moving{
-    public BusStation currentStation;
+public class Transit extends GridLogic implements Moving{
+    public boolean train;
+    public boolean circular;
+    public Station currentStation;
     private int pathIndex;
-    public BusRoute route;
+    public Route route;
     public Vector2 position = new Vector2(0,0);
     public Vector2 target = new Vector2(0,0);
     public Vector2 norm = new Vector2(0,0);
     public int buffer = 3;
     public float speed = (float) 150;
     boolean move = true;
+    public int direction;
     public Texture img = new Texture(Gdx.files.internal("testShapes/circle.png"));
     public boolean letPlayerOff = false;
 
-    public Bus(BusRoute br, int stationIndex) {
-        route = br;
-        pathIndex = stationIndex - 1;
+    public Transit(Route r, int index, boolean t, boolean c, int d) {
+        train = t;
+        circular = c;
+        route = r;
+        pathIndex = index - d;
+        direction = d;
+        if (train) {
+            speed = 200;
+            buffer = 4;
+        }
         arriveAtTarget();
     }
 
     public void arriveAtTarget() {
-        pathIndex += 1;
+        pathIndex += direction;
         position.set(v_cellToWorld(route.getPath().get(pathIndex)[0], route.getPath().get(pathIndex)[1]));
         move = false;
         String coordString = Arrays.toString(route.getPath().get(pathIndex));
@@ -43,22 +53,28 @@ public class Bus extends GridLogic implements Moving{
     }
 
     public void checkForPlayer() {
+        if (letPlayerOff) {
+            currentStation.playerExit();
+            letPlayerOff = false;
+            waitAtStation();
+            return;
+        }
         if (currentStation.occupied) {
-            currentStation.busArrived();
-            route.map.player.bus = this;
+            currentStation.arrived();
+            route.map.player.transit = this;
         }
         waitAtStation();
-        if (letPlayerOff) {
-            letPlayerOff();
-        }
     }
 
     public void setTargets() {
-        if (pathIndex == route.getPath().size() - 1) {
-            resetPath();
-            return;
+        if ((pathIndex == 0 && direction == -1) || (pathIndex == route.getPath().size() - 1) && direction == 1) {
+            if (circular) {
+                resetPath();
+                return;
+            }
+            direction *= -1;
         }
-        target.set(v_cellToWorld(route.getPath().get(pathIndex + 1)[0], route.getPath().get(pathIndex + 1)[1]));
+        target.set(v_cellToWorld(route.getPath().get(pathIndex + direction)[0], route.getPath().get(pathIndex + direction)[1]));
         norm.x = Float.compare(position.x, target.x);
         norm.y = Float.compare(position.y, target.y);
         //if diagonal reduce speed in half
@@ -66,10 +82,10 @@ public class Bus extends GridLogic implements Moving{
         move = true;
     }
 
-    public void resetPath(){
+    public void resetPath(){ //circular
         target.set(v_cellToWorld(route.getPath().get(0)[0], route.getPath().get(0)[1]));
         pathIndex = -1;
-        norm.x = -1;
+        norm.x = -direction;
         norm.y = 0;
         move = true;
     }
@@ -82,11 +98,6 @@ public class Bus extends GridLogic implements Moving{
                 setTargets();
             }
         }, 1, 0, 0);
-    }
-
-    public void letPlayerOff() {
-        currentStation.playerExit();
-        letPlayerOff = false;
     }
 
     public void dispose() {

@@ -28,8 +28,7 @@ public class Player extends GridLogic implements Moving{
     //texture
     public Texture img = new Texture(Gdx.files.internal("testShapes/square.png"));
     public boolean move = false;
-    public Train train = null;
-    public Bus bus = null;
+    public Transit transit = null;
 
     public Player(GameScreen screen, int e, int x, int y) {
         this.screen = screen;
@@ -92,18 +91,11 @@ public class Player extends GridLogic implements Moving{
         return path.get(0);
     }
 
-    public void getOffTrain() {
-        if (train == null) {
-            screen.metroVision = false;
-        } else {
-            train.letPlayerOff = true;
-            train = null;
-        }
-    }
-
-    public void getOffBus() {
-        bus.letPlayerOff = true;
-        bus = null;
+    public void exit() {
+        screen.metroVision = false;
+        screen.inUseTile = null;
+        hide = false;
+        transit = null;
     }
 
     public void dispose() {

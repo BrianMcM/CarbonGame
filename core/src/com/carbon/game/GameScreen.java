@@ -44,53 +44,17 @@ public class GameScreen extends GridLogic implements Screen {
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0.2f, 1);
-        GridCell inUseCell = null;
-        if (inUseTile != null) {
-            inUseCell = mapLoader.gridLayer.getCell(inUseTile[0], inUseTile[1]);
-        }
-        //metro vision
+
+        //render tile map
         if (metroVision) {
             metroRenderer.render();
             camera.update();
             metroRenderer.setView(camera);
-            game.batch.setProjectionMatrix(camera.combined);
-            //sprite batch
-            game.batch.begin();
-            for (TrainLine line : mapLoader.trainLines) {
-                Train train = line.train;
-                if (train.move) {
-                    float update = train.speed * Gdx.graphics.getDeltaTime();
-                    train.position.x -= train.norm.x * update;
-                    train.position.y -= train.norm.y * update;
-                    if (Math.abs(train.position.x - train.target.x) < train.buffer && Math.abs(train.position.y - train.target.y) < train.buffer) {
-                        train.arriveAtTarget();
-                    }
-                }
-                game.batch.draw(train.img, train.position.x, train.position.y, tileSize, tileSize);
-            }
-            if (inUseTile != null) {
-                game.batch.setColor(Color.YELLOW);
-                game.batch.draw(border, cellToWorld(inUseTile[0]) - (float) tileSize /2, cellToWorld(inUseTile[1]) - (float) tileSize /2, tileSize * 2, tileSize * 2);
-                game.batch.setColor(Color.WHITE);
-            }
-            game.batch.end();
-
-            if (Gdx.input.justTouched()) {
-                if (player.train == null) {
-
-                    mapLoader.trainStations.get(inUseCell).playerExit();
-                } else {
-                    player.getOffTrain();
-                }
-            }
-            return;
+        } else {
+            mapRenderer.render();
+            camera.update();
+            mapRenderer.setView(camera);
         }
-
-        //render tile map
-        mapRenderer.render();
-        camera.update();
-        mapRenderer.setView(camera);
-
         //track mouse movement for cell border
         int mouseCellX = worldToCell(Gdx.input.getX());
         int mouseCellY = worldToCell(Gdx.input.getY());
@@ -124,7 +88,7 @@ public class GameScreen extends GridLogic implements Screen {
                     if (player.mode == 1) {
                         game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
                     } else if (player.mode == 2) {
-                        if (mapLoader.bikeStations.containsKey(mouseCell)) {
+                        if (mapLoader.bikeStands.containsKey(mouseCell)) {
                             game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
                         }
                     }
@@ -132,26 +96,33 @@ public class GameScreen extends GridLogic implements Screen {
                 }
             }
         }
-        //bus section
-        for (BusRoute route : mapLoader.busRoutes) {
-            for (Bus bus : route.busses) {
-                if (bus.move) {
-                    float update = bus.speed * Gdx.graphics.getDeltaTime();
-                    bus.position.x -= bus.norm.x * update;
-                    bus.position.y -= bus.norm.y * update;
-                    if (Math.abs(bus.position.x - bus.target.x) < bus.buffer && Math.abs(bus.position.y - bus.target.y) < bus.buffer) {
-                        bus.arriveAtTarget();
+        //transit section
+        for (Route route : mapLoader.Routes) {
+            for (Transit transit : route.transitList) {
+                if (transit.move) {
+                    float update = transit.speed * Gdx.graphics.getDeltaTime();
+                    transit.position.x -= transit.norm.x * update;
+                    transit.position.y -= transit.norm.y * update;
+                    if (Math.abs(transit.position.x - transit.target.x) < transit.buffer && Math.abs(transit.position.y - transit.target.y) < transit.buffer) {
+                        transit.arriveAtTarget();
                     }
                 }
-                game.batch.draw(bus.img, bus.position.x, bus.position.y, tileSize, tileSize);
+                if ((metroVision && route.train) || (!metroVision && !route.train)) {
+                    game.batch.draw(transit.img, transit.position.x, transit.position.y, tileSize, tileSize);
+                }
             }
         }
         game.batch.end();
 
         //click input movement
         if (Gdx.input.justTouched()) {
-            if (player.hide) {
-                player.bus.letPlayerOff = true;
+            if (inUseTile != null) {
+                player.exit();
+                return;
+            }
+            if (player.transit != null) {
+                player.transit.letPlayerOff = true;
+                return;
             }
             //end trip at next cell, take no other inputs
             if (player.move) {
@@ -171,11 +142,9 @@ public class GameScreen extends GridLogic implements Screen {
             }
             if (mapLoader.stationList.containsKey(mouseCell)) {
                 if (Objects.equals(mapLoader.stationList.get(mouseCell), "bikeStations")) {
-                    mapLoader.bikeStations.get(mouseCell).select();
-                } else if (Objects.equals(mapLoader.stationList.get(mouseCell), "trainStations")) {
-                    mapLoader.trainStations.get(mouseCell).select();
+                    mapLoader.bikeStands.get(mouseCell).select();
                 } else {
-                    mapLoader.busStations.get(mouseCell).select();
+                    mapLoader.Stations.get(mouseCell).select();
                 }
             }
         }
