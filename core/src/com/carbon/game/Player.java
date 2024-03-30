@@ -24,11 +24,12 @@ public class Player extends GridLogic implements Moving{
     public boolean hide = false;
 
     //Movement Variables
-    public int mode = 2; //speed = 50 * mode, tolerance = mode
+    public int mode = 1; // 1-walking, 2-bike, 3-car
     //texture
     public Texture img = new Texture(Gdx.files.internal("testShapes/square.png"));
     public boolean move = false;
     public Train train = null;
+    public Bus bus = null;
 
     public Player(GameScreen screen, int e, int x, int y) {
         this.screen = screen;
@@ -44,6 +45,7 @@ public class Player extends GridLogic implements Moving{
         cellX = cx;
         cellY = cy;
         position.set(v_cellToWorld(cx, cy));
+        move = false;
     }
 
     //MOVEMENT FUNCTIONS
@@ -95,7 +97,13 @@ public class Player extends GridLogic implements Moving{
             screen.metroVision = false;
         } else {
             train.letPlayerOff = true;
+            train = null;
         }
+    }
+
+    public void getOffBus() {
+        bus.letPlayerOff = true;
+        bus = null;
     }
 
     public void dispose() {

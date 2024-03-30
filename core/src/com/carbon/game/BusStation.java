@@ -2,18 +2,18 @@ package com.carbon.game;
 
 import org.xguzm.pathfinding.grid.GridCell;
 
-public class TrainStation extends Station{
+public class BusStation extends Station{
     private final Map map;
-    public TrainLine line;
+    public BusRoute route;
     public boolean occupied = false;
 
-    public TrainStation(GridCell c, Player p, Map m) {
+    public BusStation(GridCell c, Player p, Map m) {
         super(c, p);
         map = m;
     }
 
-    public void setLine(TrainLine line) {
-        this.line = line;
+    public void setRoute(BusRoute route) {
+        this.route = route;
     }
 
     public void activate() {
@@ -21,20 +21,18 @@ public class TrainStation extends Station{
         if (player.mode != 1) {
             return;
         }
-        line.addTrain();
         occupied = true;
+        player.hide = true;
         map.screen.inUseTile = new int[] {cell.getX(), cell.getY()};
-        map.screen.metroVision = true;
     }
 
-    public void trainArrived() {
+    public void busArrived() {
         occupied = false;
         map.screen.inUseTile = null;
     }
 
     public void playerExit() {
         player.setCell(cell.getX() - 1, cell.getY());
-        line.removeTrain();
-        map.screen.metroVision = false;
+        player.hide = false;
     }
 }
