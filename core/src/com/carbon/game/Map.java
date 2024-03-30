@@ -18,7 +18,9 @@ public class Map extends GridLogic{
     private final int height;
     public NavigationTiledMapLayer gridLayer;
     public AStarGridFinder<GridCell> finder;
+    public HashMap<GridCell, String> stationList = new HashMap<>();
     public HashMap<GridCell, TrainStation> trainStations = new HashMap<>();
+    public HashMap<GridCell, BikeStation> bikeStations = new HashMap<>();
     public ArrayList<TrainLine> trainLines = new ArrayList<TrainLine>();
 
     public Map(GameScreen screen, Player player) {
@@ -38,7 +40,7 @@ public class Map extends GridLogic{
 
         GridCell[][] grid = new GridCell[width][height];
         convertToGrid(navLayer, grid);
-        //convertToGrid(bikeStationLayer, grid);
+        convertToGrid(bikeStationLayer, grid);
         convertToGrid(trainStationLayer, grid);
         //convertToGrid(busStationLayer, grid);
 
@@ -50,7 +52,7 @@ public class Map extends GridLogic{
         //train section
         TiledMapTileLayer trainLayer = (TiledMapTileLayer) map.getLayers().get("lines");
         GridCell[][] trainLineGrid = new GridCell[width][height];
-        convertToGridTrain(trainLayer, trainLineGrid);
+        convertToGridMetro(trainLayer, trainLineGrid);
         finishGrid(trainLineGrid);
         NavigationTiledMapLayer trainGridLayer = new NavigationTiledMapLayer(trainLineGrid);
         //hard code each train line
@@ -65,8 +67,20 @@ public class Map extends GridLogic{
                 if (notNull(layer.getCell(x, y))) {
                     GridCell gc = new GridCell(x, y, walkable);
                     grid[x][y] = gc;
-                    if (!Objects.equals(layer.getName(), "navigation")) {
+                    if (Objects.equals(layer.getName(), "navigation")) {
+                        continue;
+                    }
+                    stationList.put(gc, layer.getName());
+                    if (Objects.equals(layer.getName(), "bikeStations")) {
+                        bikeStations.put(gc, new BikeStation(gc, player));
+                        continue;
+                    }
+                    if (Objects.equals(layer.getName(), "trainStations")) {
                         trainStations.put(gc, new TrainStation(gc, player, this));
+                        continue;
+                    }
+                    if (Objects.equals(layer.getName(), "busStations")) {
+                        //bus code
                     }
                 }
             }
@@ -74,7 +88,7 @@ public class Map extends GridLogic{
     }
 
     //redo this later
-    public void convertToGridTrain(TiledMapTileLayer layer, GridCell[][] grid) {
+    public void convertToGridMetro(TiledMapTileLayer layer, GridCell[][] grid) {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 //assigning walkable layers

@@ -25,14 +25,10 @@ public class Train extends GridLogic implements Moving{
     public Texture img = new Texture(Gdx.files.internal("testShapes/circle.png"));
     public boolean letPlayerOff = false;
 
-    public Train(TrainLine l, int dir) {
+    public Train(TrainLine l, int dir, int stationIndex) {
         line = l;
         direction = dir;
-        if (dir == 1) {
-            pathIndex = 0;
-        } else {
-            pathIndex = line.getPath().size() - 1;
-        }
+        pathIndex = stationIndex;
         arriveAtTarget();
     }
 

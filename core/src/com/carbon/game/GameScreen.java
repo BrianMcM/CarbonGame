@@ -1,6 +1,7 @@
 package com.carbon.game;
 
 import java.lang.Math;
+import java.util.Objects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -103,9 +104,15 @@ public class GameScreen extends GridLogic implements Screen {
             if (mouseCell != null) {
                 if (mouseCell.isWalkable()) {
                     game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
-                } else if (mapLoader.trainStations.containsKey(mouseCell)) {
+                } else if (mapLoader.stationList.containsKey(mouseCell)) {
                     game.batch.setColor(Color.YELLOW);
-                    game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
+                    if (player.mode == 1) {
+                        game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
+                    } else if (player.mode == 2) {
+                        if (mapLoader.bikeStations.containsKey(mouseCell)) {
+                            game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
+                        }
+                    }
                     game.batch.setColor(Color.WHITE);
                 }
             }
@@ -130,8 +137,14 @@ public class GameScreen extends GridLogic implements Screen {
                 player.setPath(mapLoader.path(player.cellX, player.cellY, touchedCellX, touchedCellY));
                 return;
             }
-            if (mapLoader.trainStations.containsKey(mouseCell)) {
-                mapLoader.trainStations.get(mouseCell).select();
+            if (mapLoader.stationList.containsKey(mouseCell)) {
+                if (Objects.equals(mapLoader.stationList.get(mouseCell), "bikeStations")) {
+                    mapLoader.bikeStations.get(mouseCell).select();
+                } else if (Objects.equals(mapLoader.stationList.get(mouseCell), "trainStations")) {
+                    mapLoader.trainStations.get(mouseCell).select();
+                } else {
+                    //buscode
+                }
             }
         }
         //player movement

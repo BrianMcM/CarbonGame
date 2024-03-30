@@ -5,6 +5,7 @@ import org.xguzm.pathfinding.grid.GridCell;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 public class TrainLine {
     public Map map;
@@ -21,10 +22,13 @@ public class TrainLine {
         ts.setLine(this);
     }
 
-    public void addTrain(int dir) {
-        if (train == null) {
-            train = new Train(this, dir);
+    public void addTrain() {
+        if (train != null) {
+            return;
         }
+        int randomDir = new Random().nextBoolean() ? -1 : 1;
+        int randomInt = (int) (Math.random() * stations.size());
+        train = new Train(this, randomDir, randomInt);
     }
     public void removeTrain() {
         train.dispose();
