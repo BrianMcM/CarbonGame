@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.Timer;
 import org.xguzm.pathfinding.grid.GridCell;
 
 public class GameScreen extends GridLogic implements Screen {
@@ -24,8 +25,9 @@ public class GameScreen extends GridLogic implements Screen {
     public Map mapLoader;
     //textures
     public Texture border = new Texture(Gdx.files.internal("border.png"));
-    public int[] inUseTile = null;
+    public int[] building = null;
     public boolean metroVision = false;
+    private boolean canClick = true;
 
     //Use constructor instead of create here
     public GameScreen(final CarbonGame game) {
@@ -72,9 +74,9 @@ public class GameScreen extends GridLogic implements Screen {
         if (!player.hide) {
             game.batch.draw(player.img, player.position.x, player.position.y, tileSize, tileSize);
         } else {
-            if (inUseTile != null) {
+            if (building != null) {
                 game.batch.setColor(Color.YELLOW);
-                game.batch.draw(border, cellToWorld(inUseTile[0]) - (float) tileSize /2, cellToWorld(inUseTile[1]) - (float) tileSize /2, tileSize * 2, tileSize * 2);
+                game.batch.draw(border, cellToWorld(building[0]) - (float) tileSize /2, cellToWorld(building[1]) - (float) tileSize /2, tileSize * 2, tileSize * 2);
                 game.batch.setColor(Color.WHITE);
             }
         }
@@ -116,7 +118,13 @@ public class GameScreen extends GridLogic implements Screen {
 
         //click input movement
         if (Gdx.input.justTouched()) {
-            if (inUseTile != null) {
+            if (!canClick) {
+                return;
+            } else {
+                canClick = false;
+                clickCoolDown();
+            }
+            if (building != null) {
                 player.exit();
                 return;
             }
@@ -157,6 +165,20 @@ public class GameScreen extends GridLogic implements Screen {
                 player.nextCell();
             }
         }
+    }
+
+    private void clickCoolDown() {
+        Timer timer = new Timer();
+        timer.scheduleTask(new Timer.Task() {
+            @Override
+            public void run () {
+                allowClick();
+            }
+        }, (float) 0.2, 0, 0);
+    }
+
+    private void allowClick() {
+        canClick = true;
     }
 
     @Override

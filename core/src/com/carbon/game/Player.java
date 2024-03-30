@@ -93,7 +93,7 @@ public class Player extends GridLogic implements Moving{
 
     public void exit() {
         screen.metroVision = false;
-        screen.inUseTile = null;
+        screen.building = null;
         hide = false;
         transit = null;
     }

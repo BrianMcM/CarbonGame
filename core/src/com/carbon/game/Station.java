@@ -2,7 +2,7 @@ package com.carbon.game;
 
 import org.xguzm.pathfinding.grid.GridCell;
 
-public class Station{
+public class Station implements Inside{
     public final Player player;
     public GridCell cell;
     private final Map map;
@@ -30,13 +30,13 @@ public class Station{
             System.out.println("Too far");
             return;
         }
-        activate();
+        playerEnter();
     }
 
-    public void activate() {
+    public void playerEnter() {
         occupied = true;
         player.hide = true;
-        map.screen.inUseTile = new int[] {cell.getX(), cell.getY()};
+        map.screen.building = new int[] {cell.getX(), cell.getY()};
         if (train) {
             map.screen.metroVision = true;
         }
@@ -44,7 +44,7 @@ public class Station{
 
     public void arrived() {
         occupied = false;
-        map.screen.inUseTile = null;
+        map.screen.building = null;
     }
 
     public void playerExit() {
