@@ -8,21 +8,27 @@ import java.util.List;
 
 public class TrainLine {
     public Map map;
-    public String name;
-    public HashMap<String, Station> stations = new HashMap<String, Station>();
+    public HashMap<String, TrainStation> stations = new HashMap<String, TrainStation>();
     private final ArrayList<int[]> path = new ArrayList<int[]>();
-    public ArrayList<Train> trains = new ArrayList<Train>();
-    public TrainLine(String name, Map map) {
+    public Train train = null;
+
+    public TrainLine(Map map) {
         this.map = map;
-        this.name = name;
     }
 
-    public void addStation(String coordString, Station s) {
-        stations.put(coordString, s);
+    public void addStation(String coordString, TrainStation ts) {
+        stations.put(coordString, ts);
+        ts.setLine(this);
     }
 
     public void addTrain(int dir) {
-        trains.add(new Train(this, dir));
+        if (train == null) {
+            train = new Train(this, dir);
+        }
+    }
+    public void removeTrain() {
+        train.dispose();
+        train = null;
     }
 
     public void setPath(int[] first, List<GridCell> p) {
@@ -37,8 +43,9 @@ public class TrainLine {
     }
 
     public void dispose() {
-        for (Train train : trains) {
+        if (train != null) {
             train.dispose();
         }
     }
+
 }

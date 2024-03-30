@@ -2,15 +2,21 @@ package com.carbon.game;
 
 import org.xguzm.pathfinding.grid.GridCell;
 
-public class Station {
+public class TrainStation extends GridLogic{
     private final Player player;
-    public int type = 2;
+    private final Map map;
     public GridCell cell;
+    public TrainLine line;
     public boolean occupied = false;
 
-    public Station(GridCell c, String layer, Player p) {
+    public TrainStation(GridCell c, Player p, Map m) {
         cell = c;
         player = p;
+        map = m;
+    }
+
+    public void setLine(TrainLine line) {
+        this.line = line;
     }
 
     public void select() {
@@ -18,29 +24,20 @@ public class Station {
             System.out.println("Too far");
             return;
         }
-        if (type == 1) {
-            bike();
-        } else {
-            transit();
-        }
-    }
-
-    private void bike() {
-        System.out.println("bike");
-    }
-
-    private void transit() {
+        line.addTrain(1);
         occupied = true;
-        System.out.println("transit");
+        map.screen.inUseTile = new int[] {cell.getX(), cell.getY()};
+        map.screen.metroVision = true;
     }
 
     public void trainArrived(Train train) {
-        player.hide = true;
         occupied = false;
+        map.screen.inUseTile = null;
     }
 
     public void playerExit() {
         player.setCell(cell.getX() - 1, cell.getY());
-        player.hide = false;
+        line.removeTrain();
+        map.screen.metroVision = false;
     }
 }

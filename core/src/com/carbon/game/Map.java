@@ -13,12 +13,12 @@ public class Map extends GridLogic{
     public GameScreen screen;
     public Player player;
     public TiledMap map;
+    public TiledMap metro;
     private final int width;
     private final int height;
     public NavigationTiledMapLayer gridLayer;
-    public NavigationTiledMapLayer trainGridLayer;
     public AStarGridFinder<GridCell> finder;
-    public HashMap<GridCell, Station> stations = new HashMap<>();
+    public HashMap<GridCell, TrainStation> trainStations = new HashMap<>();
     public ArrayList<TrainLine> trainLines = new ArrayList<TrainLine>();
 
     public Map(GameScreen screen, Player player) {
@@ -26,6 +26,7 @@ public class Map extends GridLogic{
         this.player = player;
 
         map = new TmxMapLoader().load("testMap/new.tmx");
+        metro = new TmxMapLoader().load("testMap/metro.tmx");
         TiledMapTileLayer navLayer = (TiledMapTileLayer) map.getLayers().get("navigation");
 
         width = navLayer.getWidth();
@@ -37,23 +38,23 @@ public class Map extends GridLogic{
 
         GridCell[][] grid = new GridCell[width][height];
         convertToGrid(navLayer, grid);
-        convertToGrid(bikeStationLayer, grid);
+        //convertToGrid(bikeStationLayer, grid);
         convertToGrid(trainStationLayer, grid);
-        convertToGrid(busStationLayer, grid);
+        //convertToGrid(busStationLayer, grid);
 
         finishGrid(grid);
         gridLayer = new NavigationTiledMapLayer(grid);
 
+        finder = new AStarGridFinder<>(GridCell.class);
+
+        //train section
         TiledMapTileLayer trainLayer = (TiledMapTileLayer) map.getLayers().get("lines");
         GridCell[][] trainLineGrid = new GridCell[width][height];
         convertToGridTrain(trainLayer, trainLineGrid);
         finishGrid(trainLineGrid);
-        trainGridLayer = new NavigationTiledMapLayer(trainLineGrid);
-
-        finder = new AStarGridFinder<>(GridCell.class);
-
-        //Hard code train lines here I think
-        setTrainLine("Red Line", new int[]{8, 25}, new int[]{28, 20});
+        NavigationTiledMapLayer trainGridLayer = new NavigationTiledMapLayer(trainLineGrid);
+        //hard code each train line
+        setTrainLine(new int[]{8, 25}, new int[]{28, 20}, trainGridLayer);
     }
 
     public void convertToGrid(TiledMapTileLayer layer, GridCell[][] grid) {
@@ -65,7 +66,7 @@ public class Map extends GridLogic{
                     GridCell gc = new GridCell(x, y, walkable);
                     grid[x][y] = gc;
                     if (!Objects.equals(layer.getName(), "navigation")) {
-                        stations.put(gc, new Station(gc, layer.getName(), player));
+                        trainStations.put(gc, new TrainStation(gc, player, this));
                     }
                 }
             }
@@ -105,23 +106,22 @@ public class Map extends GridLogic{
         return finder.findPath(startX, startY, endX, endY, gridLayer);
     }
 
-    public void setTrainLine(String name, int[] first, int[] last) {
-        TrainLine line = new TrainLine(name, this);
+    public void setTrainLine(int[] first, int[] last, NavigationTiledMapLayer layer) {
+        TrainLine line = new TrainLine(this);
         trainLines.add(line);
         GridCell firstCell = gridLayer.getCell(first[0], first[1]);
-        line.addStation(Arrays.toString(first), stations.get(firstCell));
+        line.addStation(Arrays.toString(first), trainStations.get(firstCell));
 
-        List<GridCell> linePath = finder.findPath(first[0], first[1], last[0], last[1], trainGridLayer);
+        List<GridCell> linePath = finder.findPath(first[0], first[1], last[0], last[1], layer);
         line.setPath(first, linePath);
         for (GridCell gridCell : linePath) {
             int xCoord = gridCell.getX();
             int yCoord = gridCell.getY();
             GridCell gCell = gridLayer.getCell(xCoord, yCoord);
-            if (stations.containsKey(gCell)) {
-                line.addStation(Arrays.toString(new int[]{xCoord, yCoord}), stations.get(gCell));
+            if (trainStations.containsKey(gCell)) {
+                line.addStation(Arrays.toString(new int[]{xCoord, yCoord}), trainStations.get(gCell));
             }
         }
-        line.addTrain(1);
     }
 
     public void dispose() {

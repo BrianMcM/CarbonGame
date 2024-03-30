@@ -4,21 +4,20 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
 import java.util.Arrays;
+
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.Timer;
 
 import static com.badlogic.gdx.utils.Timer.schedule;
 
 public class Train extends GridLogic implements Moving{
-    public Station currentStation;
+    public TrainStation currentStation;
     private int pathIndex;
     public TrainLine line;
-    public float x = 0;
-    public float y = 0;
-    public float targetX = 0;
-    public float targetY = 0;
-    public float normX = 0;
-    public float normY = 0;
+    public Vector2 position = new Vector2(0,0);
+    public Vector2 target = new Vector2(0,0);
+    public Vector2 norm = new Vector2(0,0);
     public int buffer = 4;
     public float speed = (float) 200;
     boolean move = true;
@@ -39,8 +38,7 @@ public class Train extends GridLogic implements Moving{
 
     public void arriveAtTarget() {
         pathIndex += direction;
-        x = cellToWorld(line.getPath().get(pathIndex)[0]);
-        y = cellToWorld(line.getPath().get(pathIndex)[1]);
+        position.set(v_cellToWorld(line.getPath().get(pathIndex)[0], line.getPath().get(pathIndex)[1]));
         if (pathIndex == 0 || pathIndex == line.getPath().size() - 1) {
             direction *= -1;
         }
@@ -56,7 +54,7 @@ public class Train extends GridLogic implements Moving{
     public void checkForPlayer() {
         if (currentStation.occupied) {
             currentStation.trainArrived(this);
-            line.map.player.transit = this;
+            line.map.player.train = this;
         }
         waitAtStation();
         if (letPlayerOff) {
@@ -65,15 +63,11 @@ public class Train extends GridLogic implements Moving{
     }
 
     public void setTargets() {
-        targetX = cellToWorld(line.getPath().get(pathIndex + direction)[0]);
-        targetY = cellToWorld(line.getPath().get(pathIndex + direction)[1]);
-        normX = Float.compare(x, targetX);
-        normY = Float.compare(y, targetY);
+        target.set(v_cellToWorld(line.getPath().get(pathIndex + direction)[0], line.getPath().get(pathIndex + direction)[1]));
+        norm.x = Float.compare(position.x, target.x);
+        norm.y = Float.compare(position.y, target.y);
         //if diagonal reduce speed in half
-        if (normX != 0 && normY != 0) {
-            normX /= 1.5F;
-            normY /= 1.5F;
-        }
+        norm.nor();
         move = true;
     }
 
