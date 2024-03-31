@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -167,13 +168,18 @@ public class GameScreen extends GridLogic implements Screen {
         }
         //player movement
         if (player.move) {
-            float update = player.mode * 50 * Gdx.graphics.getDeltaTime();
+            float update = player.mode * 50 * Gdx.graphics.getDeltaTime() * player.exhausted;
             player.position.x -= player.norm.x * update;
             player.position.y -= player.norm.y * update;
-            if (Math.abs(player.position.x - player.target.x) < player.mode && Math.abs(player.position.y - player.target.y) < player.mode) {
+            double buffer = player.mode * player.exhausted;
+            if (Math.abs(player.position.x - player.target.x) < buffer && Math.abs(player.position.y - player.target.y) < buffer) {
                 player.nextCell();
             }
         }
+
+        //////////
+        System.out.println(player.carbon);
+        /////////
     }
 
     private void clickCoolDown() {

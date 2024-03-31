@@ -4,27 +4,32 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer;
 import org.xguzm.pathfinding.grid.GridCell;
 import java.util.List;
+import java.util.Objects;
 
 public class Player extends GridLogic implements Moving{
     public GameScreen screen;
     //value variables
     public int carbon = 0;
-    public int energy;
-    private int gemScore = 0;
-    //Cell position
+    public final int cabCarbon = 10;
+    public final int trainCarbon = 2;
+    public final int busCarbon = 3;
+    private int energy;
+    public int gemScore = 0;
     public int cellX = 0;
     public int cellY = 0;
+
     //physical position for movement
     public Vector2 position = new Vector2(0,0);
     public Vector2 target = new Vector2(0,0);
     public Vector2 norm = new Vector2(0,0);
     private List<GridCell> path;
-    public boolean hide = false;
 
-    //Movement Variables
+    public boolean hide = false;
     public int mode = 1; // 1-walking, 2-bike, 3-car
+    public float exhausted = 1;
     //texture
     public Texture img = new Texture(Gdx.files.internal("testShapes/square.png"));
     public boolean move = false;
@@ -34,6 +39,13 @@ public class Player extends GridLogic implements Moving{
         this.screen = screen;
         energy = e;
         setCell(x, y);
+        Timer timer = new Timer();
+        timer.scheduleTask(new com.badlogic.gdx.utils.Timer.Task() {
+            @Override
+            public void run () {
+                changeEnergy(1);
+            }
+        }, 0, 1);
     }
 
     public void collectGem(Gem gem) {
@@ -49,8 +61,21 @@ public class Player extends GridLogic implements Moving{
         move = false;
     }
 
+    public void transitCost(boolean train) {
+        if (train) {
+            carbon += trainCarbon;
+        } else {
+            carbon += busCarbon;
+        }
+    }
+
     //MOVEMENT FUNCTIONS
     public void arriveAtTarget() {
+        if (mode == 3) {
+            carbon += cabCarbon;
+        } else {
+            energy--;
+        }
         cellX = pathFirst().getX();
         cellY = pathFirst().getY();
         position.set(target);
@@ -114,6 +139,22 @@ public class Player extends GridLogic implements Moving{
             }
             i++;
         }
+    }
+
+    public void changeEnergy(int num) {
+        if (energy < 100) {
+            energy += num;
+        }
+        if (energy <= 0) {
+            exhausted = (float) 0.2;
+        }
+        if (exhausted < 1 && energy >= 10) {
+            exhausted = 1;
+        }
+    }
+
+    public int getEnergy() {
+        return energy;
     }
 
     public void dispose() {

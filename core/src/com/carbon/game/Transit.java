@@ -39,6 +39,9 @@ public class Transit extends GridLogic implements Moving{
     }
 
     public void arriveAtTarget() {
+        if (route.map.player.transit == this) {
+            route.map.player.transitCost(train);
+        }
         pathIndex += direction;
         position.set(v_cellToWorld(route.getPath().get(pathIndex)[0], route.getPath().get(pathIndex)[1]));
         move = false;
