@@ -12,7 +12,7 @@ public class Player extends GridLogic implements Moving{
     //value variables
     public int carbon = 0;
     public int energy;
-    private int gems = 0;
+    private int gemScore = 0;
     //Cell position
     public int cellX = 0;
     public int cellY = 0;
@@ -36,8 +36,10 @@ public class Player extends GridLogic implements Moving{
         setCell(x, y);
     }
 
-    public void addGem() {
-        gems += 1;
+    public void collectGem(Gem gem) {
+        gemScore += gem.value;
+        gem.dispose();
+        System.out.println("Gem Score +".concat(String.valueOf(gem.value)));
     }
 
     public void setCell(int cx, int cy) {
@@ -70,6 +72,7 @@ public class Player extends GridLogic implements Moving{
         arriveAtTarget();
         path.remove(0);
         if (path.isEmpty()) {
+            gemCheck();
             return;
         }
         setTargets();
@@ -96,6 +99,21 @@ public class Player extends GridLogic implements Moving{
         screen.building = null;
         hide = false;
         transit = null;
+    }
+
+    public void gemCheck() {
+        if (mode != 1) {
+            return;
+        }
+        int i = 0;
+        for (Gem gem : screen.gemList) {
+            if (cellX == gem.cellCoords[0] && cellY == gem.cellCoords[1]) {
+                screen.gemList.remove(i);
+                collectGem(gem);
+                return;
+            }
+            i++;
+        }
     }
 
     public void dispose() {

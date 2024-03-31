@@ -1,6 +1,7 @@
 package com.carbon.game;
 
 import java.lang.Math;
+import java.util.ArrayList;
 import java.util.Objects;
 
 import com.badlogic.gdx.Gdx;
@@ -28,12 +29,15 @@ public class GameScreen extends GridLogic implements Screen {
     public int[] building = null;
     public boolean metroVision = false;
     private boolean canClick = true;
+    public ArrayList<Gem> gemList = new ArrayList<>();
+    public GemSpawner gemSpawner;
 
     //Use constructor instead of create here
     public GameScreen(final CarbonGame game) {
         this.game = game;
         player = new Player(this, 100, 5, 20);
         mapLoader = new Map(this, player);
+        gemSpawner = new GemSpawner(mapLoader, this);
 
         float unitScale = 1f;
         mapRenderer = new OrthogonalTiledMapRenderer(mapLoader.map, unitScale);
@@ -114,6 +118,11 @@ public class GameScreen extends GridLogic implements Screen {
                 }
             }
         }
+        if (!metroVision) {
+            for (Gem gem : gemList){
+                game.batch.draw(gem.img, gem.position.x, gem.position.y, tileSize, tileSize);
+            }
+        }
         game.batch.end();
 
         //click input movement
@@ -152,7 +161,7 @@ public class GameScreen extends GridLogic implements Screen {
                 if (Objects.equals(mapLoader.stationList.get(mouseCell), "bikeStations")) {
                     mapLoader.bikeStands.get(mouseCell).select();
                 } else {
-                    mapLoader.Stations.get(mouseCell).select();
+                    mapLoader.stations.get(mouseCell).select();
                 }
             }
         }
@@ -208,5 +217,8 @@ public class GameScreen extends GridLogic implements Screen {
         metroRenderer.dispose();
         mapLoader.dispose();
         border.dispose();
+        for (Gem gem : gemList) {
+            gem.dispose();
+        }
     }
 }
