@@ -13,7 +13,6 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import org.xguzm.pathfinding.grid.GridCell;
 
 public class GameScreen extends GridLogic implements Screen {
@@ -52,6 +51,9 @@ public class GameScreen extends GridLogic implements Screen {
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0.2f, 1);
 
+        Vector3 inputPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        camera.unproject(inputPos);
+
         //render tile map
         if (metroVision) {
             metroRenderer.render();
@@ -63,14 +65,12 @@ public class GameScreen extends GridLogic implements Screen {
             mapRenderer.setView(camera);
         }
         //track mouse movement for cell border
-        int mouseCellX = worldToCell(Gdx.input.getX());
-        int mouseCellY = worldToCell(Gdx.input.getY());
-        GridCell mouseCell = mapLoader.gridLayer.getCell(mouseCellX, 47 - mouseCellY);
+        int inputCellX = worldToCell(inputPos.x);
+        int inputCellY = worldToCell(inputPos.y);
+        GridCell inputCell = mapLoader.gridLayer.getCell(inputCellX, inputCellY);
 
-        int tileSize = 16;
-        float borderX = cellToWorld(mouseCellX) - (float) tileSize /2; //find cell of where mouse is pointing
-        //no idea why 56 works here
-        float borderY = cellToWorld(47 - mouseCellY) - (float) tileSize /2; // and return global position of the cell center
+        float borderX = cellToWorld(inputCellX) - (float) tileSize/2; //find cell of where mouse is pointing
+        float borderY = cellToWorld(inputCellY) - (float) tileSize/2; // and return global position of the cell center
 
         game.batch.setProjectionMatrix(camera.combined);
         //sprite batch
@@ -87,15 +87,15 @@ public class GameScreen extends GridLogic implements Screen {
         }
         //cell selector for mouse
         if (!player.move && !player.hide) {
-            if (mouseCell != null) {
-                if (mouseCell.isWalkable()) {
+            if (inputCell != null) {
+                if (inputCell.isWalkable()) {
                     game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
-                } else if (mapLoader.stationList.containsKey(mouseCell)) {
+                } else if (mapLoader.stationList.containsKey(inputCell)) {
                     game.batch.setColor(Color.YELLOW);
                     if (player.mode == 1) {
                         game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
                     } else if (player.mode == 2) {
-                        if (mapLoader.bikeStands.containsKey(mouseCell)) {
+                        if (mapLoader.bikeStands.containsKey(inputCell)) {
                             game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
                         }
                     }
@@ -147,22 +147,16 @@ public class GameScreen extends GridLogic implements Screen {
                 player.finishEarly();
                 return;
             }
-            Vector3 touchPos = new Vector3();
-            touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-            camera.unproject(touchPos);
-            //check if clicked cell is walkable or station or button
-            int touchedCellX = worldToCell(touchPos.x);
-            int touchedCellY = worldToCell(touchPos.y);
             //if walkable start player movement
-            if (mapLoader.gridLayer.getCell(touchedCellX, touchedCellY).isWalkable()) {
-                player.setPath(mapLoader.path(player.cellX, player.cellY, touchedCellX, touchedCellY));
+            if (mapLoader.gridLayer.getCell(inputCellX, inputCellY).isWalkable()) {
+                player.setPath(mapLoader.path(player.cellX, player.cellY, inputCellX, inputCellY));
                 return;
             }
-            if (mapLoader.stationList.containsKey(mouseCell)) {
-                if (Objects.equals(mapLoader.stationList.get(mouseCell), "bikeStations")) {
-                    mapLoader.bikeStands.get(mouseCell).select();
+            if (mapLoader.stationList.containsKey(inputCell)) {
+                if (Objects.equals(mapLoader.stationList.get(inputCell), "bikeStations")) {
+                    mapLoader.bikeStands.get(inputCell).select();
                 } else {
-                    mapLoader.stations.get(mouseCell).select();
+                    mapLoader.stations.get(inputCell).select();
                 }
             }
         }
