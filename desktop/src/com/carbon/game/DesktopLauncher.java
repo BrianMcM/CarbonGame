@@ -8,7 +8,8 @@ import com.carbon.game.CarbonGame;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-		config.setWindowedMode(1600, 1200);
+		config.setWindowedMode(1024, 768);
+		config.setResizable(false);
 		config.useVsync(true);
 		config.setForegroundFPS(60);
 		config.setTitle("Carbon Game");

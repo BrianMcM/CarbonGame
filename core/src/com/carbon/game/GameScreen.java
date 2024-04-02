@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -14,11 +13,12 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import org.xguzm.pathfinding.grid.GridCell;
 
 public class GameScreen extends GridLogic implements Screen {
     final private CarbonGame game;
-    public OrthographicCamera camera;
+    private final OrthographicCamera camera;
     //class objects
     public Player player;
     //map
@@ -65,12 +65,12 @@ public class GameScreen extends GridLogic implements Screen {
         //track mouse movement for cell border
         int mouseCellX = worldToCell(Gdx.input.getX());
         int mouseCellY = worldToCell(Gdx.input.getY());
-        GridCell mouseCell = mapLoader.gridLayer.getCell(mouseCellX, 56 - mouseCellY);
+        GridCell mouseCell = mapLoader.gridLayer.getCell(mouseCellX, 47 - mouseCellY);
 
         int tileSize = 16;
         float borderX = cellToWorld(mouseCellX) - (float) tileSize /2; //find cell of where mouse is pointing
         //no idea why 56 works here
-        float borderY = cellToWorld(56 - mouseCellY) - (float) tileSize /2; // and return global position of the cell center
+        float borderY = cellToWorld(47 - mouseCellY) - (float) tileSize /2; // and return global position of the cell center
 
         game.batch.setProjectionMatrix(camera.combined);
         //sprite batch
@@ -176,7 +176,6 @@ public class GameScreen extends GridLogic implements Screen {
                 player.nextCell();
             }
         }
-
         //////////
         System.out.println(player.carbon);
         /////////
