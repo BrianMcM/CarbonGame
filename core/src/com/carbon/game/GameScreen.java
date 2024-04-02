@@ -13,6 +13,8 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import org.xguzm.pathfinding.grid.GridCell;
 
 public class GameScreen extends GridLogic implements Screen {
@@ -31,6 +33,7 @@ public class GameScreen extends GridLogic implements Screen {
     private boolean canClick = true;
     public ArrayList<Gem> gemList = new ArrayList<>();
     public GemSpawner gemSpawner;
+    private final Viewport viewport;
 
     //Use constructor instead of create here
     public GameScreen(final CarbonGame game) {
@@ -45,6 +48,8 @@ public class GameScreen extends GridLogic implements Screen {
         //camera
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
     }
 
     @Override
@@ -104,7 +109,7 @@ public class GameScreen extends GridLogic implements Screen {
             }
         }
         //transit section
-        for (Route route : mapLoader.Routes) {
+        for (Route route : mapLoader.routes) {
             for (Transit transit : route.transitList) {
                 if (transit.move) {
                     float update = transit.speed * Gdx.graphics.getDeltaTime();
@@ -170,9 +175,6 @@ public class GameScreen extends GridLogic implements Screen {
                 player.nextCell();
             }
         }
-        //////////
-        System.out.println(player.carbon);
-        /////////
     }
 
     private void clickCoolDown() {
@@ -191,6 +193,7 @@ public class GameScreen extends GridLogic implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        viewport.update(width, height, true);
     }
 
     @Override
