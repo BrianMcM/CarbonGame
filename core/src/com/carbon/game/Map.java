@@ -1,5 +1,6 @@
 package com.carbon.game;
 
+import Screens.GameScreen;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -18,18 +19,20 @@ public class Map extends GridLogic{
     private final int height;
     public NavigationTiledMapLayer gridLayer;
     public AStarGridFinder<GridCell> finder;
+
+    //Dont know what the below warning is on hashmaps
     public HashMap<GridCell, String> stationList = new HashMap<>();
     public HashMap<GridCell, BikeStand> bikeStands = new HashMap<>();
     public HashMap<GridCell, Station> stations = new HashMap<>();
     public ArrayList<Route> routes = new ArrayList<>();
     public ArrayList<int[]> walkableTiles = new ArrayList<>();
 
-    public Map(GameScreen screen, Player player) {
+    public Map(GameScreen screen, Player player,String mapname,String metroname) {
         this.screen = screen;
         this.player = player;
 
-        map = new TmxMapLoader().load("testMap/new.tmx");
-        metro = new TmxMapLoader().load("testMap/metro.tmx");
+        map = new TmxMapLoader().load(mapname);
+        metro = new TmxMapLoader().load(metroname);
         TiledMapTileLayer navLayer = (TiledMapTileLayer) map.getLayers().get("navigation");
 
         width = navLayer.getWidth();

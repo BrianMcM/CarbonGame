@@ -1,5 +1,6 @@
 package com.carbon.game;
 
+import Screens.GameScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
@@ -7,7 +8,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 import org.xguzm.pathfinding.grid.GridCell;
 import java.util.List;
-import java.util.Objects;
 
 public class Player extends GridLogic implements Moving{
     public GameScreen screen;

@@ -20,7 +20,7 @@ public class Transit extends GridLogic implements Moving{
     public Vector2 norm = new Vector2(0,0);
     public int buffer = 3;
     public float speed = (float) 150;
-    boolean move = true;
+    public boolean move = true;
     public int direction;
     public Texture img = new Texture(Gdx.files.internal("testShapes/circle.png"));
     public boolean letPlayerOff = false;

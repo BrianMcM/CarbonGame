@@ -1,4 +1,4 @@
-package com.carbon.game;
+package Screens;
 
 import java.lang.Math;
 import java.util.ArrayList;
@@ -9,16 +9,22 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+
+
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.carbon.game.*;
 import org.xguzm.pathfinding.grid.GridCell;
 
+
 public class GameScreen extends GridLogic implements Screen {
-    final private CarbonGame game;
+    //final private CarbonGame game;
     private final OrthographicCamera camera;
     //class objects
     public Player player;
@@ -33,29 +39,51 @@ public class GameScreen extends GridLogic implements Screen {
     private boolean canClick = true;
     public ArrayList<Gem> gemList = new ArrayList<>();
     public GemSpawner gemSpawner;
-    private final Viewport viewport;
+    private Viewport viewport;
+    private Hud hud;
+
+    public static final int WORLD_WIDTH = 1280;
+    public static final int WORLD_HEIGHT = 800;
+    public float aspectRatio;
+
+    public SpriteBatch batch;
+    public BitmapFont font;
+
+
+
 
     //Use constructor instead of create here
-    public GameScreen(final CarbonGame game) {
-        this.game = game;
+    public GameScreen() {
+        batch = new SpriteBatch();
+        font = new BitmapFont();
+        /* this.game = game; */
         player = new Player(this, 100, 5, 20);
-        mapLoader = new Map(this, player);
+
+        //Added the names of the map files here so different maps could be passed in the future
+        mapLoader = new Map(this, player,"testMap/new.tmx","testMap/metro.tmx");
         gemSpawner = new GemSpawner(mapLoader, this);
 
-        float unitScale = 1f;
-        mapRenderer = new OrthogonalTiledMapRenderer(mapLoader.map, unitScale);
-        metroRenderer = new OrthogonalTiledMapRenderer(mapLoader.metro, unitScale);
-        //camera
-        camera = new OrthographicCamera();
+        aspectRatio = (float) WORLD_WIDTH / WORLD_HEIGHT;
+        //float unitScale = 1f;
+        mapRenderer = new OrthogonalTiledMapRenderer(mapLoader.map);
+        metroRenderer = new OrthogonalTiledMapRenderer(mapLoader.metro);
+
+        camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
+        //viewport = new FitViewport(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(),camera );
+
         viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
+        hud = new Hud(batch);
+
     }
+
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(0, 0, 0.2f, 1);
+        //viewport.apply();
 
+        ScreenUtils.clear(0, 0, 0.2f, 1);
         Vector3 inputPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(inputPos);
 
@@ -77,34 +105,37 @@ public class GameScreen extends GridLogic implements Screen {
         float borderX = cellToWorld(inputCellX) - (float) tileSize/2; //find cell of where mouse is pointing
         float borderY = cellToWorld(inputCellY) - (float) tileSize/2; // and return global position of the cell center
 
-        game.batch.setProjectionMatrix(camera.combined);
+        batch.setProjectionMatrix(camera.combined);
+        batch.setProjectionMatrix(hud.stage.getCamera().combined);
+        hud.stage.draw();
+
         //sprite batch
-        game.batch.begin();
+        batch.begin();
         //player sprite
         if (!player.hide) {
-            game.batch.draw(player.img, player.position.x, player.position.y, tileSize, tileSize);
+            batch.draw(player.img, player.position.x, player.position.y, tileSize, tileSize);
         } else {
             if (building != null) {
-                game.batch.setColor(Color.YELLOW);
-                game.batch.draw(border, cellToWorld(building[0]) - (float) tileSize /2, cellToWorld(building[1]) - (float) tileSize /2, tileSize * 2, tileSize * 2);
-                game.batch.setColor(Color.WHITE);
+                batch.setColor(Color.YELLOW);
+                batch.draw(border, cellToWorld(building[0]) - (float) tileSize /2, cellToWorld(building[1]) - (float) tileSize /2, tileSize * 2, tileSize * 2);
+                batch.setColor(Color.WHITE);
             }
         }
         //cell selector for mouse
         if (!player.move && !player.hide) {
             if (inputCell != null) {
                 if (inputCell.isWalkable()) {
-                    game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
+                    batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
                 } else if (mapLoader.stationList.containsKey(inputCell)) {
-                    game.batch.setColor(Color.YELLOW);
+                    batch.setColor(Color.YELLOW);
                     if (player.mode == 1) {
-                        game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
+                        batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
                     } else if (player.mode == 2) {
                         if (mapLoader.bikeStands.containsKey(inputCell)) {
-                            game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
+                            batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
                         }
                     }
-                    game.batch.setColor(Color.WHITE);
+                    batch.setColor(Color.WHITE);
                 }
             }
         }
@@ -120,16 +151,16 @@ public class GameScreen extends GridLogic implements Screen {
                     }
                 }
                 if ((metroVision && route.train) || (!metroVision && !route.train)) {
-                    game.batch.draw(transit.img, transit.position.x, transit.position.y, tileSize, tileSize);
+                    batch.draw(transit.img, transit.position.x, transit.position.y, tileSize, tileSize);
                 }
             }
         }
         if (!metroVision) {
             for (Gem gem : gemList){
-                game.batch.draw(gem.img, gem.position.x, gem.position.y, tileSize, tileSize);
+                batch.draw(gem.img, gem.position.x, gem.position.y, tileSize, tileSize);
             }
         }
-        game.batch.end();
+        batch.end();
 
         //click input movement
         if (Gdx.input.justTouched()) {
@@ -214,6 +245,8 @@ public class GameScreen extends GridLogic implements Screen {
 
     @Override
     public void dispose() {
+        batch.dispose();
+        font.dispose();
         player.dispose();
         mapRenderer.dispose();
         metroRenderer.dispose();

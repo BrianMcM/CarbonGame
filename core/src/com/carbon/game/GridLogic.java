@@ -3,7 +3,7 @@ package com.carbon.game;
 import com.badlogic.gdx.math.Vector2;
 
 public class GridLogic {
-    int tileSize = 16;
+    public int tileSize = 16;
     public int worldToCell(float num) {
         return (int) num/tileSize;
     }
