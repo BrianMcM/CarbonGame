@@ -35,8 +35,8 @@ public class GameScreen extends GridLogic implements Screen {
     public ArrayList<Gem> gemList = new ArrayList<>();
     public GemSpawner gemSpawner;
     private final Viewport viewport;
-    public Music music_r = Gdx.audio.newMusic(Gdx.files.internal("SFX/Main_Music_City_Jazz.mp3"));
     public Music music_j = Gdx.audio.newMusic(Gdx.files.internal("SFX/Main_Music_City_Jazz.mp3"));
+    public Music music_r = Gdx.audio.newMusic(Gdx.files.internal("SFX/Main_Music_Retro.mp3"));
     public Sound Game_start = Gdx.audio.newSound(Gdx.files.internal("SFX/win31.mp3"));
     public Sound Exit_Bus_Stop = Gdx.audio.newSound(Gdx.files.internal("SFX/Bus_door.wav"));
     public Sound Train_exit = Gdx.audio.newSound(Gdx.files.internal("SFX/metro_chime.wav"));
@@ -51,10 +51,10 @@ public class GameScreen extends GridLogic implements Screen {
         gemSpawner = new GemSpawner(mapLoader, this);
         //music_j = SimCity 3000 music, more smooth jazz, probably go
         // better with the more realistic sounds and vibe of the game
-        //music_j.play();
+        music_j.play();
         //music_r = Same as before
-        music_r.setVolume(0.1f);
-        music_r.play();
+        //music_r.setVolume(0.1f);
+        //music_r.play();
 
         float unitScale = 1f;
         mapRenderer = new OrthogonalTiledMapRenderer(mapLoader.map, unitScale);
