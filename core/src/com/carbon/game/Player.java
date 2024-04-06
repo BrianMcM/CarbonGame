@@ -88,6 +88,7 @@ public class Player extends GridLogic implements Moving{
         cellY = pathFirst().getY();
         position.set(target);
         move = false;
+        //Footstep sounds
         //Walk.play();
     }
 

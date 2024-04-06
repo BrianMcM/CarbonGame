@@ -12,8 +12,11 @@ public class Station implements Inside {
     public Route route;
     public boolean occupied = false;
     public Sound Error = Gdx.audio.newSound(Gdx.files.internal("SFX/Error.wav"));
-    public Sound Metro = Gdx.audio.newSound(Gdx.files.internal("SFX/pickup.wav"));
-    public Sound Bus = Gdx.audio.newSound(Gdx.files.internal("SFX/Enter_Bus_Stop.wav"));
+    public Sound Metro_chime = Gdx.audio.newSound(Gdx.files.internal("SFX/metro_chime.wav"));
+    public Sound Bus_Horn = Gdx.audio.newSound(Gdx.files.internal("SFX/Bus_Horn.wav"));
+    public Sound Bus_Door = Gdx.audio.newSound(Gdx.files.internal("SFX/Bus_door.wav"));
+    public Sound Train_moving = Gdx.audio.newSound(Gdx.files.internal("SFX/train_moving.wav"));
+    public boolean bus_sounds = false;
 
     public Station(GridCell c, Player p, Map m, boolean t) {
         player = p;
@@ -44,16 +47,27 @@ public class Station implements Inside {
         occupied = true;
         player.hide = true;
         map.screen.building = new int[]{cell.getX(), cell.getY()};
-        Bus.play();
+        if (!train) {
+            Bus_Door.play();
+        }
         if (train) {
             map.screen.metroVision = true;
+            Metro_chime.play(0.1f);
+            //Ambient train sounds
+            Train_moving.play(0.1f);
         }
     }
 
     public void arrived() {
         occupied = false;
         map.screen.building = null;
-        Bus.play();
+        //Leaving bus stop
+        if (!train) {
+            Bus_Horn.play();
+        }
+        if (train) {
+            Metro_chime.play();
+        }
     }
 
     public void playerExit() {
@@ -63,7 +77,9 @@ public class Station implements Inside {
 
     public void dispose() {
         Error.dispose();
-        Metro.dispose();
-        Bus.dispose();
+        Metro_chime.dispose();
+        Bus_Door.dispose();
+        Train_moving.dispose();
+        Bus_Horn.dispose();
     }
 }

@@ -35,9 +35,11 @@ public class GameScreen extends GridLogic implements Screen {
     public ArrayList<Gem> gemList = new ArrayList<>();
     public GemSpawner gemSpawner;
     private final Viewport viewport;
-    public Music music = Gdx.audio.newMusic(Gdx.files.internal("SFX/Main_Music.mp3"));
+    public Music music_r = Gdx.audio.newMusic(Gdx.files.internal("SFX/Main_Music_City_Jazz.mp3"));
+    public Music music_j = Gdx.audio.newMusic(Gdx.files.internal("SFX/Main_Music_City_Jazz.mp3"));
     public Sound Game_start = Gdx.audio.newSound(Gdx.files.internal("SFX/win31.mp3"));
-    public Sound Enter_Bus_Stop = Gdx.audio.newSound(Gdx.files.internal("SFX/Enter_Bus_Stop.wav"));
+    public Sound Exit_Bus_Stop = Gdx.audio.newSound(Gdx.files.internal("SFX/Bus_door.wav"));
+    public Sound Train_exit = Gdx.audio.newSound(Gdx.files.internal("SFX/metro_chime.wav"));
 
     //Use constructor instead of create here
     public GameScreen(final CarbonGame game) {
@@ -47,8 +49,12 @@ public class GameScreen extends GridLogic implements Screen {
         player = new Player(this, 100, 5, 20);
         mapLoader = new Map(this, player);
         gemSpawner = new GemSpawner(mapLoader, this);
-        music.setVolume(0.1f);
-        music.play();
+        //music_j = SimCity 3000 music, more smooth jazz, probably go
+        // better with the more realistic sounds and vibe of the game
+        //music_j.play();
+        //music_r = Same as before
+        music_r.setVolume(0.1f);
+        music_r.play();
 
         float unitScale = 1f;
         mapRenderer = new OrthogonalTiledMapRenderer(mapLoader.map, unitScale);
@@ -149,12 +155,12 @@ public class GameScreen extends GridLogic implements Screen {
             }
             if (building != null) {
                 player.exit();
-                Enter_Bus_Stop.play();
+                //Exit_Bus_Stop.play();
                 return;
             }
             if (player.transit != null) {
                 player.transit.letPlayerOff = true;
-                Enter_Bus_Stop.play();
+                //Train_exit.play();
                 return;
             }
             //end trip at next cell, take no other inputs
@@ -229,9 +235,11 @@ public class GameScreen extends GridLogic implements Screen {
         metroRenderer.dispose();
         mapLoader.dispose();
         border.dispose();
-        music.dispose();
+        music_r.dispose();
+        music_j.dispose();
         Game_start.dispose();
-        Enter_Bus_Stop.dispose();
+        Exit_Bus_Stop.dispose();
+        Train_exit.dispose();
         for (Gem gem : gemList) {
             gem.dispose();
         }

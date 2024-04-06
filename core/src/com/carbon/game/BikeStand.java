@@ -8,7 +8,7 @@ public class BikeStand {
     public final Player player;
     public GridCell cell;
     public Sound Error = Gdx.audio.newSound(Gdx.files.internal("SFX/Error.wav"));
-    public Sound Bike_Get = Gdx.audio.newSound(Gdx.files.internal("SFX/bike_get.mp3"));
+    public Sound Bike_Get = Gdx.audio.newSound(Gdx.files.internal("SFX/bike_bell.wav"));
 
     public BikeStand(GridCell c, Player p) {
         cell = c;

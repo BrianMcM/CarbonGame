@@ -1,6 +1,7 @@
 package com.carbon.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
@@ -23,6 +24,7 @@ public class Transit extends GridLogic implements Moving{
     public int direction;
     public Texture img = new Texture(Gdx.files.internal("testShapes/circle.png"));
     public boolean letPlayerOff = false;
+    public Sound Get_off = Gdx.audio.newSound(Gdx.files.internal("SFX/Bus_door.wav"));
 
     public Transit(Route r, int index, boolean t, boolean c, int d) {
         train = t;
@@ -57,6 +59,8 @@ public class Transit extends GridLogic implements Moving{
     public void checkForPlayer() {
         if (letPlayerOff) {
             currentStation.playerExit();
+            //Sound for player leaving station after being on transit, bus door sound
+            Get_off.play();
             letPlayerOff = false;
             waitAtStation();
             return;
