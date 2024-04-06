@@ -20,8 +20,9 @@ public class Map extends GridLogic{
     public AStarGridFinder<GridCell> finder;
     public HashMap<GridCell, String> stationList = new HashMap<>();
     public HashMap<GridCell, BikeStand> bikeStands = new HashMap<>();
-    public HashMap<GridCell, Station> Stations = new HashMap<>();
-    public ArrayList<Route> Routes = new ArrayList<>();
+    public HashMap<GridCell, Station> stations = new HashMap<>();
+    public ArrayList<Route> routes = new ArrayList<>();
+    public ArrayList<int[]> walkableTiles = new ArrayList<>();
 
     public Map(GameScreen screen, Player player) {
         this.screen = screen;
@@ -78,7 +79,7 @@ public class Map extends GridLogic{
                     GridCell gc = new GridCell(x, y, walkable);
                     grid[x][y] = gc;
                     if (Objects.equals(layer.getName(), "navigation")) {
-                        continue;
+                        walkableTiles.add(new int[]{x, y});
                     }
                     stationList.put(gc, layer.getName());
                     if (Objects.equals(layer.getName(), "bikeStations")) {
@@ -86,22 +87,21 @@ public class Map extends GridLogic{
                         continue;
                     }
                     if (Objects.equals(layer.getName(), "trainStations")) {
-                        Stations.put(gc, new Station(gc, player, this, true));
+                        stations.put(gc, new Station(gc, player, this, true));
                         continue;
                     }
                     if (Objects.equals(layer.getName(), "busStations")) {
-                        Stations.put(gc, new Station(gc, player, this, false));
+                        stations.put(gc, new Station(gc, player, this, false));
                     }
                 }
             }
         }
     }
 
-    //redo this later
     public void convertToGridTransit(TiledMapTileLayer layer, GridCell[][] grid) {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                //assigning walkable layers
+                //assigning movable layers
                 if (notNull(layer.getCell(x, y))) {
                     GridCell gc = new GridCell(x, y, true);
                     grid[x][y] = gc;
@@ -109,7 +109,6 @@ public class Map extends GridLogic{
             }
         }
     }
-    //end redo
 
     public void finishGrid(GridCell[][] grid) {
         for (int x = 0; x < width; x++) {
@@ -136,15 +135,15 @@ public class Map extends GridLogic{
         List<GridCell> linePath = finder.findPath(first[0], first[1], last[0], last[1], layer);
         route.setPath(first, linePath);
 
-        Routes.add(route);
-        route.addStation(Arrays.toString(first), Stations.get(firstCell));
+        routes.add(route);
+        route.addStation(Arrays.toString(first), stations.get(firstCell));
 
         for (GridCell gridCell : linePath) {
             int xCoord = gridCell.getX();
             int yCoord = gridCell.getY();
             GridCell gCell = gridLayer.getCell(xCoord, yCoord);
-            if (Stations.containsKey(gCell)) {
-                route.addStation(Arrays.toString(new int[]{xCoord, yCoord}), Stations.get(gCell));
+            if (stations.containsKey(gCell)) {
+                route.addStation(Arrays.toString(new int[]{xCoord, yCoord}), stations.get(gCell));
             }
         }
         route.addTransit(0);
@@ -153,7 +152,7 @@ public class Map extends GridLogic{
     public void dispose() {
         map.dispose();
         metro.dispose();
-        for (Route route : Routes) {
+        for (Route route : routes) {
             route.dispose();
         }
     }

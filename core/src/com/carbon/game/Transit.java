@@ -2,12 +2,11 @@ package com.carbon.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 import java.util.Arrays;
-
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Timer.Task;
-import com.badlogic.gdx.utils.Timer;
 
 public class Transit extends GridLogic implements Moving{
     public boolean train;
@@ -39,6 +38,9 @@ public class Transit extends GridLogic implements Moving{
     }
 
     public void arriveAtTarget() {
+        if (route.map.player.transit == this) {
+            route.map.player.transitCost(train);
+        }
         pathIndex += direction;
         position.set(v_cellToWorld(route.getPath().get(pathIndex)[0], route.getPath().get(pathIndex)[1]));
         move = false;

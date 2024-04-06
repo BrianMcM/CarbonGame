@@ -1,10 +1,9 @@
 package com.carbon.game;
 
-import java.lang.Math;
-import java.util.Objects;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -12,11 +11,16 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import org.xguzm.pathfinding.grid.GridCell;
+
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class GameScreen extends GridLogic implements Screen {
     final private CarbonGame game;
-    public OrthographicCamera camera;
+    private final OrthographicCamera camera;
     //class objects
     public Player player;
     //map
@@ -28,12 +32,23 @@ public class GameScreen extends GridLogic implements Screen {
     public int[] building = null;
     public boolean metroVision = false;
     private boolean canClick = true;
+    public ArrayList<Gem> gemList = new ArrayList<>();
+    public GemSpawner gemSpawner;
+    private final Viewport viewport;
+    public Music music = Gdx.audio.newMusic(Gdx.files.internal("SFX/Main_Music.mp3"));
+    public Sound Game_start = Gdx.audio.newSound(Gdx.files.internal("SFX/win31.mp3"));
+    public Sound Enter_Bus_Stop = Gdx.audio.newSound(Gdx.files.internal("SFX/Enter_Bus_Stop.wav"));
 
     //Use constructor instead of create here
     public GameScreen(final CarbonGame game) {
         this.game = game;
+        //Sound at start of game
+        //Game_start.play();
         player = new Player(this, 100, 5, 20);
         mapLoader = new Map(this, player);
+        gemSpawner = new GemSpawner(mapLoader, this);
+        music.setVolume(0.1f);
+        music.play();
 
         float unitScale = 1f;
         mapRenderer = new OrthogonalTiledMapRenderer(mapLoader.map, unitScale);
@@ -41,11 +56,16 @@ public class GameScreen extends GridLogic implements Screen {
         //camera
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
     }
 
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0.2f, 1);
+
+        Vector3 inputPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        camera.unproject(inputPos);
 
         //render tile map
         if (metroVision) {
@@ -58,14 +78,12 @@ public class GameScreen extends GridLogic implements Screen {
             mapRenderer.setView(camera);
         }
         //track mouse movement for cell border
-        int mouseCellX = worldToCell(Gdx.input.getX());
-        int mouseCellY = worldToCell(Gdx.input.getY());
-        GridCell mouseCell = mapLoader.gridLayer.getCell(mouseCellX, 56 - mouseCellY);
+        int inputCellX = worldToCell(inputPos.x);
+        int inputCellY = worldToCell(inputPos.y);
+        GridCell inputCell = mapLoader.gridLayer.getCell(inputCellX, inputCellY);
 
-        int tileSize = 16;
-        float borderX = cellToWorld(mouseCellX) - (float) tileSize /2; //find cell of where mouse is pointing
-        //no idea why 56 works here
-        float borderY = cellToWorld(56 - mouseCellY) - (float) tileSize /2; // and return global position of the cell center
+        float borderX = cellToWorld(inputCellX) - (float) tileSize/2; //find cell of where mouse is pointing
+        float borderY = cellToWorld(inputCellY) - (float) tileSize/2; // and return global position of the cell center
 
         game.batch.setProjectionMatrix(camera.combined);
         //sprite batch
@@ -82,15 +100,15 @@ public class GameScreen extends GridLogic implements Screen {
         }
         //cell selector for mouse
         if (!player.move && !player.hide) {
-            if (mouseCell != null) {
-                if (mouseCell.isWalkable()) {
+            if (inputCell != null) {
+                if (inputCell.isWalkable()) {
                     game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
-                } else if (mapLoader.stationList.containsKey(mouseCell)) {
+                } else if (mapLoader.stationList.containsKey(inputCell)) {
                     game.batch.setColor(Color.YELLOW);
                     if (player.mode == 1) {
                         game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
                     } else if (player.mode == 2) {
-                        if (mapLoader.bikeStands.containsKey(mouseCell)) {
+                        if (mapLoader.bikeStands.containsKey(inputCell)) {
                             game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
                         }
                     }
@@ -99,7 +117,7 @@ public class GameScreen extends GridLogic implements Screen {
             }
         }
         //transit section
-        for (Route route : mapLoader.Routes) {
+        for (Route route : mapLoader.routes) {
             for (Transit transit : route.transitList) {
                 if (transit.move) {
                     float update = transit.speed * Gdx.graphics.getDeltaTime();
@@ -114,6 +132,11 @@ public class GameScreen extends GridLogic implements Screen {
                 }
             }
         }
+        if (!metroVision) {
+            for (Gem gem : gemList){
+                game.batch.draw(gem.img, gem.position.x, gem.position.y, tileSize, tileSize);
+            }
+        }
         game.batch.end();
 
         //click input movement
@@ -126,10 +149,12 @@ public class GameScreen extends GridLogic implements Screen {
             }
             if (building != null) {
                 player.exit();
+                Enter_Bus_Stop.play();
                 return;
             }
             if (player.transit != null) {
                 player.transit.letPlayerOff = true;
+                Enter_Bus_Stop.play();
                 return;
             }
             //end trip at next cell, take no other inputs
@@ -137,31 +162,26 @@ public class GameScreen extends GridLogic implements Screen {
                 player.finishEarly();
                 return;
             }
-            Vector3 touchPos = new Vector3();
-            touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-            camera.unproject(touchPos);
-            //check if clicked cell is walkable or station or button
-            int touchedCellX = worldToCell(touchPos.x);
-            int touchedCellY = worldToCell(touchPos.y);
             //if walkable start player movement
-            if (mapLoader.gridLayer.getCell(touchedCellX, touchedCellY).isWalkable()) {
-                player.setPath(mapLoader.path(player.cellX, player.cellY, touchedCellX, touchedCellY));
+            if (mapLoader.gridLayer.getCell(inputCellX, inputCellY).isWalkable()) {
+                player.setPath(mapLoader.path(player.cellX, player.cellY, inputCellX, inputCellY));
                 return;
             }
-            if (mapLoader.stationList.containsKey(mouseCell)) {
-                if (Objects.equals(mapLoader.stationList.get(mouseCell), "bikeStations")) {
-                    mapLoader.bikeStands.get(mouseCell).select();
+            if (mapLoader.stationList.containsKey(inputCell)) {
+                if (Objects.equals(mapLoader.stationList.get(inputCell), "bikeStations")) {
+                    mapLoader.bikeStands.get(inputCell).select();
                 } else {
-                    mapLoader.Stations.get(mouseCell).select();
+                    mapLoader.stations.get(inputCell).select();
                 }
             }
         }
         //player movement
         if (player.move) {
-            float update = player.mode * 50 * Gdx.graphics.getDeltaTime();
+            float update = player.mode * 50 * Gdx.graphics.getDeltaTime() * player.exhausted;
             player.position.x -= player.norm.x * update;
             player.position.y -= player.norm.y * update;
-            if (Math.abs(player.position.x - player.target.x) < player.mode && Math.abs(player.position.y - player.target.y) < player.mode) {
+            double buffer = player.mode * player.exhausted;
+            if (Math.abs(player.position.x - player.target.x) < buffer && Math.abs(player.position.y - player.target.y) < buffer) {
                 player.nextCell();
             }
         }
@@ -183,6 +203,7 @@ public class GameScreen extends GridLogic implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        viewport.update(width, height, true);
     }
 
     @Override
@@ -208,5 +229,11 @@ public class GameScreen extends GridLogic implements Screen {
         metroRenderer.dispose();
         mapLoader.dispose();
         border.dispose();
+        music.dispose();
+        Game_start.dispose();
+        Enter_Bus_Stop.dispose();
+        for (Gem gem : gemList) {
+            gem.dispose();
+        }
     }
 }
