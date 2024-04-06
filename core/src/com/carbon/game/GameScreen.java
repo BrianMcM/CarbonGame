@@ -51,6 +51,7 @@ public class GameScreen extends GridLogic implements Screen {
         gemSpawner = new GemSpawner(mapLoader, this);
         //music_j = SimCity 3000 music, more smooth jazz, probably go
         // better with the more realistic sounds and vibe of the game
+        music_j.setVolume(0.1f);
         music_j.play();
         //music_r = Same as before
         //music_r.setVolume(0.1f);
