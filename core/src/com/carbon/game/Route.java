@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Route {
-    public Map map;
+    public static Map map;
     public boolean train;
     public HashMap<String, Station> stations = new HashMap<>();
     private final ArrayList<int[]> path = new ArrayList<>();
@@ -15,7 +15,7 @@ public class Route {
 
     public Route(Map map, boolean t) {
         train = t;
-        this.map = map;
+        Route.map = map;
     }
 
     public void addStation(String coordString, Station s) {

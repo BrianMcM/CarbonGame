@@ -3,11 +3,11 @@ package com.carbon.game;
 import org.xguzm.pathfinding.grid.GridCell;
 
 public class BikeStand{
-    public final Player player;
+    public static Player player;
     public GridCell cell;
     public BikeStand(GridCell c, Player p) {
         cell = c;
-        player = p;
+        BikeStand.player = p;
     }
 
     public void select() {

@@ -10,12 +10,13 @@ import java.util.List;
 import java.util.Objects;
 
 public class Player extends GridLogic implements Moving{
-    public GameScreen screen;
-    //value variables
+    public final GameScreen screen;
+    //constants
+    public static final int CAB_CARBON = 10;
+    public static final int TRAIN_CARBON = 2;
+    public static final int BUS_CARBON = 3;
+
     public int carbon = 0;
-    public final int cabCarbon = 10;
-    public final int trainCarbon = 2;
-    public final int busCarbon = 3;
     private int energy;
     public int gemScore = 0;
     public int cellX = 0;
@@ -63,16 +64,16 @@ public class Player extends GridLogic implements Moving{
 
     public void transitCost(boolean train) {
         if (train) {
-            carbon += trainCarbon;
+            carbon += TRAIN_CARBON;
         } else {
-            carbon += busCarbon;
+            carbon += BUS_CARBON;
         }
     }
 
     //MOVEMENT FUNCTIONS
     public void arriveAtTarget() {
         if (mode == 3) {
-            carbon += cabCarbon;
+            carbon += CAB_CARBON;
         } else {
             energy--;
         }

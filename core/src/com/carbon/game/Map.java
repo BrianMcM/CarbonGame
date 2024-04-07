@@ -10,14 +10,14 @@ import org.xguzm.pathfinding.grid.finders.AStarGridFinder;
 import java.util.*;
 
 public class Map extends GridLogic{
-    public GameScreen screen;
-    public Player player;
-    public TiledMap map;
-    public TiledMap metro;
+    public final GameScreen screen;
+    public final Player player;
+    public final TiledMap map;
+    public final TiledMap metro;
     private final int width;
     private final int height;
-    public NavigationTiledMapLayer gridLayer;
-    public AStarGridFinder<GridCell> finder;
+    public final NavigationTiledMapLayer gridLayer;
+    public final AStarGridFinder<GridCell> finder;
     public HashMap<GridCell, String> stationList = new HashMap<>();
     public HashMap<GridCell, BikeStand> bikeStands = new HashMap<>();
     public HashMap<GridCell, Station> stations = new HashMap<>();

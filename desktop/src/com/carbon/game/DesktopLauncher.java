@@ -9,8 +9,8 @@ public class DesktopLauncher {
 		config.setResizable(false);
 		//FULLSCREEN
 		//config.setFullscreenMode(Lwjgl3ApplicationConfiguration.getDisplayMode());
-		config.setWindowedMode(1024, 768);
-		config.useVsync(false);
+		config.setWindowedMode(1440, 880);
+		config.useVsync(true);
 		config.setForegroundFPS(60);
 		config.setTitle("Carbon Game");
 		new Lwjgl3Application(new CarbonGame(), config);
