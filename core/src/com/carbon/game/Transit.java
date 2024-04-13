@@ -10,35 +10,39 @@ import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.Timer;
 
 public class Transit extends GridLogic implements Moving{
-    public boolean train;
-    public boolean circular;
+    public final boolean isTrain;
     public Station currentStation;
     private int pathIndex;
-    public Route route;
+    public final Route route;
     public Vector2 position = new Vector2(0,0);
     public Vector2 target = new Vector2(0,0);
     public Vector2 norm = new Vector2(0,0);
-    public int buffer = 3;
-    public float speed = (float) 150;
+    public final int buffer;
+    public final float speed;
     boolean move = true;
     public int direction;
-    public Texture img = new Texture(Gdx.files.internal("testShapes/circle.png"));
     public boolean letPlayerOff = false;
+    public Texture img = new Texture(Gdx.files.internal("testShapes/circle.png"));
 
-    public Transit(Route r, int index, boolean t, boolean c, int d) {
-        train = t;
-        circular = c;
+    public Transit(Route r, int index, boolean t, int d) {
+        isTrain = t;
         route = r;
         pathIndex = index - d;
         direction = d;
-        if (train) {
+        if (isTrain) {
             speed = 200;
             buffer = 4;
+        } else {
+            speed = 150;
+            buffer = 3;
         }
         arriveAtTarget();
     }
 
     public void arriveAtTarget() {
+        if (Route.map.player.transit == this) {
+            Route.map.player.transitCost(isTrain);
+        }
         pathIndex += direction;
         position.set(v_cellToWorld(route.getPath().get(pathIndex)[0], route.getPath().get(pathIndex)[1]));
         move = false;
@@ -61,18 +65,15 @@ public class Transit extends GridLogic implements Moving{
         }
         if (currentStation.occupied) {
             currentStation.arrived();
-            route.map.player.transit = this;
+            Route.map.player.transit = this;
         }
         waitAtStation();
     }
 
     public void setTargets() {
         if ((pathIndex == 0 && direction == -1) || (pathIndex == route.getPath().size() - 1) && direction == 1) {
-            if (circular) {
-                resetPath();
-                return;
-            }
-            direction *= -1;
+            resetPath();
+            return;
         }
         target.set(v_cellToWorld(route.getPath().get(pathIndex + direction)[0], route.getPath().get(pathIndex + direction)[1]));
         norm.x = Float.compare(position.x, target.x);
@@ -83,8 +84,14 @@ public class Transit extends GridLogic implements Moving{
     }
 
     public void resetPath(){ //circular
-        target.set(v_cellToWorld(route.getPath().get(0)[0], route.getPath().get(0)[1]));
-        pathIndex = -1;
+        if (direction == 1) {
+            target.set(v_cellToWorld(route.getPath().get(0)[0], route.getPath().get(0)[1]));
+            pathIndex = -1;
+        } else {
+            int size = route.getPath().size();
+            target.set(v_cellToWorld(route.getPath().get(size - 1)[0], route.getPath().get(size - 1)[1]));
+            pathIndex =  size;
+        }
         norm.x = -direction;
         norm.y = 0;
         move = true;
