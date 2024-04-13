@@ -1,6 +1,7 @@
 package com.carbon.game;
 
 import Screens.GameScreen;
+import Screens.MainMenu;
 import Screens.Splash;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
@@ -17,7 +18,8 @@ public class CarbonGame extends Game {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 		//this.setScreen(new MenuScreen(this));
-		setScreen(new Splash());
+//		setScreen(new Splash());
+		setScreen(new MainMenu());
 //		try {
 //			// Perform first task
 //			System.out.println("Task 1: Performing task...");

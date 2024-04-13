@@ -43,7 +43,6 @@ private TweenManager tweenManager;
         splash.setSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 
         Tween.set(splash,SpriteAccessor.Alpha).target(0).delay(1).start(tweenManager);
-
         Tween.to(splash,SpriteAccessor.Alpha,2).target(1).start(tweenManager);
         Tween.to(splash,SpriteAccessor.Alpha,2).target(0).delay(2).setCallback(new TweenCallback() {
 
