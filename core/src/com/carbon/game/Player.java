@@ -57,17 +57,7 @@ public class Player extends FreeRoam {
         super.arriveAtTarget();
     }
 
-    public void nextCell() {
-        arriveAtTarget();
-        path.remove(0);
-        if (path.isEmpty()) {
-            arrived();
-            return;
-        }
-        setTargets();
-    }
-
-    private void arrived() {
+    protected void arrived() {
         if (mode == 1) {
             gemCheck();
         }
