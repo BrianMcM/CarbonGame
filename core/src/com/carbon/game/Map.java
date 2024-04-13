@@ -20,15 +20,19 @@ public class Map extends GridLogic{
     public AStarGridFinder<GridCell> finder;
     public HashMap<GridCell, String> stationList = new HashMap<>();
     public HashMap<GridCell, BikeStand> bikeStands = new HashMap<>();
-    public HashMap<GridCell, Station> Stations = new HashMap<>();
-    public ArrayList<Route> Routes = new ArrayList<>();
+    public HashMap<GridCell, Station> stations = new HashMap<>();
+    public ArrayList<Route> routes = new ArrayList<>();
+    public ArrayList<int[]> walkableTiles = new ArrayList<>();
 
     public Map(GameScreen screen, Player player) {
         this.screen = screen;
         this.player = player;
-
-        map = new TmxMapLoader().load("testMap/new.tmx");
-        metro = new TmxMapLoader().load("testMap/metro.tmx");
+        //"new/metro" = original map
+        //"new_2_tp/metro" = original map, fixed bug where leaving some train stations would crash game
+        //"new_map_tp/new_metro_tp" = 1st iteration of 1600x900 map
+        //"new_map_tp2/new_metro_tp2" = 2nd iteration
+        map = new TmxMapLoader().load("testMap/new_map_tp2.tmx");
+        metro = new TmxMapLoader().load("testMap/new_metro_tp2.tmx");
         TiledMapTileLayer navLayer = (TiledMapTileLayer) map.getLayers().get("navigation");
 
         width = navLayer.getWidth();
@@ -56,7 +60,13 @@ public class Map extends GridLogic{
         finishGrid(trainLineGrid);
         NavigationTiledMapLayer trainGridLayer = new NavigationTiledMapLayer(trainLineGrid);
         //hard code each train line
-        setTransitRoute(new int[]{8, 25}, new int[]{28, 20}, trainGridLayer, true);
+        //original map route
+        //setTransitRoute(new int[]{8, 25}, new int[]{28, 20}, trainGridLayer, true);
+        //"new_map_tp" routes
+        //setTransitRoute(new int[]{97, 8}, new int[]{13, 45}, trainGridLayer, true);
+        setTransitRoute(new int[]{64, 54}, new int[]{34, 54}, trainGridLayer, true);
+        setTransitRoute(new int[]{7, 39}, new int[]{91, 12}, trainGridLayer, true);
+        setTransitRoute(new int[]{89, 53}, new int[]{49, 6}, trainGridLayer, true);
 
         //bus section
         TiledMapTileLayer busLayer = (TiledMapTileLayer) map.getLayers().get("busRoutes");
@@ -65,8 +75,14 @@ public class Map extends GridLogic{
         finishGrid(BusRouteGrid);
         NavigationTiledMapLayer busGridLayer = new NavigationTiledMapLayer(BusRouteGrid);
         //hard code bus routes
-        setTransitRoute(new int[]{18,34}, new int[]{16,34}, busGridLayer, false);
-
+        //setTransitRoute(new int[]{18,34}, new int[]{16,34}, busGridLayer, false);
+        //"new_map_tp" bus route
+        //setTransitRoute(new int[]{64,45}, new int[]{33,45}, busGridLayer, false);
+        //"new_map_tp2" bus routes
+        //Clockwise outer route
+        setTransitRoute(new int[]{59, 44}, new int[]{40, 44}, busGridLayer, false);
+        //Counter-clockwise inner route
+        setTransitRoute(new int[]{40, 40}, new int[]{59, 40}, busGridLayer, false);
     }
 
     public void convertToGrid(TiledMapTileLayer layer, GridCell[][] grid) {
@@ -78,7 +94,7 @@ public class Map extends GridLogic{
                     GridCell gc = new GridCell(x, y, walkable);
                     grid[x][y] = gc;
                     if (Objects.equals(layer.getName(), "navigation")) {
-                        continue;
+                        walkableTiles.add(new int[]{x, y});
                     }
                     stationList.put(gc, layer.getName());
                     if (Objects.equals(layer.getName(), "bikeStations")) {
@@ -86,22 +102,21 @@ public class Map extends GridLogic{
                         continue;
                     }
                     if (Objects.equals(layer.getName(), "trainStations")) {
-                        Stations.put(gc, new Station(gc, player, this, true));
+                        stations.put(gc, new Station(gc, player, this, true));
                         continue;
                     }
                     if (Objects.equals(layer.getName(), "busStations")) {
-                        Stations.put(gc, new Station(gc, player, this, false));
+                        stations.put(gc, new Station(gc, player, this, false));
                     }
                 }
             }
         }
     }
 
-    //redo this later
     public void convertToGridTransit(TiledMapTileLayer layer, GridCell[][] grid) {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                //assigning walkable layers
+                //assigning movable layers
                 if (notNull(layer.getCell(x, y))) {
                     GridCell gc = new GridCell(x, y, true);
                     grid[x][y] = gc;
@@ -109,7 +124,6 @@ public class Map extends GridLogic{
             }
         }
     }
-    //end redo
 
     public void finishGrid(GridCell[][] grid) {
         for (int x = 0; x < width; x++) {
@@ -136,15 +150,15 @@ public class Map extends GridLogic{
         List<GridCell> linePath = finder.findPath(first[0], first[1], last[0], last[1], layer);
         route.setPath(first, linePath);
 
-        Routes.add(route);
-        route.addStation(Arrays.toString(first), Stations.get(firstCell));
+        routes.add(route);
+        route.addStation(Arrays.toString(first), stations.get(firstCell));
 
         for (GridCell gridCell : linePath) {
             int xCoord = gridCell.getX();
             int yCoord = gridCell.getY();
             GridCell gCell = gridLayer.getCell(xCoord, yCoord);
-            if (Stations.containsKey(gCell)) {
-                route.addStation(Arrays.toString(new int[]{xCoord, yCoord}), Stations.get(gCell));
+            if (stations.containsKey(gCell)) {
+                route.addStation(Arrays.toString(new int[]{xCoord, yCoord}), stations.get(gCell));
             }
         }
         route.addTransit(0);
@@ -153,7 +167,7 @@ public class Map extends GridLogic{
     public void dispose() {
         map.dispose();
         metro.dispose();
-        for (Route route : Routes) {
+        for (Route route : routes) {
             route.dispose();
         }
     }

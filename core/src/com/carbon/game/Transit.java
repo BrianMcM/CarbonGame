@@ -1,13 +1,13 @@
 package com.carbon.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 import java.util.Arrays;
-
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Timer.Task;
-import com.badlogic.gdx.utils.Timer;
 
 public class Transit extends GridLogic implements Moving{
     public boolean train;
@@ -22,8 +22,9 @@ public class Transit extends GridLogic implements Moving{
     public float speed = (float) 150;
     boolean move = true;
     public int direction;
-    public Texture img = new Texture(Gdx.files.internal("testShapes/circle.png"));
+    public Texture img = new Texture(Gdx.files.internal("testShapes/bus_0003.png"));
     public boolean letPlayerOff = false;
+    public Sound Get_off = Gdx.audio.newSound(Gdx.files.internal("SFX/Bus_door.wav"));
 
     public Transit(Route r, int index, boolean t, boolean c, int d) {
         train = t;
@@ -39,6 +40,9 @@ public class Transit extends GridLogic implements Moving{
     }
 
     public void arriveAtTarget() {
+        if (route.map.player.transit == this) {
+            route.map.player.transitCost(train);
+        }
         pathIndex += direction;
         position.set(v_cellToWorld(route.getPath().get(pathIndex)[0], route.getPath().get(pathIndex)[1]));
         move = false;
@@ -55,6 +59,8 @@ public class Transit extends GridLogic implements Moving{
     public void checkForPlayer() {
         if (letPlayerOff) {
             currentStation.playerExit();
+            //Sound for player leaving station after being on transit, bus door sound
+            //Get_off.play();
             letPlayerOff = false;
             waitAtStation();
             return;
