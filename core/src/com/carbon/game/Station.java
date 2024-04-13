@@ -16,13 +16,15 @@ public class Station implements Inside {
     public Sound Bus_Horn = Gdx.audio.newSound(Gdx.files.internal("SFX/Bus_Horn.wav"));
     public Sound Bus_Door = Gdx.audio.newSound(Gdx.files.internal("SFX/Bus_door.wav"));
     public Sound Train_moving = Gdx.audio.newSound(Gdx.files.internal("SFX/train_moving.wav"));
-    public boolean bus_sounds = false;
+    public boolean train_sounds = false;
 
     public Station(GridCell c, Player p, Map m, boolean t) {
         player = p;
         cell = c;
         map = m;
         train = t;
+        System.out.println(c);
+        System.out.println(t);
     }
 
     public void setRoute(Route route) {
@@ -47,14 +49,12 @@ public class Station implements Inside {
         occupied = true;
         player.hide = true;
         map.screen.building = new int[]{cell.getX(), cell.getY()};
-        if (!train) {
-            Bus_Door.play();
-        }
         if (train) {
             map.screen.metroVision = true;
-            Metro_chime.play(0.1f);
+            //Metro_chime.play(0.1f);
             //Ambient train sounds
-            Train_moving.play(0.1f);
+            Train_moving.loop(0.05f);
+            Train_moving.stop();
         }
     }
 
@@ -63,10 +63,10 @@ public class Station implements Inside {
         map.screen.building = null;
         //Leaving bus stop
         if (!train) {
-            Bus_Horn.play();
+            Bus_Horn.play(0.1f);
         }
         if (train) {
-            Metro_chime.play();
+            Metro_chime.play(0.1f);
         }
     }
 

@@ -40,6 +40,7 @@ public class GameScreen extends GridLogic implements Screen {
     public Sound Game_start = Gdx.audio.newSound(Gdx.files.internal("SFX/win31.mp3"));
     public Sound Exit_Bus_Stop = Gdx.audio.newSound(Gdx.files.internal("SFX/Bus_door.wav"));
     public Sound Train_exit = Gdx.audio.newSound(Gdx.files.internal("SFX/metro_chime.wav"));
+    public Sound Train_moving = Gdx.audio.newSound(Gdx.files.internal("SFX/train_moving.wav"));
 
     //Use constructor instead of create here
     public GameScreen(final CarbonGame game) {

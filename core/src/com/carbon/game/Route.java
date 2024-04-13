@@ -34,9 +34,7 @@ public class Route {
         }
     }
 
-    public ArrayList<int[]> getPath() {
-        return path;
-    }
+    public ArrayList<int[]> getPath() { return path; }
 
     public void dispose() {
         for (Transit transit : transitList) {

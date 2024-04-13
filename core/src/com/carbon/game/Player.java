@@ -31,11 +31,11 @@ public class Player extends GridLogic implements Moving{
     public int mode = 1; // 1-walking, 2-bike, 3-car
     public float exhausted = 1;
     //texture
-    public Texture img = new Texture(Gdx.files.internal("testShapes/square.png"));
+    public Texture img = new Texture(Gdx.files.internal("testShapes/character.png"));
     public boolean move = false;
     public Transit transit = null;
     public Sound gemCollectSound = Gdx.audio.newSound(Gdx.files.internal("SFX/gem_pickup.mp3"));
-    public Sound Exhaustedsound = Gdx.audio.newSound(Gdx.files.internal("SFX/Pacman-death-sound.mp3"));
+    public Sound Exhaustedsound = Gdx.audio.newSound(Gdx.files.internal("SFX/Tired_breath_final.wav"));
     public boolean Exhausted_sound_played;
     public Sound Walk = Gdx.audio.newSound(Gdx.files.internal("SFX/Footstep.wav"));
     public Sound finishEarly = Gdx.audio.newSound(Gdx.files.internal("SFX/Stop.wav"));
