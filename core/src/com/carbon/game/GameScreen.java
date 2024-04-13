@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -125,27 +126,49 @@ public class GameScreen extends GridLogic implements Screen {
             }
         }
         if (!metroVision) {
+            //gems
             for (Gem gem : gemList){
                 game.batch.draw(gem.img, gem.position.x, gem.position.y, TILE_SIZE, TILE_SIZE);
+            }
+            //cars
+            for (Car car : mapLoader.cars) {
+                if (!car.hidden) {
+                    game.batch.draw(car.img, car.position.x, car.position.y, TILE_SIZE, TILE_SIZE);
+                }
             }
         }
         game.batch.end();
 
         //click input movement
         if (Gdx.input.justTouched()) {
+            //check that mouse isn't off-screen
+            if (inputPos.x < 0 || inputPos.y < 0 || inputPos.x > viewport.getScreenWidth() || inputPos.y > viewport.getScreenHeight()) {
+                return;
+            }
+            //if cell that player is in is clicked don't react
+            if (inputCellX == player.cellX && inputCellY == player.cellY) {
+                return;
+            }
+            //if cool down timer hasn't fired prevent click
             if (!canClick) {
                 return;
             } else {
                 canClick = false;
                 clickCoolDown();
             }
+            //exit building
             if (building != null) {
                 player.exit();
                 return;
             }
+            //let player off the train
             if (player.transit != null) {
                 player.transit.letPlayerOff = true;
                 return;
+            }
+            //don't let player click again until the car ride is finished
+            if (player.mode == 3) {
+                canClick = false;
             }
             //end trip at next cell, take no other inputs
             if (player.move) {
@@ -175,6 +198,26 @@ public class GameScreen extends GridLogic implements Screen {
                 player.nextCell();
             }
         }
+
+        //car movement
+        for (Car car : mapLoader.cars) {
+            if (car.move) {
+                float carUpdate = 150 * Gdx.graphics.getDeltaTime();
+                car.position.x -= car.norm.x * carUpdate;
+                car.position.y -= car.norm.y * carUpdate;
+                double carBuffer = 3;
+                if (Math.abs(car.position.x - car.target.x) < carBuffer && Math.abs(car.position.y - car.target.y) < carBuffer) {
+                    car.nextCell();
+                }
+            }
+        }
+
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
+            // Handle the 'A' key press event
+            mapLoader.callCar();
+            // Add your event handling code here
+        }
     }
 
     private void clickCoolDown() {
@@ -187,7 +230,7 @@ public class GameScreen extends GridLogic implements Screen {
         }, (float) 0.2, 0, 0);
     }
 
-    private void allowClick() {
+    public void allowClick() {
         canClick = true;
     }
 

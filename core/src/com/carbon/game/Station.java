@@ -2,7 +2,7 @@ package com.carbon.game;
 
 import org.xguzm.pathfinding.grid.GridCell;
 
-public class Station implements Inside{
+public class Station implements Inside, Selectable{
     public static Player player;
     private static Map map;
     public GridCell cell;
