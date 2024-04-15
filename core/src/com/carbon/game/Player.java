@@ -22,6 +22,11 @@ public class Player extends FreeRoam {
     public Transit transit = null;
     public Car car = null;
 
+    public Sound gemCollectSound = Gdx.audio.newSound(Gdx.files.internal("SFX/gem_pickup.mp3"));
+    public Sound Exhaustedsound = Gdx.audio.newSound(Gdx.files.internal("SFX/Tired_breath_final.wav"));
+    public boolean Exhausted_sound_played;
+    public Sound finishEarly = Gdx.audio.newSound(Gdx.files.internal("SFX/Stop.wav"));
+
     public Player(GameScreen screen, int e, int x, int y) {
         super(x, y);
         this.screen = screen;
@@ -102,5 +107,8 @@ public class Player extends FreeRoam {
 
     public void dispose() {
         img.dispose();
+        gemCollectSound.dispose();
+        Exhaustedsound.dispose();
+        finishEarly.dispose();
     }
 }

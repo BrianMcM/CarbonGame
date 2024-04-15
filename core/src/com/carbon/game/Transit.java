@@ -22,6 +22,7 @@ public class Transit extends GridLogic implements Moving{
     boolean move = true;
     public int direction;
     public boolean letPlayerOff = false;
+
     public Texture img = new Texture(Gdx.files.internal("testShapes/circle.png"));
 
     public Transit(Route r, int index, boolean t, int d) {
