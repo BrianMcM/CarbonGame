@@ -10,29 +10,28 @@ import org.xguzm.pathfinding.grid.finders.AStarGridFinder;
 import java.util.*;
 
 public class Map extends GridLogic{
-    public GameScreen screen;
-    public Player player;
-    public TiledMap map;
-    public TiledMap metro;
+    public final GameScreen screen;
+    public final Player player;
+    public final TiledMap map;
+    public final TiledMap metro;
     private final int width;
     private final int height;
-    public NavigationTiledMapLayer gridLayer;
-    public AStarGridFinder<GridCell> finder;
+    public final NavigationTiledMapLayer gridLayer;
+    public final AStarGridFinder<GridCell> finder;
     public HashMap<GridCell, String> stationList = new HashMap<>();
     public HashMap<GridCell, BikeStand> bikeStands = new HashMap<>();
     public HashMap<GridCell, Station> stations = new HashMap<>();
     public ArrayList<Route> routes = new ArrayList<>();
     public ArrayList<int[]> walkableTiles = new ArrayList<>();
+    public ArrayList<Car> cars = new ArrayList<>();
 
     public Map(GameScreen screen, Player player) {
         this.screen = screen;
         this.player = player;
-        //"new/metro" = original map
-        //"new_2_tp/metro" = original map, fixed bug where leaving some train stations would crash game
-        //"new_map_tp/new_metro_tp" = 1st iteration of 1600x900 map
-        //"new_map_tp2/new_metro_tp2" = 2nd iteration
+
         map = new TmxMapLoader().load("testMap/map_final.tmx");
         metro = new TmxMapLoader().load("testMap/metro_final.tmx");
+
         TiledMapTileLayer navLayer = (TiledMapTileLayer) map.getLayers().get("navigation");
 
         width = navLayer.getWidth();
@@ -41,6 +40,8 @@ public class Map extends GridLogic{
         TiledMapTileLayer bikeStationLayer = (TiledMapTileLayer) map.getLayers().get("bikeStations");
         TiledMapTileLayer trainStationLayer = (TiledMapTileLayer) map.getLayers().get("trainStations");
         TiledMapTileLayer busStationLayer = (TiledMapTileLayer) map.getLayers().get("busStations");
+
+        TiledMapTileLayer carLayer = (TiledMapTileLayer) map.getLayers().get("carLayer");
 
         GridCell[][] grid = new GridCell[width][height];
         convertToGrid(navLayer, grid);
@@ -60,14 +61,7 @@ public class Map extends GridLogic{
         finishGrid(trainLineGrid);
         NavigationTiledMapLayer trainGridLayer = new NavigationTiledMapLayer(trainLineGrid);
         //hard code each train line
-        //original map route
-        //setTransitRoute(new int[]{8, 25}, new int[]{28, 20}, trainGridLayer, true);
-        //"new_map_tp" routes
-        //setTransitRoute(new int[]{97, 8}, new int[]{13, 45}, trainGridLayer, true);
-        //setTransitRoute(new int[]{64, 54}, new int[]{34, 54}, trainGridLayer, true);
-        //setTransitRoute(new int[]{7, 39}, new int[]{91, 12}, trainGridLayer, true);
-        //setTransitRoute(new int[]{89, 53}, new int[]{49, 6}, trainGridLayer, true);
-        //setTransitRoute(new int[]{5, 1}, new int[]{5, 49}, trainGridLayer, true);
+
         setTransitRoute(new int[]{45, 53}, new int[]{5, 49}, trainGridLayer, true);
         setTransitRoute(new int[]{45, 33}, new int[]{89, 33}, trainGridLayer, true);
         setTransitRoute(new int[]{45, 53}, new int[]{52, 1}, trainGridLayer, true);
@@ -79,21 +73,16 @@ public class Map extends GridLogic{
         finishGrid(BusRouteGrid);
         NavigationTiledMapLayer busGridLayer = new NavigationTiledMapLayer(BusRouteGrid);
         //hard code bus routes
-        //setTransitRoute(new int[]{18,34}, new int[]{16,34}, busGridLayer, false);
-        //"new_map_tp" bus route
-        //setTransitRoute(new int[]{64,45}, new int[]{33,45}, busGridLayer, false);
-        //"new_map_tp2" bus routes
-        //Clockwise outer route
-        //setTransitRoute(new int[]{59, 44}, new int[]{40, 44}, busGridLayer, false);
-        //Counter-clockwise inner route
-        //setTransitRoute(new int[]{40, 40}, new int[]{59, 40}, busGridLayer, false);
         setTransitRoute(new int[]{13, 9}, new int[]{9, 9}, busGridLayer, false);
         setTransitRoute(new int[]{53, 49}, new int[]{49, 49}, busGridLayer, false);
         setTransitRoute(new int[]{37, 29}, new int[]{33, 29}, busGridLayer, false);
         setTransitRoute(new int[]{93, 29}, new int[]{89, 29}, busGridLayer, false);
+
+        //cars
+        spawnCars(carLayer);
     }
 
-    public void convertToGrid(TiledMapTileLayer layer, GridCell[][] grid) {
+    private void convertToGrid(TiledMapTileLayer layer, GridCell[][] grid) {
         boolean walkable = Objects.equals(layer.getName(), "navigation");
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -121,7 +110,7 @@ public class Map extends GridLogic{
         }
     }
 
-    public void convertToGridTransit(TiledMapTileLayer layer, GridCell[][] grid) {
+    private void convertToGridTransit(TiledMapTileLayer layer, GridCell[][] grid) {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 //assigning movable layers
@@ -133,7 +122,7 @@ public class Map extends GridLogic{
         }
     }
 
-    public void finishGrid(GridCell[][] grid) {
+    private void finishGrid(GridCell[][] grid) {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 if (grid[x][y] == null) {
@@ -148,12 +137,11 @@ public class Map extends GridLogic{
     }
 
     public List<GridCell> path(int startX, int startY, int endX, int endY) {
-
         return finder.findPath(startX, startY, endX, endY, gridLayer);
     }
 
-    public void setTransitRoute(int[] first, int[] last, NavigationTiledMapLayer layer, boolean train) {
-        Route route = new Route(this, train);
+    private void setTransitRoute(int[] first, int[] last, NavigationTiledMapLayer layer, boolean train, int dir) {
+        Route route = new Route(this, train, dir);
         GridCell firstCell = gridLayer.getCell(first[0], first[1]);
         List<GridCell> linePath = finder.findPath(first[0], first[1], last[0], last[1], layer);
         route.setPath(first, linePath);
@@ -170,6 +158,44 @@ public class Map extends GridLogic{
             }
         }
         route.addTransit(0);
+    }
+
+    private void spawnCars(TiledMapTileLayer layer) {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (notNull(layer.getCell(x, y))) {
+                    cars.add(new Car(x, y, player, this));
+                }
+            }
+        }
+    }
+
+    public void callCar() {
+        int minPathSize = 9999; //bigger than game map so will always trigger
+        Car nearestCar = null;
+        for (Car car : cars) {
+            if (car.cellX == player.cellX && car.cellY == player.cellY) {
+                car.called = true;
+                car.pickUpPlayer();
+                return;
+            }
+            List<GridCell> cPath = path(car.cellX, car.cellY, player.cellX, player.cellY);
+            if (cPath.size() >= minPathSize) {
+                continue;
+            }
+            nearestCar = car;
+            minPathSize = cPath.size();
+        }
+        assert nearestCar != null;
+        nearestCar.called = true;
+        nearestCar.resetPos();
+        nearestCar.setPath(path(nearestCar.cellX, nearestCar.cellY, player.cellX, player.cellY));
+    }
+
+    public int[] randomTile() {
+        Random random = new Random();
+        int randomIndex = random.nextInt(walkableTiles.size());
+        return(walkableTiles.get(randomIndex - 1));
     }
 
     public void dispose() {
