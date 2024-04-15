@@ -140,8 +140,8 @@ public class Map extends GridLogic{
         return finder.findPath(startX, startY, endX, endY, gridLayer);
     }
 
-    private void setTransitRoute(int[] first, int[] last, NavigationTiledMapLayer layer, boolean train, int dir) {
-        Route route = new Route(this, train, dir);
+    private void setTransitRoute(int[] first, int[] last, NavigationTiledMapLayer layer, boolean train) {
+        Route route = new Route(this, train);
         GridCell firstCell = gridLayer.getCell(first[0], first[1]);
         List<GridCell> linePath = finder.findPath(first[0], first[1], last[0], last[1], layer);
         route.setPath(first, linePath);
