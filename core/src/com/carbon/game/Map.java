@@ -28,9 +28,9 @@ public class Map extends GridLogic{
     public Map(GameScreen screen, Player player) {
         this.screen = screen;
         this.player = player;
-
-        map = new TmxMapLoader().load("testMap/map_final.tmx");
-        metro = new TmxMapLoader().load("testMap/metro_final.tmx");
+        //map_final/metro_final = newest map
+        map = new TmxMapLoader().load("testMap/new.tmx");
+        metro = new TmxMapLoader().load("testMap/metro.tmx");
 
         TiledMapTileLayer navLayer = (TiledMapTileLayer) map.getLayers().get("navigation");
 
@@ -61,10 +61,9 @@ public class Map extends GridLogic{
         finishGrid(trainLineGrid);
         NavigationTiledMapLayer trainGridLayer = new NavigationTiledMapLayer(trainLineGrid);
         //hard code each train line
-
-        setTransitRoute(new int[]{45, 53}, new int[]{5, 49}, trainGridLayer, true);
-        setTransitRoute(new int[]{45, 33}, new int[]{89, 33}, trainGridLayer, true);
-        setTransitRoute(new int[]{45, 53}, new int[]{52, 1}, trainGridLayer, true);
+        //setTransitRoute(new int[]{45, 53}, new int[]{5, 49}, trainGridLayer, true);
+        //setTransitRoute(new int[]{45, 33}, new int[]{89, 33}, trainGridLayer, true);
+        //setTransitRoute(new int[]{45, 53}, new int[]{52, 1}, trainGridLayer, true);
 
         //bus section
         TiledMapTileLayer busLayer = (TiledMapTileLayer) map.getLayers().get("busRoutes");
@@ -73,10 +72,10 @@ public class Map extends GridLogic{
         finishGrid(BusRouteGrid);
         NavigationTiledMapLayer busGridLayer = new NavigationTiledMapLayer(BusRouteGrid);
         //hard code bus routes
-        setTransitRoute(new int[]{13, 9}, new int[]{9, 9}, busGridLayer, false);
-        setTransitRoute(new int[]{53, 49}, new int[]{49, 49}, busGridLayer, false);
-        setTransitRoute(new int[]{37, 29}, new int[]{33, 29}, busGridLayer, false);
-        setTransitRoute(new int[]{93, 29}, new int[]{89, 29}, busGridLayer, false);
+        //setTransitRoute(new int[]{13, 9}, new int[]{9, 9}, busGridLayer, false);
+        //setTransitRoute(new int[]{53, 49}, new int[]{49, 49}, busGridLayer, false);
+        //setTransitRoute(new int[]{37, 29}, new int[]{33, 29}, busGridLayer, false);
+        //setTransitRoute(new int[]{93, 29}, new int[]{89, 29}, busGridLayer, false);
 
         //cars
         spawnCars(carLayer);

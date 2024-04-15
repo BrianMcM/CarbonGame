@@ -32,7 +32,7 @@ public class Car extends FreeRoam {
     public void arriveAtTarget() {
         super.arriveAtTarget();
         if (called) {
-            Player.carbon += CAB_CARBON;
+            //Player.carbon += CAB_CARBON;
         }
     }
 
@@ -56,13 +56,13 @@ public class Car extends FreeRoam {
     public void pickUpPlayer() {
         player.mode = 3;
         hidden = true;
-        player.car = this;
+        //player.car = this;
         player.img = this.img;
     }
     public void dropOff() {
         setCell(player.cellX, player.cellY);
         hidden = false;
-        player.car = null;
+        //player.car = null;
         park(3);
     }
 
