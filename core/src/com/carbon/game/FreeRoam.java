@@ -52,10 +52,13 @@ abstract public class FreeRoam extends GridLogic implements Moving{
         arriveAtTarget();
         path.remove(0);
         if (path.isEmpty()) {
+            arrived();
             return;
         }
         setTargets();
     }
+
+    protected void arrived() {};
 
     public void setTargets() {
         target.set(v_cellToWorld(pathFirst().getX(), pathFirst().getY()));

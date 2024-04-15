@@ -166,10 +166,6 @@ public class GameScreen extends GridLogic implements Screen {
                 player.transit.letPlayerOff = true;
                 return;
             }
-            //don't let player click again until the car ride is finished
-            if (player.mode == 3) {
-                canClick = false;
-            }
             //end trip at next cell, take no other inputs
             if (player.move) {
                 player.finishEarly();

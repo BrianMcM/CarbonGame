@@ -158,7 +158,7 @@ public class Map extends GridLogic{
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 if (notNull(layer.getCell(x, y))) {
-                    cars.add(new Car(x, y, player));
+                    cars.add(new Car(x, y, player, this));
                 }
             }
         }
@@ -182,7 +182,14 @@ public class Map extends GridLogic{
         }
         assert nearestCar != null;
         nearestCar.called = true;
+        nearestCar.resetPos();
         nearestCar.setPath(path(nearestCar.cellX, nearestCar.cellY, player.cellX, player.cellY));
+    }
+
+    public int[] randomTile() {
+        Random random = new Random();
+        int randomIndex = random.nextInt(walkableTiles.size());
+        return(walkableTiles.get(randomIndex - 1));
     }
 
     public void dispose() {
