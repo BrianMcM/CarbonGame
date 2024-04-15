@@ -1,9 +1,12 @@
 package com.carbon.game;
 
+import java.lang.Math;
+import java.util.ArrayList;
+import java.util.Objects;
+
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,26 +18,24 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import org.xguzm.pathfinding.grid.GridCell;
 
-import java.util.ArrayList;
-import java.util.Objects;
-
 public class GameScreen extends GridLogic implements Screen {
-    final private CarbonGame game;
+    private final CarbonGame game;
     private final OrthographicCamera camera;
     //class objects
     public Player player;
     //map
-    public OrthogonalTiledMapRenderer mapRenderer;
-    public OrthogonalTiledMapRenderer metroRenderer;
-    public Map mapLoader;
+    public final OrthogonalTiledMapRenderer mapRenderer;
+    public final OrthogonalTiledMapRenderer metroRenderer;
+    public final Map mapLoader;
     //textures
-    public Texture border = new Texture(Gdx.files.internal("border.png"));
+    public final Texture border_img = new Texture(Gdx.files.internal("border.png"));
     public int[] building = null;
     public boolean metroVision = false;
     private boolean canClick = true;
     public ArrayList<Gem> gemList = new ArrayList<>();
-    public GemSpawner gemSpawner;
+    public final GemSpawner gemSpawner;
     private final Viewport viewport;
+
     public Music music_j = Gdx.audio.newMusic(Gdx.files.internal("SFX/Main_Music_City_Jazz.mp3"));
     public Music music_r = Gdx.audio.newMusic(Gdx.files.internal("SFX/Main_Music_Retro.mp3"));    public Sound Train_exit = Gdx.audio.newSound(Gdx.files.internal("SFX/metro_chime.wav"));
     public Sound Train_moving = Gdx.audio.newSound(Gdx.files.internal("SFX/train_moving.wav"));
@@ -45,13 +46,6 @@ public class GameScreen extends GridLogic implements Screen {
         player = new Player(this, 100, 5, 20);
         mapLoader = new Map(this, player);
         gemSpawner = new GemSpawner(mapLoader, this);
-        //music_j = SimCity 3000 music, more smooth jazz, probably go
-        // better with the more realistic sounds and vibe of the game
-        music_j.setVolume(0.1f);
-        music_j.play();
-        //music_r = Same as before
-        //music_r.setVolume(0.1f);
-        //music_r.play();
 
         float unitScale = 1f;
         mapRenderer = new OrthogonalTiledMapRenderer(mapLoader.map, unitScale);
@@ -85,19 +79,19 @@ public class GameScreen extends GridLogic implements Screen {
         int inputCellY = worldToCell(inputPos.y);
         GridCell inputCell = mapLoader.gridLayer.getCell(inputCellX, inputCellY);
 
-        float borderX = cellToWorld(inputCellX) - (float) tileSize/2; //find cell of where mouse is pointing
-        float borderY = cellToWorld(inputCellY) - (float) tileSize/2; // and return global position of the cell center
+        float borderX = cellToWorld(inputCellX) - (float) TILE_SIZE/2; //find cell of where mouse is pointing
+        float borderY = cellToWorld(inputCellY) - (float) TILE_SIZE/2; // and return global position of the cell center
 
         game.batch.setProjectionMatrix(camera.combined);
         //sprite batch
         game.batch.begin();
         //player sprite
         if (!player.hide) {
-            game.batch.draw(player.img, player.position.x, player.position.y, tileSize, tileSize);
+            game.batch.draw(player.img, player.position.x, player.position.y, TILE_SIZE, TILE_SIZE);
         } else {
             if (building != null) {
                 game.batch.setColor(Color.YELLOW);
-                game.batch.draw(border, cellToWorld(building[0]) - (float) tileSize /2, cellToWorld(building[1]) - (float) tileSize /2, tileSize * 2, tileSize * 2);
+                game.batch.draw(border_img, cellToWorld(building[0]) - (float) TILE_SIZE /2, cellToWorld(building[1]) - (float) TILE_SIZE /2, TILE_SIZE * 2, TILE_SIZE * 2);
                 game.batch.setColor(Color.WHITE);
             }
         }
@@ -105,14 +99,14 @@ public class GameScreen extends GridLogic implements Screen {
         if (!player.move && !player.hide) {
             if (inputCell != null) {
                 if (inputCell.isWalkable()) {
-                    game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
+                    game.batch.draw(border_img, borderX, borderY, TILE_SIZE * 2, TILE_SIZE * 2);
                 } else if (mapLoader.stationList.containsKey(inputCell)) {
                     game.batch.setColor(Color.YELLOW);
                     if (player.mode == 1) {
-                        game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
+                        game.batch.draw(border_img, borderX, borderY, TILE_SIZE * 2, TILE_SIZE * 2);
                     } else if (player.mode == 2) {
                         if (mapLoader.bikeStands.containsKey(inputCell)) {
-                            game.batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
+                            game.batch.draw(border_img, borderX, borderY, TILE_SIZE * 2, TILE_SIZE * 2);
                         }
                     }
                     game.batch.setColor(Color.WHITE);
@@ -131,32 +125,49 @@ public class GameScreen extends GridLogic implements Screen {
                     }
                 }
                 if ((metroVision && route.train) || (!metroVision && !route.train)) {
-                    game.batch.draw(transit.img, transit.position.x, transit.position.y, tileSize, tileSize);
+                    game.batch.draw(transit.img, transit.position.x, transit.position.y, TILE_SIZE, TILE_SIZE);
                 }
             }
         }
         if (!metroVision) {
+            //gems
             for (Gem gem : gemList){
-                game.batch.draw(gem.img, gem.position.x, gem.position.y, tileSize, tileSize);
+                game.batch.draw(gem.img, gem.position.x, gem.position.y, TILE_SIZE, TILE_SIZE);
+            }
+            //cars
+            for (Car car : mapLoader.cars) {
+                if (!car.hidden) {
+                    game.batch.draw(car.img, car.position.x, car.position.y, TILE_SIZE, TILE_SIZE);
+                }
             }
         }
         game.batch.end();
 
         //click input movement
         if (Gdx.input.justTouched()) {
+            //check that mouse isn't off-screen
+            if (inputPos.x < 0 || inputPos.y < 0 || inputPos.x > viewport.getScreenWidth() || inputPos.y > viewport.getScreenHeight()) {
+                return;
+            }
+            //if cell that player is in is clicked don't react
+            if (inputCellX == player.cellX && inputCellY == player.cellY) {
+                return;
+            }
+            //if cool down timer hasn't fired prevent click
             if (!canClick) {
                 return;
             } else {
                 canClick = false;
                 clickCoolDown();
             }
+            //exit building
             if (building != null) {
                 player.exit();
                 return;
             }
+            //let player off the train
             if (player.transit != null) {
                 player.transit.letPlayerOff = true;
-                //Train_exit.play();
                 return;
             }
             //end trip at next cell, take no other inputs
@@ -187,6 +198,26 @@ public class GameScreen extends GridLogic implements Screen {
                 player.nextCell();
             }
         }
+
+        //car movement
+        for (Car car : mapLoader.cars) {
+            if (car.move) {
+                float carUpdate = 150 * Gdx.graphics.getDeltaTime();
+                car.position.x -= car.norm.x * carUpdate;
+                car.position.y -= car.norm.y * carUpdate;
+                double carBuffer = 3;
+                if (Math.abs(car.position.x - car.target.x) < carBuffer && Math.abs(car.position.y - car.target.y) < carBuffer) {
+                    car.nextCell();
+                }
+            }
+        }
+
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
+            // Handle the 'A' key press event
+            mapLoader.callCar();
+            // Add your event handling code here
+        }
     }
 
     private void clickCoolDown() {
@@ -199,7 +230,7 @@ public class GameScreen extends GridLogic implements Screen {
         }, (float) 0.2, 0, 0);
     }
 
-    private void allowClick() {
+    public void allowClick() {
         canClick = true;
     }
 
@@ -230,10 +261,10 @@ public class GameScreen extends GridLogic implements Screen {
         mapRenderer.dispose();
         metroRenderer.dispose();
         mapLoader.dispose();
-        border.dispose();
         music_r.dispose();
         music_j.dispose();
         Train_exit.dispose();
+        border_img.dispose();
         for (Gem gem : gemList) {
             gem.dispose();
         }

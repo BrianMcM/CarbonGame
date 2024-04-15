@@ -5,17 +5,17 @@ import com.badlogic.gdx.utils.Timer;
 import java.util.*;
 
 public class GemSpawner {
-    public Map map;
-    public GameScreen screen;
-    public Timer timer = new Timer();
+    public final Map map;
+    public final GameScreen screen;
+    public final Timer timer = new Timer();
     private int valueIndex = 0;
-    Random rng = new Random();
-    ArrayList<int[]> inUseCells = new ArrayList<>();
-    List<Integer> scores = new ArrayList<>(Arrays.asList(100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 200, 200, 200, 200, 200, 300, 300, 300, 400, 500));
+    private final Random rng = new Random();
+    private final ArrayList<int[]> inUseCells = new ArrayList<>();
+    private final List<Integer> scores = new ArrayList<>(Arrays.asList(100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 200, 200, 200, 200, 200, 300, 300, 300, 400, 500));
     public GemSpawner(Map map, GameScreen screen) {
         this.map = map;
         this.screen = screen;
-        timer.scheduleTask(new Timer.Task() {
+        timer.scheduleTask(new com.badlogic.gdx.utils.Timer.Task() {
             @Override
             public void run () {
                 spawn();
