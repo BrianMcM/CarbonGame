@@ -11,10 +11,10 @@ public class Station implements Inside {
     public boolean train;
     public Route route;
     public boolean occupied = false;
-    public Sound Error = Gdx.audio.newSound(Gdx.files.internal("SFX/Error.wav"));
-    public Sound Metro_chime = Gdx.audio.newSound(Gdx.files.internal("SFX/metro_chime.wav"));
-    public Sound Bus_Horn = Gdx.audio.newSound(Gdx.files.internal("SFX/Bus_Horn.wav"));
-    public Sound Train_moving = Gdx.audio.newSound(Gdx.files.internal("SFX/train_moving.wav"));
+    public Sound Error = Gdx.audio.newSound(Gdx.files.internal("sfx/Error.wav"));
+    public Sound Metro_chime = Gdx.audio.newSound(Gdx.files.internal("sfx/metro_chime.wav"));
+    public Sound Bus_Horn = Gdx.audio.newSound(Gdx.files.internal("sfx/Bus_Horn.wav"));
+    public Sound Train_moving = Gdx.audio.newSound(Gdx.files.internal("sfx/train_moving.wav"));
 
     public Station(GridCell c, Player p, Map m, boolean t) {
         player = p;

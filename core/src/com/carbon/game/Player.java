@@ -34,10 +34,10 @@ public class Player extends GridLogic implements Moving{
     public Texture img = new Texture(Gdx.files.internal("testShapes/character.png"));
     public boolean move = false;
     public Transit transit = null;
-    public Sound gemCollectSound = Gdx.audio.newSound(Gdx.files.internal("SFX/gem_pickup.mp3"));
-    public Sound Exhaustedsound = Gdx.audio.newSound(Gdx.files.internal("SFX/Tired_breath_final.wav"));
+    public Sound gemCollectSound = Gdx.audio.newSound(Gdx.files.internal("sfx/gem_pickup.mp3"));
+    public Sound Exhaustedsound = Gdx.audio.newSound(Gdx.files.internal("sfx/Tired_breath_final.wav"));
     public boolean Exhausted_sound_played;
-    public Sound finishEarly = Gdx.audio.newSound(Gdx.files.internal("SFX/Stop.wav"));
+    public Sound finishEarly = Gdx.audio.newSound(Gdx.files.internal("sfx/Stop.wav"));
 
 
     public Player(GameScreen screen, int e, int x, int y) {
