@@ -24,10 +24,9 @@ public class Transit extends GridLogic implements Moving{
     public int direction;
     public Texture img = new Texture(Gdx.files.internal("testShapes/bus_0003.png"));
     public boolean letPlayerOff = false;
-    public Sound Get_off = Gdx.audio.newSound(Gdx.files.internal("SFX/Bus_door.wav"));
 
     public Transit(Route r, int index, boolean t, boolean c, int d) {
-        train = t;
+        train =
         circular = c;
         route = r;
         pathIndex = index - d;
@@ -59,8 +58,6 @@ public class Transit extends GridLogic implements Moving{
     public void checkForPlayer() {
         if (letPlayerOff) {
             currentStation.playerExit();
-            //Sound for player leaving station after being on transit, bus door sound
-            //Get_off.play();
             letPlayerOff = false;
             waitAtStation();
             return;

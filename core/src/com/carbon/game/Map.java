@@ -31,8 +31,8 @@ public class Map extends GridLogic{
         //"new_2_tp/metro" = original map, fixed bug where leaving some train stations would crash game
         //"new_map_tp/new_metro_tp" = 1st iteration of 1600x900 map
         //"new_map_tp2/new_metro_tp2" = 2nd iteration
-        map = new TmxMapLoader().load("testMap/new_map_tp2.tmx");
-        metro = new TmxMapLoader().load("testMap/new_metro_tp2.tmx");
+        map = new TmxMapLoader().load("testMap/map_final.tmx");
+        metro = new TmxMapLoader().load("testMap/metro_final.tmx");
         TiledMapTileLayer navLayer = (TiledMapTileLayer) map.getLayers().get("navigation");
 
         width = navLayer.getWidth();
@@ -64,9 +64,13 @@ public class Map extends GridLogic{
         //setTransitRoute(new int[]{8, 25}, new int[]{28, 20}, trainGridLayer, true);
         //"new_map_tp" routes
         //setTransitRoute(new int[]{97, 8}, new int[]{13, 45}, trainGridLayer, true);
-        setTransitRoute(new int[]{64, 54}, new int[]{34, 54}, trainGridLayer, true);
-        setTransitRoute(new int[]{7, 39}, new int[]{91, 12}, trainGridLayer, true);
-        setTransitRoute(new int[]{89, 53}, new int[]{49, 6}, trainGridLayer, true);
+        //setTransitRoute(new int[]{64, 54}, new int[]{34, 54}, trainGridLayer, true);
+        //setTransitRoute(new int[]{7, 39}, new int[]{91, 12}, trainGridLayer, true);
+        //setTransitRoute(new int[]{89, 53}, new int[]{49, 6}, trainGridLayer, true);
+        //setTransitRoute(new int[]{5, 1}, new int[]{5, 49}, trainGridLayer, true);
+        setTransitRoute(new int[]{45, 53}, new int[]{5, 49}, trainGridLayer, true);
+        setTransitRoute(new int[]{45, 33}, new int[]{89, 33}, trainGridLayer, true);
+        setTransitRoute(new int[]{45, 53}, new int[]{52, 1}, trainGridLayer, true);
 
         //bus section
         TiledMapTileLayer busLayer = (TiledMapTileLayer) map.getLayers().get("busRoutes");
@@ -80,9 +84,13 @@ public class Map extends GridLogic{
         //setTransitRoute(new int[]{64,45}, new int[]{33,45}, busGridLayer, false);
         //"new_map_tp2" bus routes
         //Clockwise outer route
-        setTransitRoute(new int[]{59, 44}, new int[]{40, 44}, busGridLayer, false);
+        //setTransitRoute(new int[]{59, 44}, new int[]{40, 44}, busGridLayer, false);
         //Counter-clockwise inner route
-        setTransitRoute(new int[]{40, 40}, new int[]{59, 40}, busGridLayer, false);
+        //setTransitRoute(new int[]{40, 40}, new int[]{59, 40}, busGridLayer, false);
+        setTransitRoute(new int[]{13, 9}, new int[]{9, 9}, busGridLayer, false);
+        setTransitRoute(new int[]{53, 49}, new int[]{49, 49}, busGridLayer, false);
+        setTransitRoute(new int[]{37, 29}, new int[]{33, 29}, busGridLayer, false);
+        setTransitRoute(new int[]{93, 29}, new int[]{89, 29}, busGridLayer, false);
     }
 
     public void convertToGrid(TiledMapTileLayer layer, GridCell[][] grid) {
