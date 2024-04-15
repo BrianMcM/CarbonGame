@@ -36,17 +36,12 @@ public class GameScreen extends GridLogic implements Screen {
     public GemSpawner gemSpawner;
     private final Viewport viewport;
     public Music music_j = Gdx.audio.newMusic(Gdx.files.internal("SFX/Main_Music_City_Jazz.mp3"));
-    public Music music_r = Gdx.audio.newMusic(Gdx.files.internal("SFX/Main_Music_Retro.mp3"));
-    public Sound Game_start = Gdx.audio.newSound(Gdx.files.internal("SFX/win31.mp3"));
-    public Sound Exit_Bus_Stop = Gdx.audio.newSound(Gdx.files.internal("SFX/Bus_door.wav"));
-    public Sound Train_exit = Gdx.audio.newSound(Gdx.files.internal("SFX/metro_chime.wav"));
+    public Music music_r = Gdx.audio.newMusic(Gdx.files.internal("SFX/Main_Music_Retro.mp3"));    public Sound Train_exit = Gdx.audio.newSound(Gdx.files.internal("SFX/metro_chime.wav"));
     public Sound Train_moving = Gdx.audio.newSound(Gdx.files.internal("SFX/train_moving.wav"));
 
     //Use constructor instead of create here
     public GameScreen(final CarbonGame game) {
         this.game = game;
-        //Sound at start of game
-        //Game_start.play();
         player = new Player(this, 100, 5, 20);
         mapLoader = new Map(this, player);
         gemSpawner = new GemSpawner(mapLoader, this);
@@ -157,7 +152,6 @@ public class GameScreen extends GridLogic implements Screen {
             }
             if (building != null) {
                 player.exit();
-                //Exit_Bus_Stop.play();
                 return;
             }
             if (player.transit != null) {
@@ -239,8 +233,6 @@ public class GameScreen extends GridLogic implements Screen {
         border.dispose();
         music_r.dispose();
         music_j.dispose();
-        Game_start.dispose();
-        Exit_Bus_Stop.dispose();
         Train_exit.dispose();
         for (Gem gem : gemList) {
             gem.dispose();

@@ -14,9 +14,7 @@ public class Station implements Inside {
     public Sound Error = Gdx.audio.newSound(Gdx.files.internal("SFX/Error.wav"));
     public Sound Metro_chime = Gdx.audio.newSound(Gdx.files.internal("SFX/metro_chime.wav"));
     public Sound Bus_Horn = Gdx.audio.newSound(Gdx.files.internal("SFX/Bus_Horn.wav"));
-    public Sound Bus_Door = Gdx.audio.newSound(Gdx.files.internal("SFX/Bus_door.wav"));
     public Sound Train_moving = Gdx.audio.newSound(Gdx.files.internal("SFX/train_moving.wav"));
-    public boolean train_sounds = false;
 
     public Station(GridCell c, Player p, Map m, boolean t) {
         player = p;
@@ -51,7 +49,6 @@ public class Station implements Inside {
         map.screen.building = new int[]{cell.getX(), cell.getY()};
         if (train) {
             map.screen.metroVision = true;
-            //Metro_chime.play(0.1f);
             //Ambient train sounds
             Train_moving.loop(0.05f);
             Train_moving.stop();
@@ -78,7 +75,6 @@ public class Station implements Inside {
     public void dispose() {
         Error.dispose();
         Metro_chime.dispose();
-        Bus_Door.dispose();
         Train_moving.dispose();
         Bus_Horn.dispose();
     }

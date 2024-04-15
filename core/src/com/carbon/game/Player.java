@@ -37,7 +37,6 @@ public class Player extends GridLogic implements Moving{
     public Sound gemCollectSound = Gdx.audio.newSound(Gdx.files.internal("SFX/gem_pickup.mp3"));
     public Sound Exhaustedsound = Gdx.audio.newSound(Gdx.files.internal("SFX/Tired_breath_final.wav"));
     public boolean Exhausted_sound_played;
-    public Sound Walk = Gdx.audio.newSound(Gdx.files.internal("SFX/Footstep.wav"));
     public Sound finishEarly = Gdx.audio.newSound(Gdx.files.internal("SFX/Stop.wav"));
 
 
@@ -176,7 +175,6 @@ public class Player extends GridLogic implements Moving{
         img.dispose();
         gemCollectSound.dispose();
         Exhaustedsound.dispose();
-        Walk.dispose();
         finishEarly.dispose();
     }
 }
