@@ -9,16 +9,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.carbon.game.CarbonGame;
 
@@ -34,6 +34,29 @@ public class MainMenu implements Screen {
     private BitmapFont white,black;//done
     private TextureAtlas atlas;//done
     private CarbonGame game;
+
+//    public static class ExitDialog extends Dialog {
+//        public ExitDialog(String title, Skin skin, String windowStyleName) {
+//            super(title, skin, windowStyleName);
+//        }
+//        public ExitDialog(String title, Skin skin) {
+//            super(title, skin);
+//        }
+//        public ExitDialog(String title, WindowStyle windowStyle) {
+//            super(title, windowStyle);
+//        }
+//
+//        {
+//            text("Are you sure you want to exit?");
+//            button("Yes");
+//            button("No");
+//        }
+//        @Override
+//        protected void result(Object object) {
+//            super.result(object);
+//        }
+//
+//    }
     @Override
     public void show() {
         stage = new Stage();
@@ -59,14 +82,37 @@ public class MainMenu implements Screen {
         textButtonStyle.font = black;
 
         buttonExit = new TextButton("Exit", textButtonStyle);
+        TextureAtlas atlas1 = new TextureAtlas(Gdx.files.internal("uiskin/uiskin.atlas"));
+        Skin skinny = new Skin(Gdx.files.internal("uiskin/uiskin.json"));
         buttonExit.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.exit();
+                Dialog dialog = new Dialog("confirm exit",skinny){
+                    {
+                        text("Are you sure you want to exit?");
+                        button("Yes",true);
+                        button("No",false);
+                    }
+
+                    @Override
+                    public Dialog show(Stage stage) {
+                        return super.show(stage);
+                    }
+
+                    @Override
+                    protected void result(Object object) {
+                        if((boolean) object) {
+                            Gdx.app.exit();
+                        }
+                    }
+                };
+                dialog.show(stage);
+
             }
         });
-
         buttonExit.pad(10);
+
+
 
         buttonPlay = new TextButton("Play", textButtonStyle);
         buttonPlay.addListener(new ClickListener(){
