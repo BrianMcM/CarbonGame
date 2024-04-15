@@ -12,12 +12,10 @@ public class Route {
     public HashMap<String, Station> stations = new HashMap<>();
     private final ArrayList<int[]> path = new ArrayList<>();
     public ArrayList<Transit> transitList = new ArrayList<>();
-    private final int direction;
 
-    public Route(Map map, boolean t, int d) {
+    public Route(Map map, boolean t) {
         train = t;
         Route.map = map;
-        direction = d;
     }
 
     public void addStation(String coordString, Station s) {
@@ -26,7 +24,7 @@ public class Route {
     }
 
     public void addTransit(int stationIndex) {
-        transitList.add(new Transit(this, stationIndex, train, direction));
+        transitList.add(new Transit(this, stationIndex, train, 1));
     }
 
     public void setPath(int[] first, List<GridCell> p) {
