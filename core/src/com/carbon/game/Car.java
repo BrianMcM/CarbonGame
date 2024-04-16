@@ -12,7 +12,7 @@ public class Car extends FreeRoam {
     private final Player player;
     private final Map map;
     //texture
-    public Texture img = new Texture(Gdx.files.internal("testShapes/circle.png"));
+    public Texture img = new Texture(Gdx.files.internal("testShapes/red_car_temp.png"));
     public boolean called = false;
     public boolean hidden = false;
 
@@ -32,7 +32,7 @@ public class Car extends FreeRoam {
     public void arriveAtTarget() {
         super.arriveAtTarget();
         if (called) {
-            //Player.carbon += CAB_CARBON;
+            Player.carbon += CAB_CARBON;
         }
     }
 
@@ -56,13 +56,13 @@ public class Car extends FreeRoam {
     public void pickUpPlayer() {
         player.mode = 3;
         hidden = true;
-        //player.car = this;
+        player.car = this;
         player.img = this.img;
     }
     public void dropOff() {
         setCell(player.cellX, player.cellY);
         hidden = false;
-        //player.car = null;
+        player.car = null;
         park(3);
     }
 

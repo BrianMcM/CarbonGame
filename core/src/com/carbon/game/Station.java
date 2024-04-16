@@ -4,25 +4,25 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import org.xguzm.pathfinding.grid.GridCell;
 
-public class Station implements Inside {
-    public final Player player;
+public class Station implements Inside, Selectable{
+    public static Player player;
+    private static Map map;
     public GridCell cell;
-    private final Map map;
-    public boolean train;
+    public final boolean isTrain;
     public Route route;
     public boolean occupied = false;
-    public Sound Error = Gdx.audio.newSound(Gdx.files.internal("sfx/Error.wav"));
-    public Sound Metro_chime = Gdx.audio.newSound(Gdx.files.internal("sfx/metro_chime.wav"));
-    public Sound Bus_Horn = Gdx.audio.newSound(Gdx.files.internal("sfx/Bus_Horn.wav"));
-    public Sound Train_moving = Gdx.audio.newSound(Gdx.files.internal("sfx/train_moving.wav"));
+
+    public Sound Error = Gdx.audio.newSound(Gdx.files.internal("SFX/Error.wav"));
+    public Sound Metro_chime = Gdx.audio.newSound(Gdx.files.internal("SFX/metro_chime.wav"));
+    public Sound Bus_Horn = Gdx.audio.newSound(Gdx.files.internal("SFX/Bus_Horn.wav"));
+    public Sound Train_moving = Gdx.audio.newSound(Gdx.files.internal("SFX/train_moving.wav"));
+
 
     public Station(GridCell c, Player p, Map m, boolean t) {
-        player = p;
+        Station.player = p;
+        Station.map = m;
         cell = c;
-        map = m;
-        train = t;
-        System.out.println(c);
-        System.out.println(t);
+        isTrain = t;
     }
 
     public void setRoute(Route route) {
@@ -46,8 +46,8 @@ public class Station implements Inside {
     public void playerEnter() {
         occupied = true;
         player.hide = true;
-        map.screen.building = new int[]{cell.getX(), cell.getY()};
-        if (train) {
+        map.screen.building = new int[] {cell.getX(), cell.getY()};
+        if (isTrain) {
             map.screen.metroVision = true;
             //Ambient train sounds
             Train_moving.loop(0.05f);
@@ -58,13 +58,6 @@ public class Station implements Inside {
     public void arrived() {
         occupied = false;
         map.screen.building = null;
-        //Leaving bus stop
-        if (!train) {
-            Bus_Horn.play(0.1f);
-        }
-        if (train) {
-            Metro_chime.play(0.1f);
-        }
     }
 
     public void playerExit() {

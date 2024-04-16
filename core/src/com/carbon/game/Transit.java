@@ -2,12 +2,11 @@ package com.carbon.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 import java.util.Arrays;
-
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Timer.Task;
-import com.badlogic.gdx.utils.Timer;
 
 public class Transit extends GridLogic implements Moving{
     public final boolean isTrain;
@@ -23,7 +22,7 @@ public class Transit extends GridLogic implements Moving{
     public int direction;
     public boolean letPlayerOff = false;
 
-    public Texture img = new Texture(Gdx.files.internal("testShapes/circle.png"));
+    public Texture img = new Texture(Gdx.files.internal("testShapes/bus_temp.png"));
 
     public Transit(Route r, int index, boolean t, int d) {
         isTrain = t;

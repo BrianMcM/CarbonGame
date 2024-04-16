@@ -1,5 +1,7 @@
 package com.carbon.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -24,13 +26,15 @@ public class Map extends GridLogic{
     public ArrayList<Route> routes = new ArrayList<>();
     public ArrayList<int[]> walkableTiles = new ArrayList<>();
     public ArrayList<Car> cars = new ArrayList<>();
+    public Music game_music = Gdx.audio.newMusic(Gdx.files.internal("SFX/Main_Music_City_Jazz.mp3"));
 
     public Map(GameScreen screen, Player player) {
         this.screen = screen;
         this.player = player;
-        //map_final/metro_final = newest map
-        map = new TmxMapLoader().load("testMap/new.tmx");
-        metro = new TmxMapLoader().load("testMap/metro.tmx");
+        game_music.setVolume(0.2f);
+        game_music.play();
+        map = new TmxMapLoader().load("testMap/map_final.tmx");
+        metro = new TmxMapLoader().load("testMap/metro_final.tmx");
 
         TiledMapTileLayer navLayer = (TiledMapTileLayer) map.getLayers().get("navigation");
 
@@ -61,9 +65,10 @@ public class Map extends GridLogic{
         finishGrid(trainLineGrid);
         NavigationTiledMapLayer trainGridLayer = new NavigationTiledMapLayer(trainLineGrid);
         //hard code each train line
-        //setTransitRoute(new int[]{45, 53}, new int[]{5, 49}, trainGridLayer, true);
-        //setTransitRoute(new int[]{45, 33}, new int[]{89, 33}, trainGridLayer, true);
-        //setTransitRoute(new int[]{45, 53}, new int[]{52, 1}, trainGridLayer, true);
+        //"map_final/metro_final" routes
+        setTransitRoute(new int[]{45, 53}, new int[]{5, 49}, trainGridLayer, true);
+        setTransitRoute(new int[]{45, 33}, new int[]{89, 33}, trainGridLayer, true);
+        setTransitRoute(new int[]{45, 53}, new int[]{52, 1}, trainGridLayer, true);
 
         //bus section
         TiledMapTileLayer busLayer = (TiledMapTileLayer) map.getLayers().get("busRoutes");
@@ -72,10 +77,11 @@ public class Map extends GridLogic{
         finishGrid(BusRouteGrid);
         NavigationTiledMapLayer busGridLayer = new NavigationTiledMapLayer(BusRouteGrid);
         //hard code bus routes
-        //setTransitRoute(new int[]{13, 9}, new int[]{9, 9}, busGridLayer, false);
-        //setTransitRoute(new int[]{53, 49}, new int[]{49, 49}, busGridLayer, false);
-        //setTransitRoute(new int[]{37, 29}, new int[]{33, 29}, busGridLayer, false);
-        //setTransitRoute(new int[]{93, 29}, new int[]{89, 29}, busGridLayer, false);
+        //"map_final/metro_final" routes
+        setTransitRoute(new int[]{13, 9}, new int[]{9, 9}, busGridLayer, false);
+        setTransitRoute(new int[]{53, 49}, new int[]{49, 49}, busGridLayer, false);
+        setTransitRoute(new int[]{37, 29}, new int[]{33, 29}, busGridLayer, false);
+        setTransitRoute(new int[]{93, 29}, new int[]{89, 29}, busGridLayer, false);
 
         //cars
         spawnCars(carLayer);

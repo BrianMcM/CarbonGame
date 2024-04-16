@@ -1,12 +1,10 @@
 package com.carbon.game;
 
-import java.lang.Math;
-import java.util.ArrayList;
-import java.util.Objects;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -17,8 +15,9 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import org.xguzm.pathfinding.grid.GridCell;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
+
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class GameScreen extends GridLogic implements Screen {
     private final CarbonGame game;
@@ -38,10 +37,10 @@ public class GameScreen extends GridLogic implements Screen {
     public final GemSpawner gemSpawner;
     private final Viewport viewport;
 
-    //public Music music_j = Gdx.audio.newMusic(Gdx.files.internal("sfx/Main_Music_City_Jazz.mp3"));
-    //public Music music_r = Gdx.audio.newMusic(Gdx.files.internal("sfx/Main_Music_Retro.mp3"));
-    //public Sound Train_exit = Gdx.audio.newSound(Gdx.files.internal("sfx/metro_chime.wav"));
-    //public Sound Train_moving = Gdx.audio.newSound(Gdx.files.internal("sfx/train_moving.wav"));
+    public Music music_j = Gdx.audio.newMusic(Gdx.files.internal("SFX/Main_Music_City_Jazz.mp3"));
+    public Music music_r = Gdx.audio.newMusic(Gdx.files.internal("SFX/Main_Music_Retro.mp3"));
+    public Sound Train_exit = Gdx.audio.newSound(Gdx.files.internal("SFX/metro_chime.wav"));
+    public Sound Train_moving = Gdx.audio.newSound(Gdx.files.internal("SFX/train_moving.wav"));
 
     //Use constructor instead of create here
     public GameScreen(final CarbonGame game) {
@@ -264,9 +263,9 @@ public class GameScreen extends GridLogic implements Screen {
         mapRenderer.dispose();
         metroRenderer.dispose();
         mapLoader.dispose();
-        //music_r.dispose();
-        //music_j.dispose();
-        //Train_exit.dispose();
+        music_r.dispose();
+        music_j.dispose();
+        Train_exit.dispose();
         border_img.dispose();
         for (Gem gem : gemList) {
             gem.dispose();
