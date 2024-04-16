@@ -15,7 +15,7 @@ public class GemSpawner {
     public GemSpawner(Map map, GameScreen screen) {
         this.map = map;
         this.screen = screen;
-        timer.scheduleTask(new com.badlogic.gdx.utils.Timer.Task() {
+        timer.scheduleTask(new Timer.Task() {
             @Override
             public void run () {
                 spawn();

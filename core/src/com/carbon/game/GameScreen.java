@@ -1,9 +1,5 @@
 package com.carbon.game;
 
-import java.lang.Math;
-import java.util.ArrayList;
-import java.util.Objects;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -19,6 +15,9 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import org.xguzm.pathfinding.grid.GridCell;
+
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class GameScreen extends GridLogic implements Screen {
     private final CarbonGame game;

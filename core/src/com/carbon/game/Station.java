@@ -32,10 +32,12 @@ public class Station implements Inside, Selectable{
     public void select() {
         //cant activate station on bike or in car
         if (player.mode != 1) {
+            Error.play();
             return;
         }
         if (Math.abs(player.cellX - cell.getX()) > 1 || Math.abs(player.cellY - cell.getY()) > 1) {
             System.out.println("Too far");
+            Error.play();
             return;
         }
         playerEnter();

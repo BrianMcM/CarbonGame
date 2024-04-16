@@ -12,7 +12,7 @@ public class Car extends FreeRoam {
     private final Player player;
     private final Map map;
     //texture
-    public Texture img = new Texture(Gdx.files.internal("testShapes/circle.png"));
+    public Texture img = new Texture(Gdx.files.internal("testShapes/red_car_temp.png"));
     public boolean called = false;
     public boolean hidden = false;
 
