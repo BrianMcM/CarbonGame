@@ -80,26 +80,10 @@ public class Hud {
         table.add(scoreLabel).expand().top();
         table.add(timeLabel).expand().top();//carbon label
         table.add(energyLabel).expand().top();
-//        table.add();
-//        table.add();
-//        table.add();
         table.add(buttonCab).top().right();
         stage.addActor(table);
 
     }
 
-//    public void button(){
-//        Gdx.input.setInputProcessor(stage);
-//        font = new BitmapFont();
-//        skin = new Skin();
-//        buttonAtlas = new TextureAtlas(Gdx.files.internal("buttons/buttons.pack"));
-//        skin.addRegions(buttonAtlas);
-//        textButtonStyle = new TextButton.TextButtonStyle();
-//        textButtonStyle.font = font;
-//        textButtonStyle.up = skin.getDrawable("up-button");
-//        textButtonStyle.down = skin.getDrawable("down-button");
-//        textButtonStyle.checked = skin.getDrawable("checked-button");
-//        button = new TextButton("Button1", textButtonStyle);
-//
-//    }
+
 }
