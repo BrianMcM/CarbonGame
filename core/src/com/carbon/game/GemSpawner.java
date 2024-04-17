@@ -1,6 +1,5 @@
 package com.carbon.game;
 
-import Screens.GameScreen;
 import com.badlogic.gdx.utils.Timer;
 
 import java.util.*;

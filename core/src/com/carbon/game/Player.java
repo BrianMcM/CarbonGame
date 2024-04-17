@@ -1,12 +1,9 @@
 package com.carbon.game;
 
-import Screens.GameScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Timer;
-import org.xguzm.pathfinding.grid.GridCell;
-import java.util.List;
 
 public class Player extends FreeRoam {
     public final GameScreen screen;

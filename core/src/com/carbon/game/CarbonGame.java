@@ -1,8 +1,6 @@
 package com.carbon.game;
 
-import Screens.GameScreen;
 import Screens.MainMenu;
-import Screens.Splash;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
