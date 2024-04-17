@@ -11,8 +11,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -21,6 +25,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.carbon.game.*;
 import org.xguzm.pathfinding.grid.GridCell;
+import sun.tools.jconsole.JConsole;
 
 
 public class GameScreen extends GridLogic implements Screen {
@@ -48,12 +53,17 @@ public class GameScreen extends GridLogic implements Screen {
 
     public SpriteBatch batch;
     public BitmapFont font;
+    public static Float worldTimer = (float) 300.00;
+    private boolean popuped;
+    private Stage stage;
 
 
 
 
     //Use constructor instead of create here
     public GameScreen() {
+        stage = new Stage();
+        popuped = new Boolean(true);
         batch = new SpriteBatch();
         font = new BitmapFont();
         /* this.game = game; */
@@ -78,10 +88,15 @@ public class GameScreen extends GridLogic implements Screen {
 
     }
 
-
+    public static void timer_world(Float t){
+        worldTimer +=t;
+    }
     @Override
     public void render(float delta) {
+
         //viewport.apply();
+        timer_world(-delta);
+        System.out.println(worldTimer);
 
         ScreenUtils.clear(0, 0, 0.2f, 1);
         Vector3 inputPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -107,7 +122,37 @@ public class GameScreen extends GridLogic implements Screen {
 
         batch.setProjectionMatrix(camera.combined);
         batch.setProjectionMatrix(hud.stage.getCamera().combined);
+        hud = new Hud(batch);
         hud.stage.draw();
+        if (worldTimer<295 && popuped){
+            popuped = false;
+            TextureAtlas atlas1 = new TextureAtlas(Gdx.files.internal("uiskin/uiskin.atlas"));
+            Skin skinny = new Skin(Gdx.files.internal("uiskin/uiskin.json"));
+            Dialog dialog = new Dialog("confirm exit",skinny){
+                {
+                    text("Are you sure you want to exit?");
+                    button("Yes",true);
+                    button("No",false);
+                }
+
+                @Override
+                public Dialog show(Stage stage) {
+                    return super.show(stage);
+                }
+
+                @Override
+                protected void result(Object object) {
+                    if((boolean) object) {
+                        Gdx.app.exit();
+                    }
+                }
+            };
+            dialog.show(stage);
+            stage.draw();
+
+
+        }
+        stage.act(delta);
 
         //sprite batch
         batch.begin();

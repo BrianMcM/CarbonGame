@@ -1,5 +1,6 @@
 package com.carbon.game;
 
+import Screens.GameScreen;
 import Screens.MainMenu;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -71,7 +72,7 @@ public class Hud {
 //        table.setFillParent(true);
         table.setBounds(0,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 
-        countdownLabel = new Label(String.format("%03d",worldTimer), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        countdownLabel = new Label(String.format("%06f", GameScreen.worldTimer), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         scoreLabel = new Label(String.format("%06d",score), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         timeLabel = new Label(String.format("%03d",worldTimer), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         energyLabel = new Label("EnergyLabel", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
