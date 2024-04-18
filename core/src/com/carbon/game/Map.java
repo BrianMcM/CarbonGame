@@ -18,8 +18,6 @@ public class Map extends GridLogic{
     public final TiledMap metro;
     private final int width;
     private final int height;
-    public NavigationTiledMapLayer gridLayer;
-    public AStarGridFinder<GridCell> finder;
 
     //Dont know what the below warning is on hashmaps
     public final NavigationTiledMapLayer gridLayer;
