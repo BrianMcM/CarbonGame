@@ -77,6 +77,9 @@ public class Car extends FreeRoam {
     }
 
     private void drive() {
+        if (called) {
+            return;
+        }
         int [] dest = map.randomTile();
         setPath(map.path(cellX, cellY, dest[0], dest[1]));
     }

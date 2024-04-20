@@ -209,5 +209,8 @@ public class Map extends GridLogic{
         for (Route route : routes) {
             route.dispose();
         }
+        for (Car car : cars) {
+            car.dispose();
+        }
     }
 }
