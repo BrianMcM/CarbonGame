@@ -65,10 +65,8 @@ public class Map extends GridLogic{
         finishGrid(trainLineGrid);
         NavigationTiledMapLayer trainGridLayer = new NavigationTiledMapLayer(trainLineGrid);
         //hard code each train line
-        //"map_final/metro_final" routes
-        setTransitRoute(new int[]{45, 53}, new int[]{5, 49}, trainGridLayer, true);
-        setTransitRoute(new int[]{45, 33}, new int[]{89, 33}, trainGridLayer, true);
-        setTransitRoute(new int[]{45, 53}, new int[]{52, 1}, trainGridLayer, true);
+        setTransitRoute(new int[]{45, 53}, new int[]{43, 53}, trainGridLayer, true);
+        setTransitRoute(new int[]{45, 33}, new int[]{43, 33}, trainGridLayer, true);
 
         //bus section
         TiledMapTileLayer busLayer = (TiledMapTileLayer) map.getLayers().get("busRoutes");
@@ -77,7 +75,6 @@ public class Map extends GridLogic{
         finishGrid(BusRouteGrid);
         NavigationTiledMapLayer busGridLayer = new NavigationTiledMapLayer(BusRouteGrid);
         //hard code bus routes
-        //"map_final/metro_final" routes
         setTransitRoute(new int[]{13, 9}, new int[]{9, 9}, busGridLayer, false);
         setTransitRoute(new int[]{53, 49}, new int[]{49, 49}, busGridLayer, false);
         setTransitRoute(new int[]{37, 29}, new int[]{33, 29}, busGridLayer, false);

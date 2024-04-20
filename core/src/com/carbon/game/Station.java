@@ -46,7 +46,7 @@ public class Station implements Inside, Selectable{
     public void playerEnter() {
         occupied = true;
         player.hide = true;
-        map.screen.building = new int[] {cell.getX(), cell.getY()};
+        map.screen.stationInside = this;
         if (isTrain) {
             map.screen.metroVision = true;
             //Ambient train sounds
@@ -57,10 +57,11 @@ public class Station implements Inside, Selectable{
 
     public void arrived() {
         occupied = false;
-        map.screen.building = null;
+        map.screen.stationInside = null;
     }
 
     public void playerExit() {
+        occupied = false;
         player.setCell(cell.getX() - 1, cell.getY());
         player.exit();
     }

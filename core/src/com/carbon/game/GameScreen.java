@@ -30,7 +30,7 @@ public class GameScreen extends GridLogic implements Screen {
     public final Map mapLoader;
     //textures
     public final Texture border_img = new Texture(Gdx.files.internal("border.png"));
-    public int[] building = null;
+    public Station stationInside = null;
     public boolean metroVision = false;
     private boolean canClick = true;
     public ArrayList<Gem> gemList = new ArrayList<>();
@@ -91,9 +91,9 @@ public class GameScreen extends GridLogic implements Screen {
         if (!player.hide) {
             game.batch.draw(player.img, player.position.x, player.position.y, TILE_SIZE, TILE_SIZE);
         } else {
-            if (building != null) {
+            if (stationInside != null) {
                 game.batch.setColor(Color.YELLOW);
-                game.batch.draw(border_img, cellToWorld(building[0]) - (float) TILE_SIZE /2, cellToWorld(building[1]) - (float) TILE_SIZE /2, TILE_SIZE * 2, TILE_SIZE * 2);
+                game.batch.draw(border_img, cellToWorld(stationInside.cell.getX()) - (float) TILE_SIZE /2, cellToWorld(stationInside.cell.getY()) - (float) TILE_SIZE /2, TILE_SIZE * 2, TILE_SIZE * 2);
                 game.batch.setColor(Color.WHITE);
             }
         }
@@ -163,8 +163,8 @@ public class GameScreen extends GridLogic implements Screen {
                 clickCoolDown();
             }
             //exit building
-            if (building != null) {
-                player.exit();
+            if (stationInside != null) {
+                stationInside.playerExit();
                 return;
             }
             //let player off the train

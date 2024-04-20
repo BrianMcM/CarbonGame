@@ -78,7 +78,7 @@ public class Player extends FreeRoam {
 
     public void exit() {
         screen.metroVision = false;
-        screen.building = null;
+        screen.stationInside = null;
         hide = false;
         transit = null;
     }
