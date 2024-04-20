@@ -30,11 +30,7 @@ abstract public class FreeRoam extends GridLogic implements Moving{
 
     //MOVEMENT FUNCTIONS
     public void arriveAtTarget() {
-        //increase carbon
-        cellX = pathFirst().getX();
-        cellY = pathFirst().getY();
-        position.set(target);
-        move = false;
+        setCell(pathFirst().getX(), pathFirst().getY());
     }
 
     public void finishEarly() {

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Timer;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class Car extends FreeRoam {
@@ -20,7 +21,7 @@ public class Car extends FreeRoam {
         super(x, y);
         player = p;
         map = m;
-        drive();
+        park(1);
     }
 
     public void resetPos() {
@@ -44,7 +45,6 @@ public class Car extends FreeRoam {
             int randomIndex = random.nextInt(5,10);
             park(randomIndex);
         }
-
     }
 
     private void checkForPlayer() {
@@ -81,7 +81,12 @@ public class Car extends FreeRoam {
             return;
         }
         int [] dest = map.randomTile();
-        setPath(map.path(cellX, cellY, dest[0], dest[1]));
+        System.out.println(Arrays.toString(dest));
+        if (dest[0] == cellX && dest[1] == cellY) {
+            park(1);
+        } else {
+            setPath(map.carPath(cellX, cellY, dest[0], dest[1]));
+        }
     }
 
     public void dispose() {

@@ -19,12 +19,15 @@ public class Map extends GridLogic{
     private final int width;
     private final int height;
     public final NavigationTiledMapLayer gridLayer;
+    public final NavigationTiledMapLayer carGridLayer;
     public final AStarGridFinder<GridCell> finder;
     public HashMap<GridCell, String> stationList = new HashMap<>();
     public HashMap<GridCell, BikeStand> bikeStands = new HashMap<>();
     public HashMap<GridCell, Station> stations = new HashMap<>();
     public ArrayList<Route> routes = new ArrayList<>();
     public ArrayList<int[]> walkableTiles = new ArrayList<>();
+
+    public ArrayList<int[]> drivableTiles = new ArrayList<>();
     public ArrayList<Car> cars = new ArrayList<>();
     public Music game_music = Gdx.audio.newMusic(Gdx.files.internal("SFX/Main_Music_City_Jazz.mp3"));
 
@@ -44,8 +47,6 @@ public class Map extends GridLogic{
         TiledMapTileLayer bikeStationLayer = (TiledMapTileLayer) map.getLayers().get("bikeStations");
         TiledMapTileLayer trainStationLayer = (TiledMapTileLayer) map.getLayers().get("trainStations");
         TiledMapTileLayer busStationLayer = (TiledMapTileLayer) map.getLayers().get("busStations");
-
-        TiledMapTileLayer carLayer = (TiledMapTileLayer) map.getLayers().get("carLayer");
 
         GridCell[][] grid = new GridCell[width][height];
         convertToGrid(navLayer, grid);
@@ -81,7 +82,14 @@ public class Map extends GridLogic{
         setTransitRoute(new int[]{93, 29}, new int[]{89, 29}, busGridLayer, false);
 
         //cars
-        spawnCars(carLayer);
+        TiledMapTileLayer carLayer = (TiledMapTileLayer) map.getLayers().get("carRoad");
+        GridCell[][] carGrid = new GridCell[width][height];
+        convertToGridCar(carLayer, carGrid);
+        finishGrid(carGrid);
+        carGridLayer = new NavigationTiledMapLayer(carGrid);
+
+        TiledMapTileLayer carSpawn = (TiledMapTileLayer) map.getLayers().get("carLayer");
+        spawnCars(carSpawn);
     }
 
     private void convertToGrid(TiledMapTileLayer layer, GridCell[][] grid) {
@@ -124,6 +132,19 @@ public class Map extends GridLogic{
         }
     }
 
+    private void convertToGridCar(TiledMapTileLayer layer, GridCell[][] grid) {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                //assigning movable layers
+                if (notNull(layer.getCell(x, y))) {
+                    GridCell gc = new GridCell(x, y, true);
+                    grid[x][y] = gc;
+                    drivableTiles.add(new int[]{x, y});
+                }
+            }
+        }
+    }
+
     private void finishGrid(GridCell[][] grid) {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -140,6 +161,10 @@ public class Map extends GridLogic{
 
     public List<GridCell> path(int startX, int startY, int endX, int endY) {
         return finder.findPath(startX, startY, endX, endY, gridLayer);
+    }
+
+    public List<GridCell> carPath(int startX, int startY, int endX, int endY) {
+        return finder.findPath(startX, startY, endX, endY, carGridLayer);
     }
 
     private void setTransitRoute(int[] first, int[] last, NavigationTiledMapLayer layer, boolean train) {
@@ -181,7 +206,7 @@ public class Map extends GridLogic{
                 car.pickUpPlayer();
                 return;
             }
-            List<GridCell> cPath = path(car.cellX, car.cellY, player.cellX, player.cellY);
+            List<GridCell> cPath = carPath(car.cellX, car.cellY, player.cellX, player.cellY);
             if (cPath.size() >= minPathSize) {
                 continue;
             }
@@ -191,13 +216,13 @@ public class Map extends GridLogic{
         assert nearestCar != null;
         nearestCar.called = true;
         nearestCar.resetPos();
-        nearestCar.setPath(path(nearestCar.cellX, nearestCar.cellY, player.cellX, player.cellY));
+        nearestCar.setPath(carPath(nearestCar.cellX, nearestCar.cellY, player.cellX, player.cellY));
     }
 
     public int[] randomTile() {
         Random random = new Random();
-        int randomIndex = random.nextInt(walkableTiles.size());
-        return(walkableTiles.get(randomIndex - 1));
+        int randomIndex = random.nextInt(drivableTiles.size() - 1);
+        return(drivableTiles.get(randomIndex));
     }
 
     public void dispose() {
@@ -208,6 +233,9 @@ public class Map extends GridLogic{
         }
         for (Car car : cars) {
             car.dispose();
+        }
+        for (Station station : stations.values()) {
+            station.dispose();
         }
     }
 }

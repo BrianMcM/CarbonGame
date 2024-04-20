@@ -207,7 +207,7 @@ public class GameScreen extends GridLogic implements Screen {
                 float carUpdate = 150 * Gdx.graphics.getDeltaTime();
                 car.position.x -= car.norm.x * carUpdate;
                 car.position.y -= car.norm.y * carUpdate;
-                double carBuffer = 3;
+                double carBuffer = 4;
                 if (Math.abs(car.position.x - car.target.x) < carBuffer && Math.abs(car.position.y - car.target.y) < carBuffer) {
                     car.nextCell();
                 }
