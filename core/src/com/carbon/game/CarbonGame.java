@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class CarbonGame extends Game {
 	public SpriteBatch batch;
 	public BitmapFont font;
-	private GameScreen gameScreen;
+    public ScreenClass currentScreen;
 
 	public void create () {
 		batch = new SpriteBatch();
@@ -20,13 +20,20 @@ public class CarbonGame extends Game {
 	}
 
 	public void setGameScreen() {
-		gameScreen = new GameScreen(this);
+        GameScreen gameScreen = new GameScreen(this, 10);
 		this.setScreen(gameScreen);
+		currentScreen = gameScreen;
+	}
+
+	public void setScoreScreen(int score, int carbon) {
+		ScoreScreen scoreScreen = new ScoreScreen(this, score, carbon);
+		this.setScreen(scoreScreen);
+		currentScreen = scoreScreen;
 	}
 
 	public void dispose () {
 		batch.dispose();
 		font.dispose();
-		gameScreen.dispose();
+		currentScreen.dispose();
 	}
 }

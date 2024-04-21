@@ -6,7 +6,9 @@ import com.google.gson.Gson;
 
 import java.io.FileReader;
 import java.io.IOException;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class ScoreManager {
     private final String SCORES_FILE_PATH = "Scores/scores.json";
@@ -21,11 +23,11 @@ public class ScoreManager {
         file.writeString(json, true);
     }
 
-    public String[] loadScores() {
+    public List<String[]> loadScores() {
         try (FileReader reader = new FileReader(SCORES_FILE_PATH)) {
-            return gson.fromJson(reader, String[].class);
+            return gson.fromJson(reader, List.class);
         } catch (IOException e) {
-            return new String[0];
+            return new ArrayList<>();
         }
     }
 }

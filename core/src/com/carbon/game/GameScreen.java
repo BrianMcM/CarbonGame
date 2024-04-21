@@ -19,7 +19,7 @@ import org.xguzm.pathfinding.grid.GridCell;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class GameScreen extends GridLogic implements Screen {
+public class GameScreen extends ScreenClass implements Screen {
     private final CarbonGame game;
     private final OrthographicCamera camera;
     //class objects
@@ -43,7 +43,7 @@ public class GameScreen extends GridLogic implements Screen {
     public Sound Train_moving = Gdx.audio.newSound(Gdx.files.internal("SFX/train_moving.wav"));
 
     //Use constructor instead of create here
-    public GameScreen(final CarbonGame game) {
+    public GameScreen(final CarbonGame game, int time) {
         this.game = game;
         player = new Player(this, 100, 5, 20);
         mapLoader = new Map(this, player);
@@ -57,6 +57,13 @@ public class GameScreen extends GridLogic implements Screen {
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
+        Timer timer = new Timer();
+        timer.scheduleTask(new Timer.Task() {
+            @Override
+            public void run () {
+                endLvl();
+            }
+        }, (float) time, 0, 0);
     }
 
     @Override
@@ -234,6 +241,11 @@ public class GameScreen extends GridLogic implements Screen {
 
     public void allowClick() {
         canClick = true;
+    }
+
+    private void endLvl() {
+        game.setScoreScreen(Player.score, Player.carbon);
+        dispose();
     }
 
     @Override
