@@ -121,8 +121,8 @@ public class GameScreen extends GridLogic implements Screen {
             int inputCellY = worldToCell(inputPos.y);
             GridCell inputCell = mapLoader.gridLayer.getCell(inputCellX, inputCellY);
 
-            float borderX = cellToWorld(inputCellX) - (float) tileSize / 2; //find cell of where mouse is pointing
-            float borderY = cellToWorld(inputCellY) - (float) tileSize / 2; // and return global position of the cell center
+            float borderX = cellToWorld(inputCellX) - (float) TILE_SIZE / 2; //find cell of where mouse is pointing
+            float borderY = cellToWorld(inputCellY) - (float) TILE_SIZE / 2; // and return global position of the cell center
 
             batch.setProjectionMatrix(camera.combined);
             batch.setProjectionMatrix(hud.stage.getCamera().combined);
@@ -133,11 +133,11 @@ public class GameScreen extends GridLogic implements Screen {
             batch.begin();
             //player sprite
             if (!player.hide) {
-                batch.draw(player.img, player.position.x, player.position.y, tileSize, tileSize);
+                batch.draw(player.img, player.position.x, player.position.y, TILE_SIZE, TILE_SIZE);
             } else {
                 if (building != null) {
                     batch.setColor(Color.YELLOW);
-                    batch.draw(border, cellToWorld(building[0]) - (float) tileSize / 2, cellToWorld(building[1]) - (float) tileSize / 2, tileSize * 2, tileSize * 2);
+                    batch.draw(border, cellToWorld(building[0]) - (float) TILE_SIZE / 2, cellToWorld(building[1]) - (float) TILE_SIZE / 2, TILE_SIZE * 2, TILE_SIZE * 2);
                     batch.setColor(Color.WHITE);
                 }
             }
@@ -145,14 +145,14 @@ public class GameScreen extends GridLogic implements Screen {
             if (!player.move && !player.hide) {
                 if (inputCell != null) {
                     if (inputCell.isWalkable()) {
-                        batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
+                        batch.draw(border, borderX, borderY, TILE_SIZE * 2, TILE_SIZE * 2);
                     } else if (mapLoader.stationList.containsKey(inputCell)) {
                         batch.setColor(Color.YELLOW);
                         if (player.mode == 1) {
-                            batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
+                            batch.draw(border, borderX, borderY, TILE_SIZE * 2, TILE_SIZE * 2);
                         } else if (player.mode == 2) {
                             if (mapLoader.bikeStands.containsKey(inputCell)) {
-                                batch.draw(border, borderX, borderY, tileSize * 2, tileSize * 2);
+                                batch.draw(border, borderX, borderY, TILE_SIZE * 2, TILE_SIZE * 2);
                             }
                         }
                         batch.setColor(Color.WHITE);
@@ -171,13 +171,13 @@ public class GameScreen extends GridLogic implements Screen {
                         }
                     }
                     if ((metroVision && route.train) || (!metroVision && !route.train)) {
-                        batch.draw(transit.img, transit.position.x, transit.position.y, tileSize, tileSize);
+                        batch.draw(transit.img, transit.position.x, transit.position.y, TILE_SIZE, TILE_SIZE);
                     }
                 }
             }
             if (!metroVision) {
                 for (Gem gem : gemList) {
-                    batch.draw(gem.img, gem.position.x, gem.position.y, tileSize, tileSize);
+                    batch.draw(gem.img, gem.position.x, gem.position.y, TILE_SIZE, TILE_SIZE);
                 }
             }
             batch.end();
@@ -281,7 +281,7 @@ public class GameScreen extends GridLogic implements Screen {
         }, (float) 0.2, 0, 0);
     }
 
-    private void allowClick() {
+    public void allowClick() {
         canClick = true;
     }
 
