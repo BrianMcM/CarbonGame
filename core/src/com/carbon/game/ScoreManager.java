@@ -15,15 +15,18 @@ public class ScoreManager {
     Gson gson = new Gson();
 
     public void saveScore(String name, String score) {
-        String[] array = {name, score};
+        String[] scorePair = {name, score};
 
-        String json = gson.toJson(array);
+        List<String[]> scoreArray = loadScoreArray();
+        scoreArray.add(scorePair);
+
+        String json = gson.toJson(scoreArray);
 
         FileHandle file = Gdx.files.local(SCORES_FILE_PATH);
-        file.writeString(json, true);
+        file.writeString(json, false);
     }
 
-    public List<String[]> loadScores() {
+    public List<String[]> loadScoreArray() {
         try (FileReader reader = new FileReader(SCORES_FILE_PATH)) {
             return gson.fromJson(reader, List.class);
         } catch (IOException e) {
