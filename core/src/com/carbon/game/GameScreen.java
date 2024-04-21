@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import Screens.DialogPopup;
+import Screens.LevelsScreen;
+import Screens.ScoreScreen;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -38,6 +41,7 @@ public class GameScreen extends GridLogic implements Screen {
     //class objects
     public Player player;
     //map
+    public PopupText popupText = new PopupText();
     public OrthogonalTiledMapRenderer mapRenderer;
     public OrthogonalTiledMapRenderer metroRenderer;
     public Map mapLoader;
@@ -63,16 +67,23 @@ public class GameScreen extends GridLogic implements Screen {
     static final int GAME_READY = 0;
     static final int GAME_RUNNING = 1;
     static final int GAME_PAUSED = 2;
-    static final int GAME_LEVEL_END = 3;
-    static final int GAME_OVER = 4;
+    static final int GAME_CARBON_POP = 3;
+    static final int GAME_SCORE_POP = 4;
+    static final int GAME_ENERGY_POP = 5;
+    static final int GAME_TIME_POP = 6;
+    static final int GAME_GEM_POP = 7;
     int state = 1;
     private Boolean popuped = true;
+    private Boolean popuped_carbon = true;
+    private Boolean popuped_time = true;
+    private Boolean popuped_energy = true;
+    private Boolean popuped_gems = true;
 
 
 
 
     //Use constructor instead of create here
-    public GameScreen() {
+    public GameScreen(String mapName, String metroName) {
         stage = new Stage();
         batch = new SpriteBatch();
         font = new BitmapFont();
@@ -80,7 +91,7 @@ public class GameScreen extends GridLogic implements Screen {
         player = new Player(this, 100, 5, 20);
 
         //Added the names of the map files here so different maps could be passed in the future
-        mapLoader = new Map(this, player,"testMap/new.tmx","testMap/metro.tmx");
+        mapLoader = new Map(this, player,mapName,metroName);//"testMap/map_final.tmx","testMap/metro_final.tmx");
         gemSpawner = new GemSpawner(mapLoader, this);
 
         aspectRatio = (float) WORLD_WIDTH / WORLD_HEIGHT;
@@ -228,12 +239,34 @@ public class GameScreen extends GridLogic implements Screen {
             }
 
         }else {
-            Dialog popup = new Dialog("Popup", DialogPopup.skin){
+            Dialog popup = new Dialog("Info Popup", DialogPopup.skin){
                 {
-                    text("Are you sure you want to exit?");
-                    button("Yes",true);
-                    button("No",false);
+                    String string = getString();
+                    text(string);
+                    button("Continue",false);
+                    button("Exit Game",true);
 
+                }
+
+                private String getString() {
+                    String string = null;
+                    switch (state){
+                        case GAME_PAUSED:
+                            string = popupText.gamePaused;
+                            break;
+                        case GAME_CARBON_POP:
+                            string = popupText.carbonPopup;
+                            break;
+                        case GAME_GEM_POP:
+                            string = popupText.gemPopup;
+                            break;
+                        case GAME_ENERGY_POP:
+                            string = popupText.energyPopup;
+                            break;
+                        case GAME_TIME_POP:
+                            string = popupText.timePopup;
+                    }
+                    return string;
                 }
 
                 @Override
@@ -243,7 +276,7 @@ public class GameScreen extends GridLogic implements Screen {
 
                 @Override
                 protected void result(Object object) {
-                    if((boolean) object) {
+                    if((Boolean) object) {
                         Gdx.app.exit();
                     }else{
                         state = GAME_RUNNING;
@@ -251,9 +284,6 @@ public class GameScreen extends GridLogic implements Screen {
                 }
             };
 
-
-//
-//            popup.show(stage);
             popup.setWidth(300);
             popup.setHeight(300);
             popup.setPosition(Math.round((stage.getWidth() - popup.getWidth()) / 2), Math.round((stage.getHeight() - popup.getHeight()) / 2));
@@ -267,8 +297,28 @@ public class GameScreen extends GridLogic implements Screen {
             popuped = false;
             state = GAME_PAUSED;
             out.println("popuped");
+            out.println(popupText.carbonPopup);
         }
+        if(Player.carbon>10 && popuped_carbon){
+            popuped_carbon = false;
+            state = GAME_CARBON_POP;
+            out.println("popup_carbon");
+        }
+        if(Player.score>=100 && popuped_gems){
+            popuped_gems = false;
+            state = GAME_GEM_POP;
+            out.println("popup_gem");
+        }
+        if(Player.energy<70 && popuped_energy){
+            popuped_energy = false;
+            state = GAME_ENERGY_POP;
+            out.println("popup_energy");
+        }
+        if(worldTimer<250){
+            worldTimer = (float) 300.00;
+            ((Game) Gdx.app.getApplicationListener()).setScreen(new ScoreScreen());
 
+        }
     }
 
     private void clickCoolDown() {

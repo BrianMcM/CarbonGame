@@ -21,13 +21,13 @@ public class Hud {
     private final OrthographicCamera camera;
     private Viewport viewport;
     private Integer worldTimer;
-    private Integer score;
+
     private Float timeCount;
     private TextButton buttonCab;
 
     com.badlogic.gdx.scenes.scene2d.ui.Label countdownLabel;
     com.badlogic.gdx.scenes.scene2d.ui.Label scoreLabel;
-    com.badlogic.gdx.scenes.scene2d.ui.Label timeLabel;
+    com.badlogic.gdx.scenes.scene2d.ui.Label carbonLabel;
     com.badlogic.gdx.scenes.scene2d.ui.Label energyLabel;
     public Hud(SpriteBatch sb){
         BitmapFont white = new BitmapFont();
@@ -57,7 +57,7 @@ public class Hud {
 
         worldTimer = 300;
         timeCount = (float) 0;
-        score = 0;
+//        score = 0;
         camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),camera);
@@ -67,14 +67,14 @@ public class Hud {
 //        table.setFillParent(true);
         table.setBounds(0,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 
-        countdownLabel = new Label(String.format("%06f", GameScreen.worldTimer), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        scoreLabel = new Label(String.format("%06d",score), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        timeLabel = new Label(String.format("%03d",worldTimer), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
-        energyLabel = new Label("EnergyLabel", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        countdownLabel = new Label(String.format("%,.0f", (double) GameScreen.worldTimer), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        scoreLabel = new Label(String.format("%06d",Player.score), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        carbonLabel = new Label(String.format("%03d",Player.carbon), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        energyLabel = new Label(String.format("%06d",Player.energy), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
         table.add(countdownLabel).expandX().top();
         table.add(scoreLabel).expand().top();
-        table.add(timeLabel).expand().top();//carbon label
+        table.add(carbonLabel).expand().top();//carbon label
         table.add(energyLabel).expand().top();
         table.add(buttonCab).top().right();
         stage.addActor(table);

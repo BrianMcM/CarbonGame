@@ -35,8 +35,8 @@ public class Map extends GridLogic{
         this.player = player;
         game_music.setVolume(0.2f);
         game_music.play();
-        map = new TmxMapLoader().load("testMap/map_final.tmx");
-        metro = new TmxMapLoader().load("testMap/metro_final.tmx");
+        map = new TmxMapLoader().load(mapname);//"testMap/map_final.tmx");
+        metro = new TmxMapLoader().load(metroname);
 
 //        map = new TmxMapLoader().load(mapname);
 //        metro = new TmxMapLoader().load(metroname);

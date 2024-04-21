@@ -33,7 +33,8 @@ public class MainMenu implements Screen {
     private Skin skin;//done
     private BitmapFont white,black;//done
     private TextureAtlas atlas;//done
-    private CarbonGame game;
+//    private CarbonGame game;
+    private Skin skinny;
 
 //    public static class ExitDialog extends Dialog {
 //        public ExitDialog(String title, Skin skin, String windowStyleName) {
@@ -83,7 +84,7 @@ public class MainMenu implements Screen {
 
         buttonExit = new TextButton("Exit", textButtonStyle);
         TextureAtlas atlas1 = new TextureAtlas(Gdx.files.internal("uiskin/uiskin.atlas"));
-        Skin skinny = new Skin(Gdx.files.internal("uiskin/uiskin.json"));
+        skinny = new Skin(Gdx.files.internal("uiskin/uiskin.json"));
         buttonExit.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -204,5 +205,6 @@ public class MainMenu implements Screen {
         skin.dispose();
         white.dispose();
         black.dispose();
+        skinny.dispose();
     }
 }
