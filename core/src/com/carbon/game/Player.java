@@ -18,7 +18,7 @@ public class Player extends FreeRoam {
     public int mode = 1; // 1-walking, 2-bike, 3-car
     public float exhausted = 1;
     //texture
-    private final Texture sprite = new Texture(Gdx.files.internal("testShapes/character.png"));
+    private final Texture sprite = new Texture(Gdx.files.internal("testShapes/player1.png"));
     public Texture img = sprite;
     public Transit transit = null;
     public Car car = null;
