@@ -132,7 +132,7 @@ public class GameScreen extends GridLogic implements Screen {
             batch.begin();
             //player sprite
             if (!player.hide) {
-                batch.draw(player.img, player.position.x - 12, player.position.y - 12, TILE_SIZE * 3, TILE_SIZE * 3);
+                batch.draw(player.img, player.position.x - 8, player.position.y - 8, TILE_SIZE * 2, TILE_SIZE * 2);
             } else {
                 if (stationInside != null) {
                     batch.setColor(Color.YELLOW);
