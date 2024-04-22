@@ -1,3 +1,4 @@
+
 sourceCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
@@ -8,4 +9,5 @@ eclipse.project.name = appName + "-core"
 dependencies {
     implementation "com.github.xaguzman:pathfinding-gdx-bridge:0.2.6"
     api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
+    implementation "org.mini2Dx:universal-tween-engine:6.3.3"
 }
