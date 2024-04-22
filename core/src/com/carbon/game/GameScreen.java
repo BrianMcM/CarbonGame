@@ -9,7 +9,10 @@ import Screens.LevelsScreen;
 import Screens.ScoreScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -33,7 +36,7 @@ import static java.lang.System.*;
 
 
 public class GameScreen extends ScreenClass implements Screen {
-    private final CarbonGame game;
+//    private final CarbonGame game;
     private final OrthographicCamera camera;
     //class objects
     public Player player;
@@ -103,12 +106,14 @@ public class GameScreen extends ScreenClass implements Screen {
 
         viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
         Timer timer = new Timer();
-        timer.scheduleTask(new Timer.Task() {
-            @Override
-            public void run () {
-                endLvl();
-            }
-        }, (float) time, 0, 0);
+//        timer.scheduleTask(new Timer.Task() {
+//
+//        @Override
+//        public void run () {
+//            float time = (float) 3.0;
+//            endLvl();
+//        }
+//        }, (float) time, 0, 0);
         hud = new Hud(batch);
     }
     public static void timer_world(Float t){
@@ -141,145 +146,150 @@ public class GameScreen extends ScreenClass implements Screen {
             float borderX = cellToWorld(inputCellX) - (float) TILE_SIZE / 2; //find cell of where mouse is pointing
             float borderY = cellToWorld(inputCellY) - (float) TILE_SIZE / 2; // and return global position of the cell center
 
-        game.batch.setProjectionMatrix(camera.combined);
-        //sprite batch
-        game.batch.begin();
-        //player sprite
-        if (!player.hide) {
-            game.batch.draw(player.img, player.position.x, player.position.y, TILE_SIZE, TILE_SIZE);
-        } else {
-            if (stationInside != null) {
-                game.batch.setColor(Color.YELLOW);
-                game.batch.draw(border_img, cellToWorld(stationInside.cell.getX()) - (float) TILE_SIZE /2, cellToWorld(stationInside.cell.getY()) - (float) TILE_SIZE /2, TILE_SIZE * 2, TILE_SIZE * 2);
-                game.batch.setColor(Color.WHITE);
+            batch.setProjectionMatrix(camera.combined);
+            //sprite batch
+            batch.begin();
+            //player sprite
+            if (!player.hide) {
+                batch.draw(player.img, player.position.x, player.position.y, TILE_SIZE, TILE_SIZE);
+            } else {
+                if (stationInside != null) {
+                    batch.setColor(Color.YELLOW);
+                    batch.draw(border_img, cellToWorld(stationInside.cell.getX()) - (float) TILE_SIZE / 2, cellToWorld(stationInside.cell.getY()) - (float) TILE_SIZE / 2, TILE_SIZE * 2, TILE_SIZE * 2);
+                    batch.setColor(Color.WHITE);
+                }
             }
-        }
-        //cell selector for mouse
-        if (!player.move && !player.hide) {
-            if (inputCell != null) {
-                if (inputCell.isWalkable()) {
-                    game.batch.draw(border_img, borderX, borderY, TILE_SIZE * 2, TILE_SIZE * 2);
-                } else if (mapLoader.stationList.containsKey(inputCell)) {
-                    game.batch.setColor(Color.YELLOW);
-                    if (player.mode == 1) {
-                        game.batch.draw(border_img, borderX, borderY, TILE_SIZE * 2, TILE_SIZE * 2);
-                    } else if (player.mode == 2) {
-                        if (mapLoader.bikeStands.containsKey(inputCell)) {
-                            game.batch.draw(border_img, borderX, borderY, TILE_SIZE * 2, TILE_SIZE * 2);
+            //cell selector for mouse
+            if (!player.move && !player.hide) {
+                if (inputCell != null) {
+                    if (inputCell.isWalkable()) {
+                        batch.draw(border_img, borderX, borderY, TILE_SIZE * 2, TILE_SIZE * 2);
+                    } else if (mapLoader.stationList.containsKey(inputCell)) {
+                        batch.setColor(Color.YELLOW);
+                        if (player.mode == 1) {
+                            batch.draw(border_img, borderX, borderY, TILE_SIZE * 2, TILE_SIZE * 2);
+                        } else if (player.mode == 2) {
+                            if (mapLoader.bikeStands.containsKey(inputCell)) {
+                                batch.draw(border_img, borderX, borderY, TILE_SIZE * 2, TILE_SIZE * 2);
+                            }
+                        }
+                        batch.setColor(Color.WHITE);
+                    }
+                }
+            }
+            //transit section
+            for (Route route : mapLoader.routes) {
+                for (Transit transit : route.transitList) {
+                    if (transit.move) {
+                        float update = transit.speed * Gdx.graphics.getDeltaTime();
+                        transit.position.x -= transit.norm.x * update;
+                        transit.position.y -= transit.norm.y * update;
+                        if (Math.abs(transit.position.x - transit.target.x) < transit.buffer && Math.abs(transit.position.y - transit.target.y) < transit.buffer) {
+                            transit.arriveAtTarget();
                         }
                     }
-                    game.batch.setColor(Color.WHITE);
-                }
-            }
-        }
-        //transit section
-        for (Route route : mapLoader.routes) {
-            for (Transit transit : route.transitList) {
-                if (transit.move) {
-                    float update = transit.speed * Gdx.graphics.getDeltaTime();
-                    transit.position.x -= transit.norm.x * update;
-                    transit.position.y -= transit.norm.y * update;
-                    if (Math.abs(transit.position.x - transit.target.x) < transit.buffer && Math.abs(transit.position.y - transit.target.y) < transit.buffer) {
-                        transit.arriveAtTarget();
+                    if ((metroVision && route.train) || (!metroVision && !route.train)) {
+                        batch.draw(transit.img, transit.position.x, transit.position.y, TILE_SIZE, TILE_SIZE);
                     }
                 }
-                if ((metroVision && route.train) || (!metroVision && !route.train)) {
-                    game.batch.draw(transit.img, transit.position.x, transit.position.y, TILE_SIZE, TILE_SIZE);
+            }
+            if (!metroVision) {
+                //gems
+                for (Gem gem : gemList) {
+                    batch.draw(gem.img, gem.position.x, gem.position.y, TILE_SIZE, TILE_SIZE);
+                }
+                //cars
+                for (Car car : mapLoader.cars) {
+                    if (!car.hidden) {
+                        batch.draw(car.img, car.position.x, car.position.y, TILE_SIZE, TILE_SIZE);
+                    }
                 }
             }
-        }
-        if (!metroVision) {
-            //gems
-            for (Gem gem : gemList){
-                game.batch.draw(gem.img, gem.position.x, gem.position.y, TILE_SIZE, TILE_SIZE);
-            }
-            //cars
-            for (Car car : mapLoader.cars) {
-                if (!car.hidden) {
-                    game.batch.draw(car.img, car.position.x, car.position.y, TILE_SIZE, TILE_SIZE);
-                }
-            }
-        }
-        game.batch.end();
+            batch.end();
 
-        //click input movement
-        if (Gdx.input.justTouched()) {
-            //check that mouse isn't off-screen
-            if (inputPos.x < 0 || inputPos.y < 0 || inputPos.x > viewport.getScreenWidth() || inputPos.y > viewport.getScreenHeight()) {
-                return;
-            }
-            //if cell that player is in is clicked don't react
-            if (inputCellX == player.cellX && inputCellY == player.cellY) {
-                return;
-            }
-            //if cool down timer hasn't fired prevent click
-            if (!canClick) {
-                return;
-            } else {
-                canClick = false;
-                clickCoolDown();
-            }
-            //exit building
-            if (stationInside != null) {
-                stationInside.playerExit();
-                return;
-            }
-            //let player off the train
-            if (player.transit != null) {
-                player.transit.letPlayerOff = true;
-                return;
-            }
-            //end trip at next cell, take no other inputs
-            if (player.move) {
-                player.finishEarly();
-                return;
-            }
-            //if walkable start player movement
-            if (mapLoader.gridLayer.getCell(inputCellX, inputCellY).isWalkable()) {
-                player.setPath(mapLoader.path(player.cellX, player.cellY, inputCellX, inputCellY));
-                return;
-            }
-            if (mapLoader.stationList.containsKey(inputCell)) {
-                if (Objects.equals(mapLoader.stationList.get(inputCell), "bikeStations")) {
-                    mapLoader.bikeStands.get(inputCell).select();
+            //click input movement
+            if (Gdx.input.justTouched()) {
+                //check that mouse isn't off-screen
+                if (inputPos.x < 0 || inputPos.y < 0 || inputPos.x > viewport.getScreenWidth() || inputPos.y > viewport.getScreenHeight()) {
+                    return;
+                }
+                //if cell that player is in is clicked don't react
+                if (inputCellX == player.cellX && inputCellY == player.cellY) {
+                    return;
+                }
+                //if cool down timer hasn't fired prevent click
+                if (!canClick) {
+                    return;
                 } else {
-                    mapLoader.stations.get(inputCell).select();
+                    canClick = false;
+                    clickCoolDown();
+                }
+                //exit building
+                if (stationInside != null) {
+                    stationInside.playerExit();
+                    return;
+                }
+                //let player off the train
+                if (player.transit != null) {
+                    player.transit.letPlayerOff = true;
+                    return;
+                }
+                //end trip at next cell, take no other inputs
+                if (player.move) {
+                    player.finishEarly();
+                    return;
+                }
+                //if walkable start player movement
+                if (mapLoader.gridLayer.getCell(inputCellX, inputCellY).isWalkable()) {
+                    player.setPath(mapLoader.path(player.cellX, player.cellY, inputCellX, inputCellY));
+                    return;
+                }
+                if (mapLoader.stationList.containsKey(inputCell)) {
+                    if (Objects.equals(mapLoader.stationList.get(inputCell), "bikeStations")) {
+                        mapLoader.bikeStands.get(inputCell).select();
+                    } else {
+                        mapLoader.stations.get(inputCell).select();
+                    }
+                }
+
+                //herer hro functions
+            }
+            //player movement
+            if (player.move) {
+                float update = player.mode * 50 * Gdx.graphics.getDeltaTime() * player.exhausted;
+                player.position.x -= player.norm.x * update;
+                player.position.y -= player.norm.y * update;
+                double buffer = player.mode * player.exhausted;
+                if (Math.abs(player.position.x - player.target.x) < buffer && Math.abs(player.position.y - player.target.y) < buffer) {
+                    player.nextCell();
                 }
             }
-        }
-        //player movement
-        if (player.move) {
-            float update = player.mode * 50 * Gdx.graphics.getDeltaTime() * player.exhausted;
-            player.position.x -= player.norm.x * update;
-            player.position.y -= player.norm.y * update;
-            double buffer = player.mode * player.exhausted;
-            if (Math.abs(player.position.x - player.target.x) < buffer && Math.abs(player.position.y - player.target.y) < buffer) {
-                player.nextCell();
-            }
-        }
 
-        //car movement
-        for (Car car : mapLoader.cars) {
-            if (car.move) {
-                float carUpdate = 150 * Gdx.graphics.getDeltaTime();
-                car.position.x -= car.norm.x * carUpdate;
-                car.position.y -= car.norm.y * carUpdate;
-                double carBuffer = 4;
-                if (Math.abs(car.position.x - car.target.x) < carBuffer && Math.abs(car.position.y - car.target.y) < carBuffer) {
-                    car.nextCell();
-        }else {
-            Dialog popup = new Dialog("Info Popup", DialogPopup.skin){
+            //car movement
+            for (Car car : mapLoader.cars) {
+                if (car.move) {
+                    float carUpdate = 150 * Gdx.graphics.getDeltaTime();
+                    car.position.x -= car.norm.x * carUpdate;
+                    car.position.y -= car.norm.y * carUpdate;
+                    double carBuffer = 4;
+                    if (Math.abs(car.position.x - car.target.x) < carBuffer && Math.abs(car.position.y - car.target.y) < carBuffer) {
+                        car.nextCell();
+                    }
+                }
+            }
+        } else {
+            Dialog popup = new Dialog("Info Popup", DialogPopup.skin) {
                 {
                     String string = getString();
                     text(string);
-                    button("Continue",false);
-                    button("Exit Game",true);
+                    button("Continue", false);
+                    button("Exit Game", true);
 
                 }
 
                 private String getString() {
                     String string = null;
-                    switch (state){
+                    switch (state) {
                         case GAME_PAUSED:
                             string = popupText.gamePaused;
                             break;
@@ -306,9 +316,9 @@ public class GameScreen extends ScreenClass implements Screen {
 
                 @Override
                 protected void result(Object object) {
-                    if((Boolean) object) {
+                    if ((Boolean) object) {
                         Gdx.app.exit();
-                    }else{
+                    } else {
                         state = GAME_RUNNING;
                     }
                 }
@@ -321,55 +331,57 @@ public class GameScreen extends ScreenClass implements Screen {
             stage.draw();
             Gdx.input.setInputProcessor(stage);
         }
+        hud = new Hud(batch);
         hud.stage.draw();
 
-        if(worldTimer<298 && popuped){
+        if (worldTimer < 298 && popuped) {
             popuped = false;
             state = GAME_PAUSED;
             out.println("popuped");
             out.println(popupText.carbonPopup);
         }
-        if(Player.carbon>10 && popuped_carbon){
+        if (Player.carbon > 10 && popuped_carbon) {
             popuped_carbon = false;
             state = GAME_CARBON_POP;
             out.println("popup_carbon");
         }
-        if(Player.score>=100 && popuped_gems){
+        if (Player.score >= 100 && popuped_gems) {
             popuped_gems = false;
             state = GAME_GEM_POP;
             out.println("popup_gem");
         }
-        if(Player.energy<70 && popuped_energy){
+        if (Player.energy < 70 && popuped_energy) {
             popuped_energy = false;
             state = GAME_ENERGY_POP;
             out.println("popup_energy");
         }
-        if(worldTimer<250){
+        if (worldTimer < 250) {
             worldTimer = (float) 300.00;
             ((Game) Gdx.app.getApplicationListener()).setScreen(new ScoreScreen());
-            if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
-                // Handle the 'A' key press event
-                mapLoader.callCar();
-                // Add your event handling code here
-            }
-    }
 
-    private void clickCoolDown() {
-        Timer timer = new Timer();
-        timer.scheduleTask(new Timer.Task() {
-            @Override
-            public void run () {
-                allowClick();
-            }
-        }, (float) 0.2, 0, 0);
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
+            // Handle the 'A' key press event
+            mapLoader.callCar();
+            // Add your event handling code here
+        }
     }
+        private void clickCoolDown() {
+            Timer timer = new Timer();
+            timer.scheduleTask(new Timer.Task() {
+                @Override
+                public void run() {
+                    allowClick();
+                }
+            }, (float) 0.2, 0, 0);
+        }
 
-    public void allowClick() {
-        canClick = true;
-    }
+        public void allowClick () {
+            canClick = true;
+        }
 
     private void endLvl() {
-        game.setScoreScreen(Player.score, Player.carbon);
+//        setScoreScreen(Player.score, Player.carbon);
         dispose();
     }
 
