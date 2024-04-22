@@ -18,6 +18,8 @@ public class Map extends GridLogic{
     public final TiledMap metro;
     private final int width;
     private final int height;
+
+    //Dont know what the below warning is on hashmaps
     public final NavigationTiledMapLayer gridLayer;
     public final NavigationTiledMapLayer carGridLayer;
     public final AStarGridFinder<GridCell> finder;
@@ -31,14 +33,16 @@ public class Map extends GridLogic{
     public ArrayList<Car> cars = new ArrayList<>();
     public Music game_music = Gdx.audio.newMusic(Gdx.files.internal("SFX/Main_Music_City_Jazz.mp3"));
 
-    public Map(GameScreen screen, Player player) {
+    public Map(GameScreen screen, Player player,String mapname,String metroname) {
         this.screen = screen;
         this.player = player;
         game_music.setVolume(0.2f);
         game_music.play();
-        map = new TmxMapLoader().load("testMap/map_final.tmx");
-        metro = new TmxMapLoader().load("testMap/metro_final.tmx");
+        map = new TmxMapLoader().load(mapname);//"testMap/map_final.tmx");
+        metro = new TmxMapLoader().load(metroname);
 
+//        map = new TmxMapLoader().load(mapname);
+//        metro = new TmxMapLoader().load(metroname);
         TiledMapTileLayer navLayer = (TiledMapTileLayer) map.getLayers().get("navigation");
 
         width = navLayer.getWidth();

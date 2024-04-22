@@ -1,0 +1,26 @@
+inbetween.png
+size: 126, 370
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+inbetween
+  rotate: false
+  xy: 0, 0
+  size: 126, 132
+  orig: 126, 132
+  offset: 0, 0
+  index: -1
+start
+  rotate: false
+  xy: 0, 132
+  size: 118, 120
+  orig: 118, 120
+  offset: 0, 0
+  index: -1
+stop
+  rotate: false
+  xy: 0, 252
+  size: 112, 118
+  orig: 112, 118
+  offset: 0, 0
+  index: -1
