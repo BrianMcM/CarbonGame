@@ -58,6 +58,7 @@ public class Car extends FreeRoam {
         hidden = true;
         player.car = this;
         player.img = this.img;
+        player.carCalled = false;
     }
     public void dropOff() {
         setCell(player.cellX, player.cellY);

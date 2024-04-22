@@ -202,6 +202,18 @@ public class Map extends GridLogic{
     }
 
     public void callCar() {
+        boolean onRoad = false;
+        for (int[] tile : drivableTiles) {
+            if (tile[0] == player.cellX && tile[1] == player.cellY) {
+                onRoad = true;
+                break;
+            }
+        }
+        if (!onRoad) {
+            System.out.println("not on road.");
+            return;
+        }
+        player.carCalled = true;
         int minPathSize = 9999; //bigger than game map so will always trigger
         Car nearestCar = null;
         for (Car car : cars) {
