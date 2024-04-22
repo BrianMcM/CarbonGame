@@ -179,6 +179,10 @@ public class GameScreen extends ScreenClass implements Screen {
                 player.transit.letPlayerOff = true;
                 return;
             }
+            //cant move once cars coming
+            if (player.carCalled) {
+                return;
+            }
             //end trip at next cell, take no other inputs
             if (player.move) {
                 player.finishEarly();
@@ -225,7 +229,6 @@ public class GameScreen extends ScreenClass implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
             // Handle the 'A' key press event
             mapLoader.callCar();
-            // Add your event handling code here
         }
     }
 

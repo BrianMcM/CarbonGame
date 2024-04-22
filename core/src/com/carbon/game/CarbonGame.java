@@ -20,7 +20,7 @@ public class CarbonGame extends Game {
 	}
 
 	public void setGameScreen() {
-        GameScreen gameScreen = new GameScreen(this, 10);
+        GameScreen gameScreen = new GameScreen(this, 300);
 		this.setScreen(gameScreen);
 		currentScreen = gameScreen;
 	}

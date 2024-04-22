@@ -22,6 +22,7 @@ public class Player extends FreeRoam {
     public Texture img = sprite;
     public Transit transit = null;
     public Car car = null;
+    public boolean carCalled = false;
 
     public Sound gemCollectSound = Gdx.audio.newSound(Gdx.files.internal("SFX/gem_pickup.mp3"));
     public Sound Exhaustedsound = Gdx.audio.newSound(Gdx.files.internal("SFX/Tired_breath_final.wav"));
