@@ -8,7 +8,7 @@ public class Gem extends GridLogic{
     static GemSpawner spawner;
     public int value;
     public int[] cellCoords;
-    public Texture img = new Texture(Gdx.files.internal("testShapes/gem.png"));
+    public Texture img = new Texture(Gdx.files.internal("testShapes/gem_new.png"));
     public Vector2 position;
 
     public Gem(int v, int[] c, GemSpawner gs) {

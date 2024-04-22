@@ -18,12 +18,6 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class Hud {
     public Stage stage;
-    private final OrthographicCamera camera;
-    private Viewport viewport;
-    private Integer worldTimer;
-
-    private Float timeCount;
-    private TextButton buttonCab;
 
     com.badlogic.gdx.scenes.scene2d.ui.Label countdownLabel;
     com.badlogic.gdx.scenes.scene2d.ui.Label scoreLabel;
@@ -46,7 +40,7 @@ public class Hud {
         textButtonStyle.pressedOffsetY = -1;
         textButtonStyle.font = black;
 
-        buttonCab = new TextButton("Call Cab", textButtonStyle);
+        TextButton buttonCab = new TextButton("Call Cab", textButtonStyle);
         buttonCab.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -55,16 +49,11 @@ public class Hud {
         });
         buttonCab.pad(10);
 
-        worldTimer = 300;
-        timeCount = (float) 0;
-//        score = 0;
-        camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        OrthographicCamera camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),camera);
+        Viewport viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
         stage = new Stage(viewport,sb);
         Table table = new Table();
-//        table.top();
-//        table.setFillParent(true);
         table.setBounds(0,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 
         countdownLabel = new Label(String.format("%,.0f", (double) GameScreen.worldTimer), new Label.LabelStyle(new BitmapFont(), Color.WHITE));

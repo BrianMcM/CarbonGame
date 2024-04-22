@@ -25,7 +25,7 @@ public class Player extends FreeRoam {
 
     public Sound gemCollectSound = Gdx.audio.newSound(Gdx.files.internal("SFX/gem_pickup.mp3"));
     public Sound Exhaustedsound = Gdx.audio.newSound(Gdx.files.internal("SFX/Tired_breath_final.wav"));
-    public boolean Exhausted_sound_played;
+    public boolean Exhausted_sound_played = false;
     public Sound finishEarly = Gdx.audio.newSound(Gdx.files.internal("SFX/Stop.wav"));
 
     public Player(GameScreen screen, int e, int x, int y) {

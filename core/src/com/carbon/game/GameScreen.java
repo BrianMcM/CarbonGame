@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import Screens.DialogPopup;
-import Screens.LevelsScreen;
 import Screens.ScoreScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -18,24 +17,19 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.carbon.game.*;
 import org.xguzm.pathfinding.grid.GridCell;
-import sun.tools.jconsole.JConsole;
 import static java.lang.System.*;
 
 
-public class GameScreen extends ScreenClass implements Screen {
+public class GameScreen extends GridLogic implements Screen {
 //    private final CarbonGame game;
     private final OrthographicCamera camera;
     //class objects
@@ -52,17 +46,13 @@ public class GameScreen extends ScreenClass implements Screen {
     private boolean canClick = true;
     public ArrayList<Gem> gemList = new ArrayList<>();
     public GemSpawner gemSpawner;
-    private Viewport viewport;
+    private final Viewport viewport;
     private Hud hud;
-
-    public static final int WORLD_WIDTH = 1280;
-    public static final int WORLD_HEIGHT = 800;
-    public float aspectRatio;
 
     public SpriteBatch batch;
     public BitmapFont font;
-    public static Float worldTimer = (float) 300.00;
-    private Stage stage;
+    public static Float worldTimer = (float) 10;
+    private final Stage stage;
     private DialogPopup popup;
     static final int GAME_READY = 0;
     static final int GAME_RUNNING = 1;
@@ -86,15 +76,14 @@ public class GameScreen extends ScreenClass implements Screen {
     public Sound Train_moving = Gdx.audio.newSound(Gdx.files.internal("SFX/train_moving.wav"));
 
     //Use constructor instead of create here
-    public GameScreen(String mapName, String metroName) {
+    public GameScreen(String mapName, String metroName, float time) {
         stage = new Stage();
         batch = new SpriteBatch();
         font = new BitmapFont();
-        /* this.game = game; */
         player = new Player(this, 100, 5, 20);
 
         //Added the names of the map files here so different maps could be passed in the future
-        mapLoader = new Map(this, player,mapName,metroName);//"testMap/map_final.tmx","testMap/metro_final.tmx");
+        mapLoader = new Map(this, player,mapName,metroName);
         gemSpawner = new GemSpawner(mapLoader, this);
 
         float unitScale = 1f;
@@ -105,16 +94,8 @@ public class GameScreen extends ScreenClass implements Screen {
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
-        Timer timer = new Timer();
-//        timer.scheduleTask(new Timer.Task() {
-//
-//        @Override
-//        public void run () {
-//            float time = (float) 3.0;
-//            endLvl();
-//        }
-//        }, (float) time, 0, 0);
         hud = new Hud(batch);
+        worldTimer = time;
     }
     public static void timer_world(Float t){
         worldTimer +=t;
@@ -196,7 +177,7 @@ public class GameScreen extends ScreenClass implements Screen {
             if (!metroVision) {
                 //gems
                 for (Gem gem : gemList) {
-                    batch.draw(gem.img, gem.position.x, gem.position.y, TILE_SIZE, TILE_SIZE);
+                    batch.draw(gem.img, gem.position.x - 8, gem.position.y - 8, TILE_SIZE * 2, TILE_SIZE * 2);
                 }
                 //cars
                 for (Car car : mapLoader.cars) {
@@ -251,8 +232,6 @@ public class GameScreen extends ScreenClass implements Screen {
                         mapLoader.stations.get(inputCell).select();
                     }
                 }
-
-                //herer hro functions
             }
             //player movement
             if (player.move) {
@@ -334,7 +313,8 @@ public class GameScreen extends ScreenClass implements Screen {
         hud = new Hud(batch);
         hud.stage.draw();
 
-        if (worldTimer < 298 && popuped) {
+        //////PAUSEING
+        if (worldTimer < -5 && popuped) {
             popuped = false;
             state = GAME_PAUSED;
             out.println("popuped");

@@ -97,7 +97,7 @@ public class LevelsScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 //                ((Game) Gdx.app.getApplicationListener()).setScreen(new Levels());
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen("testMap/map_final.tmx","testMap/metro_final.tmx"));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen("testMap/map_final.tmx","testMap/metro_final.tmx", 300));
             }
         });
         Label.LabelStyle headingStyle = new Label.LabelStyle(white,Color.WHITE);
@@ -144,7 +144,7 @@ public class LevelsScreen implements Screen {
                 .push(Tween.to(buttonExit,ActorAccessor.Alpha,.5f).target(1))
                 .end().start(tweenManager);
         Tween.from(table,ActorAccessor.Alpha,.5f).target(0).start(tweenManager);
-        Tween.from(table,ActorAccessor.Y,.5f).target(Gdx.graphics.getHeight()/8).start(tweenManager);
+        Tween.from(table,ActorAccessor.Y,.5f).target((float) Gdx.graphics.getHeight() /8).start(tweenManager);
     }
 
     @Override
