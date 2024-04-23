@@ -37,7 +37,7 @@ private TweenManager tweenManager;
         batch = new SpriteBatch();
         tweenManager = new TweenManager();
         Tween.registerAccessor(Sprite.class, new SpriteAccessor());
-        Texture splashTexture = new Texture("CarbonGame.png");
+        Texture splashTexture = new Texture("uiskin/CarbonWorld.png");
 
         splash = new Sprite(splashTexture);
         splash.setSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());

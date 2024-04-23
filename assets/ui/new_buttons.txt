@@ -1,0 +1,26 @@
+new_buttons.png
+size: 1013, 512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+background of popup
+  rotate: false
+  xy: 0, 0
+  size: 813, 493
+  orig: 813, 493
+  offset: 0, 0
+  index: -1
+button_down
+  rotate: false
+  xy: 813, 0
+  size: 200, 20
+  orig: 200, 20
+  offset: 0, 0
+  index: -1
+button_up
+  rotate: false
+  xy: 0, 493
+  size: 198, 19
+  orig: 198, 19
+  offset: 0, 0
+  index: -1
