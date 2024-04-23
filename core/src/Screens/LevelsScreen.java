@@ -25,63 +25,65 @@ import com.carbon.game.GameScreen;
 public class LevelsScreen implements Screen {
     private TweenManager tweenManager;
     private Stage stage;
-    private Table table;//done
-    private TextButton buttonPlay,buttonExit;
+    private Table table, buttonTable;
+    private TextButton buttonPlay,buttonExit,buttonHighScore;
     private Label heading;
     private Skin skin;//done
     private BitmapFont white,black;//done
     private TextureAtlas atlas;//done
     private CarbonGame game;
-    private List.ListStyle listStyle;
-    private List list;
-    private java.lang.String[] stringy;
+    private List.ListStyle listStyle,listStyle_;
+    private List list,list_;
+    private java.lang.String[] stringy, highScore;
     private Texture texture;
-    private ScrollPane scrollPane;
+    private ScrollPane scrollPane,scrollPane_;
     @Override
     public void show() {
-
-        texture = new Texture(Gdx.files.internal("knob.png"));
-        listStyle = new List.ListStyle(new BitmapFont(), Color.BLACK, new Color(1, 1, 1, 1), new TextureRegionDrawable(new TextureRegion(texture)));
+        black = new BitmapFont(Gdx.files.internal("fonts/earthair.fnt"),false);
+        int x = 54;
+        texture = new Texture(Gdx.files.internal("ui/button_down.png"));
+        listStyle = new List.ListStyle(black, new Color(84f/256f,116f/256f,20f/256f, 1), new Color(91f/256f,75f/256f,58f/256f, 1), new TextureRegionDrawable(new TextureRegion(texture)));
         list = new List(listStyle);
-        stringy = new java.lang.String[]{   "Level 1",
-                                            "Level 2",
-                                            "Level 3",
-                                            "Level 4",
-                                            "Level 5",
-                                            "Level 6",
-                                            "Level 7",
-                                            "Level 8",
-                                            "Level 9",
-                                            "Level 10",
-                                            "Level 11",
-                                            "Level 12",
-                                            "Level 13"};
+        stringy = new java.lang.String[]{   "      Tutorial", "      Level ONE", "      Level TWO", "      Level THREE", "      Level 5", "      Level 6", "      Level 7", "      Level 8", "      Level 9", "      Level 10", "      Level 11", "      Level 12", "      Level 13"};
+
         list.setItems(stringy);
+
 
         scrollPane = new ScrollPane(list);
 
+
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
-        white = new BitmapFont(Gdx.files.internal("fonts/a.fnt"),false);        white.setColor(256, 256, 256, 1);
+        white = new BitmapFont(Gdx.files.internal("fonts/a.fnt"),false);
+        white.setColor(256, 256, 256, 1);
 
-        black = new BitmapFont(Gdx.files.internal("fonts/earthair.fnt"),false);
-        black.setColor(0, 0,0, 1);
+//        black = new BitmapFont(Gdx.files.internal("fonts/earthair.fnt"),false);
+//        black.setColor(0, 0,0, 1);
 
         atlas = new TextureAtlas("ui/new_buttons.txt");
         skin = new Skin(atlas);
 
         table = new Table(skin);
+        buttonTable = new Table(skin);
         table.setBounds(0,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
-
+        table.background(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("uiskin/screen_level_background.png")))));
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
         textButtonStyle.up = skin.getDrawable("button_up");
         textButtonStyle.down = skin.getDrawable("button_down");
         textButtonStyle.pressedOffsetX = 1;
         textButtonStyle.pressedOffsetY = -1;
         textButtonStyle.font = black;
-
+        textButtonStyle.fontColor = new Color(84f/256f,116f/256f,20f/256f, 1);
         buttonExit = new TextButton("Back", textButtonStyle);
         buttonExit.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+            }
+        });
+
+        buttonHighScore = new TextButton("HighScore", textButtonStyle);
+        buttonHighScore.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
@@ -104,19 +106,25 @@ public class LevelsScreen implements Screen {
 
         buttonPlay.pad(10);
         buttonExit.pad(10);
+        buttonHighScore.pad(10);
 //        Adding Things to Table
         table.add().width(table.getWidth()/3);
         table.add(heading).width(table.getWidth()/3).center();
         table.add().width(table.getWidth()/3).row();
-        table.add(scrollPane).expandY().colspan(2);
+        table.add(scrollPane).size(600, 600).expandY().colspan(2).right().spaceRight(50);
         table.padBottom(50);
-        table.add(buttonPlay);
-
-        table.getCell(buttonPlay).spaceBottom(10);
-        table.row();
-        table.add();
-        table.add();
-        table.add(buttonExit).spaceBottom(10);
+//        table.add(buttonPlay);
+        buttonTable.add(buttonPlay).spaceBottom(10);
+        buttonTable.row();
+        buttonTable.add(buttonExit).spaceBottom(10);
+        buttonTable.row();
+        buttonTable.add(buttonHighScore).spaceBottom(10);
+        table.add(buttonTable).left();
+//        table.getCell(buttonPlay).spaceBottom(10);
+//        table.row();
+//        table.add();
+//        table.add();
+//        table.add(buttonExit).spaceBottom(10);
 
         table.debug();
         stage.addActor(table);
@@ -128,25 +136,27 @@ public class LevelsScreen implements Screen {
 
         //create animation
         Timeline.createSequence().beginSequence()
-                .push(Tween.to(heading,ActorAccessor.RGB,.5f).target(0,0,1))
-                .push(Tween.to(heading,ActorAccessor.RGB,.5f).target(0,1,0))
-                .push(Tween.to(heading,ActorAccessor.RGB,.5f).target(1,0,0))
-                .push(Tween.to(heading,ActorAccessor.RGB,.5f).target(1,1,0))
-                .push(Tween.to(heading,ActorAccessor.RGB,.5f).target(1,0,1))
-                .push(Tween.to(heading,ActorAccessor.RGB,.5f).target(0,1,1))
-                .push(Tween.to(heading,ActorAccessor.RGB,.5f).target(1,1,1))
+                .push(Tween.to(heading,ActorAccessor.RGB,.0001f).target(91f/256f,75f/256f,58f/256f))
+//                .push(Tween.to(heading,ActorAccessor.RGB,3f).target(91f/256f,75f/256f,58f/256f))
+//                .push(Tween.to(heading,ActorAccessor.RGB,3f).target(199f/256f,147f/256f,104f/256f))
+//                .push(Tween.to(heading,ActorAccessor.RGB,3f).target(241f/256f,224f/256f,203f/256f))
+//                .push(Tween.to(heading,ActorAccessor.RGB,3f).target(223f/256f,181f/256f,133f/256f))
+//                .push(Tween.to(heading,ActorAccessor.RGB,3f).target(150f/256f,107f/256f,78f/256f))
+                .push(Tween.to(heading,ActorAccessor.RGB,3f).target(84f/256f,116f/256f,20f/256f))
+                .push(Tween.to(heading,ActorAccessor.RGB,3f).target(91f/256f,75f/256f,58f/256f))
+//                .push(Tween.to(heading,ActorAccessor.RGB,3f).target(118f/256f,110f/256f,95f/256f))
                 .end().repeat(Tween.INFINITY,0).start(tweenManager);
 
 
-        Timeline.createSequence().beginSequence()
-                .push(Tween.set(buttonPlay,ActorAccessor.Alpha).target(0))
-                .push(Tween.set(buttonExit,ActorAccessor.Alpha).target(0))
-                .push(Tween.from(heading,ActorAccessor.Alpha,.5f).target(0))
-                .push(Tween.to(buttonPlay,ActorAccessor.Alpha,.5f).target(1))
-                .push(Tween.to(buttonExit,ActorAccessor.Alpha,.5f).target(1))
-                .end().start(tweenManager);
-        Tween.from(table,ActorAccessor.Alpha,.5f).target(0).start(tweenManager);
-        Tween.from(table,ActorAccessor.Y,.5f).target((float) Gdx.graphics.getHeight() /8).start(tweenManager);
+//        Timeline.createSequence().beginSequence()
+//                .push(Tween.set(buttonPlay,ActorAccessor.Alpha).target(0))
+//                .push(Tween.set(buttonExit,ActorAccessor.Alpha).target(0))
+//                .push(Tween.from(heading,ActorAccessor.Alpha,.5f).target(0))
+//                .push(Tween.to(buttonPlay,ActorAccessor.Alpha,.5f).target(1))
+//                .push(Tween.to(buttonExit,ActorAccessor.Alpha,.5f).target(1))
+//                .end().start(tweenManager);
+//        Tween.from(table,ActorAccessor.Alpha,.5f).target(0).start(tweenManager);
+//        Tween.from(table,ActorAccessor.Y,.5f).target((float) Gdx.graphics.getHeight() /8).start(tweenManager);
     }
 
     @Override

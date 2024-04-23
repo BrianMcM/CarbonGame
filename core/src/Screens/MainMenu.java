@@ -84,6 +84,7 @@ public class MainMenu implements Screen {
         textButtonStyle.pressedOffsetX = 1;
         textButtonStyle.pressedOffsetY = -1;
         textButtonStyle.font = black;
+        textButtonStyle.fontColor = new Color(84f/256f,116f/256f,20f/256f, 1);
 
         buttonExit = new TextButton("Exit", textButtonStyle);
         TextureAtlas atlas1 = new TextureAtlas(Gdx.files.internal("uiskin/uiskin.atlas"));
