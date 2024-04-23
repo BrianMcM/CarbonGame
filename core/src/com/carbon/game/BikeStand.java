@@ -5,12 +5,12 @@ import com.badlogic.gdx.audio.Sound;
 import org.xguzm.pathfinding.grid.GridCell;
 
 public class BikeStand implements Selectable{
-    public static Player player;
+    public Player player;
     public GridCell cell;
     public Sound Error = Gdx.audio.newSound(Gdx.files.internal("SFX/Error.wav"));
     public BikeStand(GridCell c, Player p) {
         cell = c;
-        BikeStand.player = p;
+        player = p;
     }
 
     public void select() {
@@ -24,9 +24,9 @@ public class BikeStand implements Selectable{
 
     public void activate() {
         if (player.mode == 1) {
-            player.mode = 2;
+            player.onBike();
         } else if (player.mode == 2) {
-            player.mode = 1;
+            player.offBike();
         }
 
     }

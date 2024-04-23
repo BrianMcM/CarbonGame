@@ -19,6 +19,7 @@ public class Player extends FreeRoam {
     public float exhausted = 1;
     //texture
     private final Texture sprite = new Texture(Gdx.files.internal("testShapes/player1.png"));
+    private final Texture bikeSprite = new Texture(Gdx.files.internal("testShapes/bike_player.png"));
     public Texture img = sprite;
     public Transit transit = null;
     public Car car = null;
@@ -106,6 +107,16 @@ public class Player extends FreeRoam {
         if (exhausted < 1 && energy >= 10) {
             exhausted = 1;
         }
+    }
+
+    public void onBike() {
+        mode = 2;
+        img = bikeSprite;
+    }
+
+    public void offBike() {
+        mode = 1;
+        img = sprite;
     }
 
     public void dispose() {
