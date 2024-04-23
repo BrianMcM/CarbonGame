@@ -23,6 +23,8 @@ public class Transit extends GridLogic implements Moving{
     public boolean letPlayerOff = false;
 
     public Texture img = new Texture(Gdx.files.internal("testShapes/bus_temp.png"));
+    public Texture img2 = new Texture(Gdx.files.internal("testShapes/train.png"));
+
 
     public Transit(Route r, int index, boolean t, int d) {
         isTrain = t;
@@ -30,9 +32,11 @@ public class Transit extends GridLogic implements Moving{
         pathIndex = index - d;
         direction = d;
         if (isTrain) {
+            img = new Texture(Gdx.files.internal("testShapes/train.png"));
             speed = 200;
             buffer = 4;
         } else {
+            img = new Texture(Gdx.files.internal("testShapes/bus_temp.png"));
             speed = 150;
             buffer = 3;
         }

@@ -3,6 +3,7 @@ package com.carbon.game;
 import java.lang.Math;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
 
 import Screens.DialogPopup;
 import Screens.ScoreScreen;
@@ -74,13 +75,16 @@ public class GameScreen extends GridLogic implements Screen {
     public Music music_r = Gdx.audio.newMusic(Gdx.files.internal("SFX/Main_Music_Retro.mp3"));
     public Sound Train_exit = Gdx.audio.newSound(Gdx.files.internal("SFX/metro_chime.wav"));
     public Sound Train_moving = Gdx.audio.newSound(Gdx.files.internal("SFX/train_moving.wav"));
-
+    public Music music_end = Gdx.audio.newMusic(Gdx.files.internal("SFX/10_Second_Track.mp3"));
+    public Sound Countdown = Gdx.audio.newSound(Gdx.files.internal("SFX/countdown.wav"));
     //Use constructor instead of create here
     public GameScreen(String mapName, String metroName, float time) {
         stage = new Stage();
         batch = new SpriteBatch();
         font = new BitmapFont();
         player = new Player(this, 100, 5, 20);
+        music_j.setVolume(0.2f);
+        music_j.play();
 
         //Added the names of the map files here so different maps could be passed in the future
         mapLoader = new Map(this, player,mapName,metroName);
@@ -339,9 +343,15 @@ public class GameScreen extends GridLogic implements Screen {
             state = GAME_ENERGY_POP;
             out.println("popup_energy");
         }
+        if (worldTimer <= 260) {
+            music_j.stop();
+            music_end.setVolume(0.2f);
+            music_end.play();
+        }
         if (worldTimer < 250) {
             worldTimer = (float) 300.00;
             ((Game) Gdx.app.getApplicationListener()).setScreen(new ScoreScreen());
+            music_end.stop();
 
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
@@ -397,8 +407,11 @@ public class GameScreen extends GridLogic implements Screen {
         mapRenderer.dispose();
         metroRenderer.dispose();
         mapLoader.dispose();
+        music_end.dispose();
         music_r.dispose();
         music_j.dispose();
+        Countdown.dispose();
+        Train_moving.dispose();
         Train_exit.dispose();
         border_img.dispose();
         for (Gem gem : gemList) {
