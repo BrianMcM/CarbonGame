@@ -17,11 +17,14 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.carbon.game.CarbonGame;
 
+import java.awt.*;
 import java.sql.Time;
 
 public class MainMenu implements Screen {
@@ -63,21 +66,21 @@ public class MainMenu implements Screen {
         stage = new Stage();
 
         Gdx.input.setInputProcessor(stage);
-        white = new BitmapFont();
+        white = new BitmapFont(Gdx.files.internal("fonts/b.fnt"),false);
         white.setColor(256, 256, 256, 1);
 
-        black = new BitmapFont();
+        black = new BitmapFont(Gdx.files.internal("fonts/earthair.fnt"),false);
         black.setColor(0, 0,0, 1);
 
-        atlas = new TextureAtlas("ui/inbetween.txt");
+        atlas = new TextureAtlas("ui/new_buttons.txt");
         skin = new Skin(atlas);
 
         table = new Table(skin);
         table.setBounds(0,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.up = skin.getDrawable("start");
-        textButtonStyle.down = skin.getDrawable("stop");
+        textButtonStyle.up = skin.getDrawable("button_up");
+        textButtonStyle.down = skin.getDrawable("button_down");
         textButtonStyle.pressedOffsetX = 1;
         textButtonStyle.pressedOffsetY = -1;
         textButtonStyle.font = black;
@@ -111,7 +114,7 @@ public class MainMenu implements Screen {
 
             }
         });
-        buttonExit.pad(10);
+
 
 
 
@@ -125,18 +128,24 @@ public class MainMenu implements Screen {
         });
         Label.LabelStyle headingStyle = new Label.LabelStyle(white,Color.WHITE);
 
-        heading = new Label("Carbon Game",headingStyle);
-        heading.setFontScale(4);
-
-        table.add(heading);
+        heading = new Label("Carbon World",headingStyle);
+        heading.setFontScale((float)0.7);
+        buttonPlay.pad(15);
+        buttonExit.pad(15);
+        table.background(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("uiskin/background_menu.png")))));
+        //row 1
+        table.add(heading).colspan(7).spaceBottom(200);
         table.row();
-        table.padBottom(50);
+        //row2
+        table.add();
+        table.add();
         table.add(buttonPlay);
-        table.getCell(buttonPlay).spaceBottom(10);
-        table.row();
+        table.add();
         table.add(buttonExit);
+        table.add();
+        table.add();
 
-        table.debug();
+//        table.debug();
         stage.addActor(table);
 
         //Creating animations
@@ -145,35 +154,36 @@ public class MainMenu implements Screen {
 
         //create animation
         Timeline.createSequence().beginSequence()
-                .push(Tween.to(heading,ActorAccessor.RGB,.5f).target(0,0,1))
-                .push(Tween.to(heading,ActorAccessor.RGB,.5f).target(0,1,0))
-                .push(Tween.to(heading,ActorAccessor.RGB,.5f).target(1,0,0))
-                .push(Tween.to(heading,ActorAccessor.RGB,.5f).target(1,1,0))
-                .push(Tween.to(heading,ActorAccessor.RGB,.5f).target(1,0,1))
-                .push(Tween.to(heading,ActorAccessor.RGB,.5f).target(0,1,1))
-                .push(Tween.to(heading,ActorAccessor.RGB,.5f).target(1,1,1))
-                .end().repeat(Tween.INFINITY,0).start(tweenManager);
-
-
-        Timeline.createSequence().beginSequence()
-                .push(Tween.set(buttonPlay,ActorAccessor.Alpha).target(0))
-                .push(Tween.set(buttonExit,ActorAccessor.Alpha).target(0))
-                .push(Tween.from(heading,ActorAccessor.Alpha,.5f).target(0))
-                .push(Tween.to(buttonPlay,ActorAccessor.Alpha,.5f).target(1))
-                .push(Tween.to(buttonExit,ActorAccessor.Alpha,.5f).target(1))
+                .push(Tween.to(heading,ActorAccessor.RGB,3f).target(91f/256f,75f/256f,58f/256f))
+//                .push(Tween.to(heading,ActorAccessor.RGB,3f).target(199f/256f,147f/256f,104f/256f))
+//                .push(Tween.to(heading,ActorAccessor.RGB,3f).target(241f/256f,224f/256f,203f/256f))
+//                .push(Tween.to(heading,ActorAccessor.RGB,3f).target(223f/256f,181f/256f,133f/256f))
+//                .push(Tween.to(heading,ActorAccessor.RGB,3f).target(150f/256f,107f/256f,78f/256f))
+                .push(Tween.to(heading,ActorAccessor.RGB,3f).target(84f/256f,116f/256f,20f/256f))
+//                .push(Tween.to(heading,ActorAccessor.RGB,3f).target(118f/256f,110f/256f,95f/256f))
                 .end().start(tweenManager);
-        Tween.from(table,ActorAccessor.Alpha,.5f).target(0).start(tweenManager);
-        Tween.from(table,ActorAccessor.Y,.5f).target(Gdx.graphics.getHeight()/8).start(tweenManager);
-    }
 
+
+//        Timeline.createSequence().beginSequence()
+//                .push(Tween.set(buttonPlay,ActorAccessor.Alpha).target(0))
+//                .push(Tween.set(buttonExit,ActorAccessor.Alpha).target(0))
+//                .push(Tween.from(heading,ActorAccessor.Alpha,.5f).target(0))
+//                .push(Tween.to(buttonPlay,ActorAccessor.Alpha,.5f).target(1))
+//                .push(Tween.to(buttonExit,ActorAccessor.Alpha,.5f).target(1))
+//                .end().start(tweenManager);
+//        Tween.from(table,ActorAccessor.Alpha,.5f).target(0).start(tweenManager);
+//        Tween.from(table,ActorAccessor.Y,.5f).target(Gdx.graphics.getHeight()/8).start(tweenManager);
+    }
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        table.setDebug(true);
+//        table.setDebug(true);
         tweenManager.update(delta);
         stage.act(delta);
+        table.background(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("uiskin/background_menu.png")))));
+
 
         stage.draw();
     }

@@ -43,7 +43,7 @@ public class LevelsScreen implements Screen {
         texture = new Texture(Gdx.files.internal("knob.png"));
         listStyle = new List.ListStyle(new BitmapFont(), Color.BLACK, new Color(1, 1, 1, 1), new TextureRegionDrawable(new TextureRegion(texture)));
         list = new List(listStyle);
-        stringy = new java.lang.String[]{   "Level 1","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ","Level ",
+        stringy = new java.lang.String[]{   "Level 1",
                                             "Level 2",
                                             "Level 3",
                                             "Level 4",
@@ -62,22 +62,20 @@ public class LevelsScreen implements Screen {
 
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
-        white = new BitmapFont();
-        white.setColor(256, 256, 256, 1);
+        white = new BitmapFont(Gdx.files.internal("fonts/a.fnt"),false);        white.setColor(256, 256, 256, 1);
 
-        black = new BitmapFont();
+        black = new BitmapFont(Gdx.files.internal("fonts/earthair.fnt"),false);
         black.setColor(0, 0,0, 1);
 
-        atlas = new TextureAtlas("ui/inbetween.txt");
+        atlas = new TextureAtlas("ui/new_buttons.txt");
         skin = new Skin(atlas);
-
 
         table = new Table(skin);
         table.setBounds(0,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.up = skin.getDrawable("start");
-        textButtonStyle.down = skin.getDrawable("stop");
+        textButtonStyle.up = skin.getDrawable("button_up");
+        textButtonStyle.down = skin.getDrawable("button_down");
         textButtonStyle.pressedOffsetX = 1;
         textButtonStyle.pressedOffsetY = -1;
         textButtonStyle.font = black;
@@ -90,7 +88,6 @@ public class LevelsScreen implements Screen {
             }
         });
 
-        buttonExit.pad(10);
 
         buttonPlay = new TextButton("Play", textButtonStyle);
         buttonPlay.addListener(new ClickListener(){
@@ -103,18 +100,23 @@ public class LevelsScreen implements Screen {
         Label.LabelStyle headingStyle = new Label.LabelStyle(white,Color.WHITE);
 
         heading = new Label("Select Level",headingStyle);
-        heading.setFontScale(4);
+        heading.setFontScale((float)0.7);
 
-
+        buttonPlay.pad(10);
+        buttonExit.pad(10);
 //        Adding Things to Table
         table.add().width(table.getWidth()/3);
         table.add(heading).width(table.getWidth()/3).center();
         table.add().width(table.getWidth()/3).row();
-        table.add(scrollPane).left().expandY();
+        table.add(scrollPane).expandY().colspan(2);
         table.padBottom(50);
         table.add(buttonPlay);
+
         table.getCell(buttonPlay).spaceBottom(10);
-        table.add(buttonExit).bottom().right();
+        table.row();
+        table.add();
+        table.add();
+        table.add(buttonExit).spaceBottom(10);
 
         table.debug();
         stage.addActor(table);
