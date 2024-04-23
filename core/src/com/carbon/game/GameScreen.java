@@ -88,7 +88,7 @@ public class GameScreen extends GridLogic implements Screen {
 
         //Added the names of the map files here so different maps could be passed in the future
         mapLoader = new Map(this, player,mapName,metroName);
-        gemSpawner = new GemSpawner(mapLoader, this);
+        gemSpawner = new GemSpawner(mapLoader, this, 5);
 
         float unitScale = 1f;
         mapRenderer = new OrthogonalTiledMapRenderer(mapLoader.map, unitScale);

@@ -109,7 +109,7 @@ public class Transit extends GridLogic implements Moving{
             public void run () {
                 setTargets();
             }
-        }, 1, 0, 0);
+        }, (float) 0.5, 0, 0);
     }
 
     private void waitStart(){

@@ -18,7 +18,20 @@ public class ScoreManager {
         String[] scorePair = {name, score};
 
         List<String[]> scoreArray = loadScoreArray();
-        scoreArray.add(scorePair);
+
+        if (scoreArray.isEmpty()) {
+            scoreArray.add(scorePair);
+        } else {
+            int i = 0;
+            while (Integer.parseInt(score) < Integer.parseInt(scoreArray.get(i)[1])) {
+                i++;
+                if (i == scoreArray.size()) {
+                    i--;
+                    break;
+                }
+            }
+            scoreArray.add(i, scorePair);
+        }
 
         String json = gson.toJson(scoreArray);
 
