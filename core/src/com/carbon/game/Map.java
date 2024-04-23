@@ -30,13 +30,10 @@ public class Map extends GridLogic{
 
     public ArrayList<int[]> drivableTiles = new ArrayList<>();
     public ArrayList<Car> cars = new ArrayList<>();
-    public Music game_music = Gdx.audio.newMusic(Gdx.files.internal("SFX/Main_Music_City_Jazz.mp3"));
 
     public Map(GameScreen screen, Player player,String mapname,String metroname) {
         this.screen = screen;
         this.player = player;
-        //game_music.setVolume(0.2f);
-        //game_music.play();
         map = new TmxMapLoader().load("testMap/map_final2.tmx");//"testMap/map_final.tmx");
         metro = new TmxMapLoader().load("testMap/metro_final2.tmx");
 
@@ -74,8 +71,8 @@ public class Map extends GridLogic{
         setTransitRoute(new int[]{57, 41}, new int[]{55, 41}, trainGridLayer, true, 1);
         setTransitRoute(new int[]{5, 9}, new int[]{3, 9}, trainGridLayer, true, 1);
         //tutorial map trains
-        /*setTransitRoute(new int[]{64, 54}, new int[]{62, 54}, trainGridLayer, true);
-        setTransitRoute(new int[]{40, 26}, new int[]{38, 26}, trainGridLayer, true);*/
+        /*setTransitRoute(new int[]{64, 54}, new int[]{62, 54}, trainGridLayer, true, 1);
+        setTransitRoute(new int[]{40, 26}, new int[]{38, 26}, trainGridLayer, true, 0);*/
 
 
         //bus section
@@ -91,8 +88,8 @@ public class Map extends GridLogic{
         setTransitRoute(new int[]{93, 29}, new int[]{91, 29}, busGridLayer, false, 1);
         setTransitRoute(new int[]{9, 49}, new int[]{7, 49}, busGridLayer, false, 1);
         //tutorial bus
-        /*setTransitRoute(new int[]{50, 44}, new int[]{48, 44}, busGridLayer, false);
-        setTransitRoute(new int[]{50, 40}, new int[]{48, 40}, busGridLayer, false);*/
+        /*setTransitRoute(new int[]{50, 44}, new int[]{48, 44}, busGridLayer, false, 1);
+        setTransitRoute(new int[]{50, 40}, new int[]{48, 40}, busGridLayer, false, 0);*/
 
         //cars
         TiledMapTileLayer carLayer = (TiledMapTileLayer) map.getLayers().get("carRoad");

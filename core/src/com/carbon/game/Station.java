@@ -50,16 +50,22 @@ public class Station implements Inside, Selectable{
         if (isTrain) {
             map.screen.metroVision = true;
             //Ambient train sounds
-            Train_moving.loop(0.05f);
+            Train_moving.loop(1f);
             Train_moving.stop();
         }
     }
 
     public void arrived() {
-        occupied = false;
-        map.screen.stationInside = null;
+        if (isTrain) {
+            occupied = false;
+            Metro_chime.play();
+            map.screen.stationInside = null;
+        } else {
+            occupied = false;
+            Bus_Horn.play();
+            map.screen.stationInside = null;
+        }
     }
-
     public void playerExit() {
         occupied = false;
         player.setCell(cell.getX() - 1, cell.getY());
