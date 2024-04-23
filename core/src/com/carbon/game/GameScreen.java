@@ -194,15 +194,6 @@ public class GameScreen extends GridLogic implements Screen {
 
             //click input movement
             if (Gdx.input.justTouched()) {
-                //check that mouse isn't off-screen
-                if (inputPos.x < 0 || inputPos.y < 0 || inputPos.x > viewport.getScreenWidth() || inputPos.y > viewport.getScreenHeight()) {
-                    return;
-                }
-                //if cell that player is in is clicked don't react
-                if (inputCellX == player.cellX && inputCellY == player.cellY) {
-                    return;
-                }
-                //if cool down timer hasn't fired prevent click
                 if (!canClick) {
                     return;
                 } else {

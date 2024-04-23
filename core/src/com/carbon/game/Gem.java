@@ -16,19 +16,19 @@ public class Gem extends GridLogic{
         value = v;
         switch(value){
             case 100:
-                img = new Texture(Gdx.files.internal("testShapes/gem3.png"));
+                img = new Texture(Gdx.files.internal("testShapes/gem4.png"));
                 break;
             case 200:
-                img = new Texture(Gdx.files.internal("testShapes/gem2.png"));
+                img = new Texture(Gdx.files.internal("testShapes/gem3.png"));
                 break;
             case 300:
-                img = new Texture(Gdx.files.internal("testShapes/gem1.png"));
+                img = new Texture(Gdx.files.internal("testShapes/gem2.png"));
                 break;
             case 400:
-                img = new Texture(Gdx.files.internal("testShapes/gem.png"));
+                img = new Texture(Gdx.files.internal("testShapes/gem1.png"));
                 break;
             case 500:
-                img = new Texture(Gdx.files.internal("testShapes/gem.png"));
+                img = new Texture(Gdx.files.internal("testShapes/gem1.png"));
                 break;
         }
         cellCoords = c;

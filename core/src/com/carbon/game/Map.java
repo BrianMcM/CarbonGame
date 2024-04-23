@@ -19,7 +19,6 @@ public class Map extends GridLogic{
     private final int width;
     private final int height;
 
-    //Dont know what the below warning is on hashmaps
     public final NavigationTiledMapLayer gridLayer;
     public final NavigationTiledMapLayer carGridLayer;
     public final AStarGridFinder<GridCell> finder;
@@ -71,9 +70,9 @@ public class Map extends GridLogic{
         NavigationTiledMapLayer trainGridLayer = new NavigationTiledMapLayer(trainLineGrid);
         //hard code each train line
         //full map trains
-        setTransitRoute(new int[]{45, 53}, new int[]{43, 53}, trainGridLayer, true);
-        setTransitRoute(new int[]{57, 41}, new int[]{55, 41}, trainGridLayer, true);
-        setTransitRoute(new int[]{5, 9}, new int[]{3, 9}, trainGridLayer, true);
+        setTransitRoute(new int[]{45, 53}, new int[]{43, 53}, trainGridLayer, true, 1);
+        setTransitRoute(new int[]{57, 41}, new int[]{55, 41}, trainGridLayer, true, 1);
+        setTransitRoute(new int[]{5, 9}, new int[]{3, 9}, trainGridLayer, true, 1);
         //tutorial map trains
         /*setTransitRoute(new int[]{64, 54}, new int[]{62, 54}, trainGridLayer, true);
         setTransitRoute(new int[]{40, 26}, new int[]{38, 26}, trainGridLayer, true);*/
@@ -87,10 +86,10 @@ public class Map extends GridLogic{
         NavigationTiledMapLayer busGridLayer = new NavigationTiledMapLayer(BusRouteGrid);
         //hard code bus routes
         //full map buses
-        setTransitRoute(new int[]{13, 9}, new int[]{11, 9}, busGridLayer, false);
-        setTransitRoute(new int[]{33, 29}, new int[]{31, 29}, busGridLayer, false);
-        setTransitRoute(new int[]{93, 29}, new int[]{91, 29}, busGridLayer, false);
-        setTransitRoute(new int[]{9, 49}, new int[]{7, 49}, busGridLayer, false);
+        setTransitRoute(new int[]{13, 9}, new int[]{11, 9}, busGridLayer, false, 1);
+        setTransitRoute(new int[]{33, 29}, new int[]{31, 29}, busGridLayer, false, 1);
+        setTransitRoute(new int[]{93, 29}, new int[]{91, 29}, busGridLayer, false, 1);
+        setTransitRoute(new int[]{9, 49}, new int[]{7, 49}, busGridLayer, false, 1);
         //tutorial bus
         /*setTransitRoute(new int[]{50, 44}, new int[]{48, 44}, busGridLayer, false);
         setTransitRoute(new int[]{50, 40}, new int[]{48, 40}, busGridLayer, false);*/
@@ -181,8 +180,8 @@ public class Map extends GridLogic{
         return finder.findPath(startX, startY, endX, endY, carGridLayer);
     }
 
-    private void setTransitRoute(int[] first, int[] last, NavigationTiledMapLayer layer, boolean train) {
-        Route route = new Route(this, train);
+    private void setTransitRoute(int[] first, int[] last, NavigationTiledMapLayer layer, boolean train, int dir) {
+        Route route = new Route(this, train, dir);
         GridCell firstCell = gridLayer.getCell(first[0], first[1]);
         List<GridCell> linePath = finder.findPath(first[0], first[1], last[0], last[1], layer);
         route.setPath(first, linePath);
@@ -198,7 +197,7 @@ public class Map extends GridLogic{
                 route.addStation(Arrays.toString(new int[]{xCoord, yCoord}), stations.get(gCell));
             }
         }
-        route.addTransit(0);
+        route.addTransit();
     }
 
     private void spawnCars(TiledMapTileLayer layer) {

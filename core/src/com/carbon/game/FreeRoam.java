@@ -40,6 +40,9 @@ abstract public class FreeRoam extends GridLogic implements Moving{
     }
 
     public void setPath(List<GridCell> list) {
+        if (list == null || list.isEmpty()) {
+            return;
+        }
         path.addAll(list);
         setTargets();
     }

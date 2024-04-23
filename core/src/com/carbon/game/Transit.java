@@ -27,20 +27,21 @@ public class Transit extends GridLogic implements Moving{
 
 
     public Transit(Route r, int index, boolean t, int d) {
+        System.out.println(index);
         isTrain = t;
         route = r;
         pathIndex = index - d;
         direction = d;
         if (isTrain) {
             img = new Texture(Gdx.files.internal("testShapes/train.png"));
-            speed = 200;
-            buffer = 4;
+            speed = 220;
+            buffer = 5;
         } else {
             img = new Texture(Gdx.files.internal("testShapes/bus_temp.png"));
-            speed = 150;
-            buffer = 3;
+            speed = 170;
+            buffer = 4;
         }
-        arriveAtTarget();
+        waitStart();
     }
 
     public void arriveAtTarget() {
@@ -107,6 +108,16 @@ public class Transit extends GridLogic implements Moving{
             @Override
             public void run () {
                 setTargets();
+            }
+        }, 1, 0, 0);
+    }
+
+    private void waitStart(){
+        Timer timer = new Timer();
+        timer.scheduleTask(new Task() {
+            @Override
+            public void run () {
+                arriveAtTarget();
             }
         }, 1, 0, 0);
     }
