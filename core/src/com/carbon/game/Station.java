@@ -58,7 +58,7 @@ public class Station implements Inside, Selectable{
     public void arrived() {
         if (isTrain) {
             occupied = false;
-            Metro_chime.play();
+            Metro_chime.play(0.3f);
             map.screen.stationInside = null;
         } else {
             occupied = false;

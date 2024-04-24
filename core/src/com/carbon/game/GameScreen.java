@@ -235,7 +235,7 @@ public class GameScreen extends GridLogic implements Screen {
                     return;
                 }
                 if (mapLoader.stationList.containsKey(inputCell)) {
-                    if (Objects.equals(mapLoader.stationList.get(inputCell), "bikeStations")) {
+                    if (Objects.equals(mapLoader.stationList.get(inputCell), "bikeStation")) {
                         mapLoader.bikeStands.get(inputCell).select();
                     } else {
                         mapLoader.stations.get(inputCell).select();
