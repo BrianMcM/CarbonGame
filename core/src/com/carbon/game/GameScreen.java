@@ -126,6 +126,15 @@ public class GameScreen extends GridLogic implements Screen {
             //track mouse movement for cell border
             int inputCellX = worldToCell(inputPos.x);
             int inputCellY = worldToCell(inputPos.y);
+
+            /////
+            System.out.println(inputCellX);
+            System.out.println(inputCellY);
+            System.out.println("--------");
+
+
+            ////
+
             GridCell inputCell = mapLoader.gridLayer.getCell(inputCellX, inputCellY);
 
             float borderX = cellToWorld(inputCellX) - (float) TILE_SIZE / 2; //find cell of where mouse is pointing
