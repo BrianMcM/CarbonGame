@@ -124,7 +124,6 @@ public class MainMenu implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new LevelsScreen());
-//                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen());
             }
         });
         Label.LabelStyle headingStyle = new Label.LabelStyle(white,Color.WHITE);

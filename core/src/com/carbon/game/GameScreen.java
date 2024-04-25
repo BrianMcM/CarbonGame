@@ -6,11 +6,9 @@ import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 
 import Screens.DialogPopup;
+import Screens.MainMenu;
 import Screens.ScoreScreen;
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
@@ -22,6 +20,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -59,13 +58,16 @@ public class GameScreen extends GridLogic implements Screen {
     static final int GAME_RUNNING = 1;
     static final int GAME_PAUSED = 2;
     static final int GAME_CARBON_POP = 3;
-    static final int GAME_SCORE_POP = 4;
-    static final int GAME_ENERGY_POP = 5;
-    static final int GAME_TIME_POP = 6;
-    static final int GAME_GEM_POP = 7;
+    static final int GAME_CARBON_POP_2 = 4;
+    static final int GAME_SCORE_POP = 5;
+    static final int GAME_ENERGY_POP = 6;
+    static final int GAME_TIME_POP = 7;
+    static final int GAME_GEM_POP = 8;
+    static final int GAME_INITIAL_POP = 9;
     int state = 1;
     private Boolean popuped = true;
     private Boolean popuped_carbon = true;
+    private Boolean popuped_carbon_2 = true;
     private Boolean popuped_time = true;
     private Boolean popuped_energy = true;
     private Boolean popuped_gems = true;
@@ -271,34 +273,63 @@ public class GameScreen extends GridLogic implements Screen {
                 }
             }
         } else {
-            Dialog popup = new Dialog("Info Popup", DialogPopup.skin) {
+            Dialog popup = new Dialog("Hint", DialogPopup.skin) {
                 {
-                    String string = getString();
-                    text(string);
+                    String[] string = getString();
+                    text(string[0]);
                     button("Continue", false);
-                    button("Exit Game", true);
-
+                    if (state == GAME_PAUSED) {
+                        button("Main Menu", true);
+                    }
+                    setWidth(Float.parseFloat(string[1]));
+                    setHeight(Float.parseFloat(string[2]));
+//                    out.println(Float.parseFloat(string[2]));
                 }
 
-                private String getString() {
+                private String[] getString() {
                     String string = null;
+                    int widthBox = 0;
+                    int heightBox = 0;
+
                     switch (state) {
                         case GAME_PAUSED:
                             string = popupText.gamePaused;
+                            widthBox = 600;
+                            heightBox = 400;
                             break;
                         case GAME_CARBON_POP:
                             string = popupText.carbonPopup;
+                            widthBox = 600;
+                            heightBox = 400;
+                            break;
+                        case GAME_CARBON_POP_2:
+                            string = popupText.carbonPopup_2;
+                            widthBox = 600;
+                            heightBox = 400;
                             break;
                         case GAME_GEM_POP:
                             string = popupText.gemPopup;
+                            widthBox = 600;
+                            heightBox = 400;
                             break;
                         case GAME_ENERGY_POP:
                             string = popupText.energyPopup;
+                            widthBox = 600;
+                            heightBox = 400;
                             break;
                         case GAME_TIME_POP:
                             string = popupText.timePopup;
+                            widthBox = 600;
+                            heightBox = 400;
+                            break;
+                        case GAME_INITIAL_POP:
+                            string = popupText.gameInitialised;
+                            widthBox = 600;
+                            heightBox = 400;
+                            break;
                     }
-                    return string;
+
+                    return new String[]{string, String.valueOf(widthBox), String.valueOf(heightBox)};
                 }
 
                 @Override
@@ -310,16 +341,17 @@ public class GameScreen extends GridLogic implements Screen {
                 @Override
                 protected void result(Object object) {
                     if ((Boolean) object) {
+
+                        ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
                         music_r.stop();
                         Gdx.app.exit();
+
                     } else {
                         state = GAME_RUNNING;
                     }
                 }
             };
 
-            popup.setWidth(300);
-            popup.setHeight(300);
             popup.setPosition(Math.round((stage.getWidth() - popup.getWidth()) / 2), Math.round((stage.getHeight() - popup.getHeight()) / 2));
             stage.addActor(popup);
             stage.draw();
@@ -327,43 +359,72 @@ public class GameScreen extends GridLogic implements Screen {
         }
         hud = new Hud(batch);
         hud.stage.draw();
+//        InputMultiplexer ml = new InputMultiplexer();
+//        ml.addProcessor();
+//        ml.addProcessor(hud.stage);
+//        Gdx.input.setInputProcessor(ml);
 
-        //////PAUSEING
+        //////PAUSING
         if (worldTimer < -5 && popuped) {
             popuped = false;
             state = GAME_PAUSED;
             out.println("popuped");
             out.println(popupText.carbonPopup);
         }
+        if (worldTimer <(float) 199.00 && popuped) {
+            popuped = false;
+            state = GAME_INITIAL_POP;
+        }
+        if (worldTimer <(float) 100.00 && popuped_time) {
+            popuped_time = false;
+            state = GAME_TIME_POP;
+        }
         if (Player.carbon > 10 && popuped_carbon) {
             popuped_carbon = false;
             state = GAME_CARBON_POP;
             out.println("popup_carbon");
         }
+        if (Player.carbon > 500 && popuped_carbon_2) {
+            popuped_carbon_2 = false;
+            state = GAME_CARBON_POP_2;
+        }
+
         if (Player.score >= 100 && popuped_gems) {
             popuped_gems = false;
             state = GAME_GEM_POP;
             out.println("popup_gem");
         }
-        if (Player.energy < 70 && popuped_energy) {
+        if (Player.energy < 30 && popuped_energy) {
             popuped_energy = false;
             state = GAME_ENERGY_POP;
             out.println("popup_energy");
         }
-        if (worldTimer <= 260) {
+        if (worldTimer <= 50) {
             music_j.stop();
             music_end.setVolume(0.2f);
             music_end.play();
         }
-        if (worldTimer < 250) {
-            worldTimer = (float) 300.00;
+        if (worldTimer < 0) {
+            worldTimer = (float) 200.00;
             ((Game) Gdx.app.getApplicationListener()).setScreen(new ScoreScreen());
             music_end.stop();
-            Success.play();
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
+        if (Player.carbon>1000) {
+            worldTimer = (float) 200.00;
+            ((Game) Gdx.app.getApplicationListener()).setScreen(new ScoreScreen());
+            music_end.stop();
+
+            Success.play();
+
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             // Handle the 'A' key press event
             mapLoader.callCar();
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+            // Handle the 'A' key press event
+            state = GAME_PAUSED;
         }
     }
         private void clickCoolDown() {
