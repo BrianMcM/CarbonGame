@@ -5,21 +5,19 @@ import com.badlogic.gdx.Game;
 import Screens.MainMenu;
 import Screens.ScoreScreen;
 import Screens.Splash;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
 
 public class CarbonGame extends Game {
 
-  public static int SCREENUMBER;
+  public int screenNumber;
 
 	public void create () {
-		pickScreen(3);
+		pickScreen(1);
 	}
 
 	public void pickScreen(int screenNum) {
 		Screen newScreen;
-		SCREENUMBER = screenNum;
+		screenNumber = screenNum;
 		switch (screenNum) {
 			case 0:
 				newScreen = new Splash(this);
@@ -34,12 +32,12 @@ public class CarbonGame extends Game {
 				newScreen = new ScoreScreen(this);
 				break;
 			case 4:
-				newScreen = new GameScreen(this, "Maps/map_tutorial.tmx", "Maps/metro_tutorial.tmx", 100,"      Tutorial");
-				SCREENNUMBER = screenNum;
+				newScreen = new GameScreen(this, "Maps/map_tutorial.tmx", "Maps/metro_tutorial.tmx", 200,"      Tutorial");
+				screenNumber = screenNum;
 				break;
 			default:
-				newScreen = new GameScreen(this, "Maps/map.tmx", "Maps/metro.tmx", 100, "      Level ONE");
-				SCREENNUMBER = screenNum;
+				newScreen = new GameScreen(this, "Maps/map.tmx", "Maps/metro.tmx", 200, "      Level ONE");
+				screenNumber = screenNum;
 		}
 		screenChange(newScreen);
 	}
@@ -53,6 +51,5 @@ public class CarbonGame extends Game {
 	}
 
 	public void dispose () {
-		currentScreen.dispose();
 	}
 }

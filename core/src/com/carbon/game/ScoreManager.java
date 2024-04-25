@@ -19,19 +19,7 @@ public class ScoreManager {
 
         List<String[]> scoreArray = loadScoreArray();
 
-//        if (scoreArray.isEmpty()) {
-            scoreArray.add(scorePair);
-//        } else {
-//            int i = 0;
-//            while (Integer.parseInt(score) < Integer.parseInt(scoreArray.get(i)[1])) {
-//                i++;
-//                if (i == scoreArray.size()) {
-//                    i--;
-//                    break;
-//                }
-//            }
-//            scoreArray.add(i, scorePair);
-//        }
+        scoreArray.add(scorePair);
 
         String json = gson.toJson(scoreArray);
 
@@ -39,9 +27,9 @@ public class ScoreManager {
         file.writeString(json, false);
     }
 
-    public List<String[]> loadScoreArray() {
+    public ArrayList<String[]> loadScoreArray() {
         try (FileReader reader = new FileReader(SCORES_FILE_PATH)) {
-            return gson.fromJson(reader, List.class);
+            return (ArrayList<String[]>) gson.fromJson(reader, List.class);
         } catch (IOException e) {
             return new ArrayList<>();
         }

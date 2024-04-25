@@ -56,6 +56,7 @@ public class Player extends FreeRoam {
                 changeFrame();
             }
         }, 0, (float) 0.125);
+        carbon = 0;
     }
 
     public void collectGem(Gem gem) {
@@ -77,6 +78,9 @@ public class Player extends FreeRoam {
     public void arriveAtTarget() {
         if (energy > 0 && mode != 3) {
             energy--;
+        }
+        if (mode == 3) {
+            carbon += 10;
         }
         super.arriveAtTarget();
     }
@@ -177,7 +181,14 @@ public class Player extends FreeRoam {
     }
 
     public void dispose() {
-        img.dispose();
+        running_0.dispose();
+        running_1.dispose();
+        running_2.dispose();
+        running_3.dispose();
+        idle_0.dispose();
+        idle_1.dispose();
+        idle_2.dispose();
+        bikeSprite.dispose();
         gemCollectSound.dispose();
         Exhaustedsound.dispose();
     }

@@ -23,17 +23,13 @@ public class ScoreScreen implements Screen {
     private Skin skin;
     private Stage stage;
     private BitmapFont white,black;
-    private Label heading,carbonStar,scoreStar,bonusStar,totalStar;
-    private Texture star,no_star;
-    private Image star_carbon,star_no_carbon,star_energy,star_no_energy,star_gem,star_no_gem;
     private ScoreManager scoreManager;
     private TextField txtf;
-    private int i;
+    private int finalScore;
     public Sound Button = Gdx.audio.newSound(Gdx.files.internal("SFX/button.mp3"));
 
 
     public ScoreScreen(CarbonGame g) {
-        boolean levelselect = false;
         game = g;
     }
     @Override
@@ -59,7 +55,6 @@ public class ScoreScreen implements Screen {
 
         white = new BitmapFont();
 
-
         Table table = new Table(skin);
         table.background(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("uiskin/screen_level_background.png")))));
 
@@ -74,8 +69,8 @@ public class ScoreScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 Button.play();
                 game.pickScreen(2);
-                i = ((Player.energy*10)- Player.carbon);
-                scoreManager.saveScore(txtf.getText(), String.valueOf(i));
+                finalScore = ((Player.score) - Player.carbon);
+                scoreManager.saveScore(txtf.getText(), String.valueOf(finalScore));
             }
         });
         buttonReplay.addListener(new ClickListener(){
@@ -84,13 +79,13 @@ public class ScoreScreen implements Screen {
                 Button.play();
                 Player.score = 0;
 
-                if (CarbonGame.SCREENNUMBER==4) {
+                if (game.screenNumber == 4) {
                     game.pickScreen(4);
-                } else if (CarbonGame.SCREENNUMBER==5){
+                } else if (game.screenNumber == 5){
                     game.pickScreen(5);
                 }
-               i = ((Player.energy*10)- Player.carbon);
-               scoreManager.saveScore(txtf.getText(), String.valueOf(i));
+                finalScore = ((Player.score) - Player.carbon);
+                scoreManager.saveScore(txtf.getText(), String.valueOf(finalScore));
             }
         });
 
@@ -99,8 +94,8 @@ public class ScoreScreen implements Screen {
 
 
         txtf = new TextField("Enter Name", skin);
-        heading = new Label("Score",headingStyle2);
-        carbonStar = new Label("Carbon Score "+ String.format("%d",Player.carbon),headingStyle);
+        Label heading = new Label("Score", headingStyle2);
+        Label carbonStar = new Label("Carbon Score " + String.format("%d", Player.carbon), headingStyle);
 
         carbonStar.setAlignment(Align.center);
         carbonStar.setFontScale(2);
@@ -111,7 +106,7 @@ public class ScoreScreen implements Screen {
         bonusStar.setAlignment(Align.center);
         bonusStar.setFontScale(2);
 
-        totalStar = new Label("Total Score "+String.format("%03d", (Player.energy*10)- Player.carbon),headingStyle);
+        Label totalStar = new Label("Total Score " + String.format("%03d", (Player.score * 10) - Player.carbon), headingStyle);
 
         totalStar.setAlignment(Align.center);
         totalStar.setFontScale(2);
@@ -131,9 +126,11 @@ public class ScoreScreen implements Screen {
         table.row();
         table.add();
         Table starTable = new Table(skin);
-        if(Player.carbon>100){starTable.add(star_no_carbon).pad(15);}else{starTable.add(star_carbon).pad(15);}
+
+        if (Player.carbon>100){starTable.add(star_no_carbon).pad(15);}else{starTable.add(star_carbon).pad(15);}
         if(Player.score<300){starTable.add(star_no_gem).pad(15);}else{starTable.add(star_gem).pad(15);}
         if(Player.energy<50){starTable.add(star_no_energy).pad(15);}else{starTable.add(star_energy).pad(15);}
+
         table.add(starTable);
         table.row();
         table.padLeft(60);

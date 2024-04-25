@@ -43,13 +43,12 @@ public class GameScreen extends GridLogic implements Screen {
     public ArrayList<Gem> gemList = new ArrayList<>();
     public GemSpawner gemSpawner;
     private final Viewport viewport;
-    private Hud hud;
+    private final Hud hud;
 
     public SpriteBatch batch;
     public BitmapFont font;
     public static Float worldTimer = (float) 10;
     private final Stage stage;
-    private DialogPopup popup;
     static final int GAME_READY = 0;
     static final int GAME_RUNNING = 1;
     static final int GAME_PAUSED = 2;
@@ -74,7 +73,7 @@ public class GameScreen extends GridLogic implements Screen {
     public Music music_end = Gdx.audio.newMusic(Gdx.files.internal("SFX/10_Second_Track.mp3"));
     public Sound Success = Gdx.audio.newSound(Gdx.files.internal("SFX/success.mp3"));
     public Sound Popup = Gdx.audio.newSound(Gdx.files.internal("SFX/popup.mp3"));
-    //Use constructor instead of create here
+
     public GameScreen(CarbonGame game, String mapName, String metroName, float time, String levelroutes) {
         this.game = game;
         stage = new Stage();
@@ -100,7 +99,7 @@ public class GameScreen extends GridLogic implements Screen {
         worldTimer = time;
     }
     public static void timer_world(Float t){
-        worldTimer +=t;
+        worldTimer += t;
     }
     @Override
     public void render(float delta) {
@@ -377,7 +376,7 @@ public class GameScreen extends GridLogic implements Screen {
             out.println("popup_carbon");
             Popup.play();
         }
-        if (Player.carbon > 500 && popuped_carbon_2) {
+        if (Player.carbon > 4000 && popuped_carbon_2) {
             popuped_carbon_2 = false;
             state = GAME_CARBON_POP_2;
             Popup.play();
@@ -402,14 +401,12 @@ public class GameScreen extends GridLogic implements Screen {
         }
         if (worldTimer < 0) {
             worldTimer = (float) 200.00;
-            Player.carbon = 0;
             game.pickScreen(3);
             music_end.stop();
             Success.play();
         }
-        if (Player.carbon > 1000) {
+        if (Player.carbon > 5000) {
             worldTimer = (float) 200.00;
-            Player.carbon = 0;
             game.pickScreen(3);
             music_end.stop();
 
@@ -420,6 +417,13 @@ public class GameScreen extends GridLogic implements Screen {
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
             state = GAME_PAUSED;
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+            for (Route r : mapLoader.routes) {
+                for (Transit t : r.transitList) {
+                    t.arriveAtTarget();
+                }
+            }
         }
 //dispose();
     }
@@ -464,7 +468,6 @@ public class GameScreen extends GridLogic implements Screen {
 
     @Override
     public void dispose() {
-//        popup.dispose();
         hud.dispose();
         batch.dispose();
         font.dispose();
