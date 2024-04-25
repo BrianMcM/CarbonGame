@@ -376,7 +376,7 @@ public class GameScreen extends GridLogic implements Screen {
             out.println("popup_carbon");
             Popup.play();
         }
-        if (Player.carbon > 4000 && popuped_carbon_2) {
+        if (Player.carbon > 2000 && popuped_carbon_2) {
             popuped_carbon_2 = false;
             state = GAME_CARBON_POP_2;
             Popup.play();
@@ -405,7 +405,7 @@ public class GameScreen extends GridLogic implements Screen {
             music_end.stop();
             Success.play();
         }
-        if (Player.carbon > 5000) {
+        if (Player.carbon > 3000) {
             worldTimer = (float) 200.00;
             game.pickScreen(3);
             music_end.stop();
