@@ -37,8 +37,13 @@ public class Map extends GridLogic{
         this.player = player;
         //game_music.setVolume(0.2f);
         //game_music.play();
+
 //        map = new TmxMapLoader().load("testMap/map_final2.tmx");//"testMap/map_final.tmx");
 //        metro = new TmxMapLoader().load("testMap/metro_final2.tmx");
+
+        map = new TmxMapLoader().load("Maps/map.tmx");
+        metro = new TmxMapLoader().load("Maps/metro.tmx");
+
 
         map = new TmxMapLoader().load(mapname);
         metro = new TmxMapLoader().load(metroname);
@@ -47,9 +52,9 @@ public class Map extends GridLogic{
         width = navLayer.getWidth();
         height = navLayer.getHeight();
 
-        TiledMapTileLayer bikeStationLayer = (TiledMapTileLayer) map.getLayers().get("bikeStations");
-        TiledMapTileLayer trainStationLayer = (TiledMapTileLayer) map.getLayers().get("trainStations");
-        TiledMapTileLayer busStationLayer = (TiledMapTileLayer) map.getLayers().get("busStations");
+        TiledMapTileLayer bikeStationLayer = (TiledMapTileLayer) map.getLayers().get("bikeStation");
+        TiledMapTileLayer trainStationLayer = (TiledMapTileLayer) map.getLayers().get("trainStation");
+        TiledMapTileLayer busStationLayer = (TiledMapTileLayer) map.getLayers().get("busStation");
 
         GridCell[][] grid = new GridCell[width][height];
         convertToGrid(navLayer, grid);
@@ -63,29 +68,27 @@ public class Map extends GridLogic{
         finder = new AStarGridFinder<>(GridCell.class);
 
         //train section
-        TiledMapTileLayer trainLayer = (TiledMapTileLayer) map.getLayers().get("lines");
+        TiledMapTileLayer trainLayer = (TiledMapTileLayer) map.getLayers().get("train");
         GridCell[][] trainLineGrid = new GridCell[width][height];
         convertToGridTransit(trainLayer, trainLineGrid);
         finishGrid(trainLineGrid);
         NavigationTiledMapLayer trainGridLayer = new NavigationTiledMapLayer(trainLineGrid);
         //hard code each train line
-        //full map trains
-        setTransitRoute(new int[]{45, 53}, new int[]{43, 53}, trainGridLayer, true, 1);
-        setTransitRoute(new int[]{57, 41}, new int[]{55, 41}, trainGridLayer, true, 1);
-        setTransitRoute(new int[]{5, 9}, new int[]{3, 9}, trainGridLayer, true, 1);
+        setTransitRoute(new int[]{45, 53}, new int[]{43, 53}, trainGridLayer, true, 1); //pink line
+        setTransitRoute(new int[]{77, 41}, new int[]{75, 41}, trainGridLayer, true, 1); //purple line
+        setTransitRoute(new int[]{13, 5}, new int[]{11, 5}, trainGridLayer, true, 1); //brown line
         //tutorial map trains
         /*setTransitRoute(new int[]{64, 54}, new int[]{62, 54}, trainGridLayer, true);
         setTransitRoute(new int[]{40, 26}, new int[]{38, 26}, trainGridLayer, true);*/
 
 
         //bus section
-        TiledMapTileLayer busLayer = (TiledMapTileLayer) map.getLayers().get("busRoutes");
+        TiledMapTileLayer busLayer = (TiledMapTileLayer) map.getLayers().get("bus");
         GridCell[][] BusRouteGrid = new GridCell[width][height];
         convertToGridTransit(busLayer, BusRouteGrid);
         finishGrid(BusRouteGrid);
         NavigationTiledMapLayer busGridLayer = new NavigationTiledMapLayer(BusRouteGrid);
         //hard code bus routes
-        //full map buses
         setTransitRoute(new int[]{13, 9}, new int[]{11, 9}, busGridLayer, false, 1);
         setTransitRoute(new int[]{33, 29}, new int[]{31, 29}, busGridLayer, false, 1);
         setTransitRoute(new int[]{93, 29}, new int[]{91, 29}, busGridLayer, false, 1);
@@ -95,13 +98,13 @@ public class Map extends GridLogic{
         setTransitRoute(new int[]{50, 40}, new int[]{48, 40}, busGridLayer, false);*/
 
         //cars
-        TiledMapTileLayer carLayer = (TiledMapTileLayer) map.getLayers().get("carRoad");
+        TiledMapTileLayer carLayer = (TiledMapTileLayer) map.getLayers().get("car");
         GridCell[][] carGrid = new GridCell[width][height];
         convertToGridCar(carLayer, carGrid);
         finishGrid(carGrid);
         carGridLayer = new NavigationTiledMapLayer(carGrid);
 
-        TiledMapTileLayer carSpawn = (TiledMapTileLayer) map.getLayers().get("carLayer");
+        TiledMapTileLayer carSpawn = (TiledMapTileLayer) map.getLayers().get("carSpawn");
         spawnCars(carSpawn);
     }
 
@@ -117,15 +120,15 @@ public class Map extends GridLogic{
                         walkableTiles.add(new int[]{x, y});
                     }
                     stationList.put(gc, layer.getName());
-                    if (Objects.equals(layer.getName(), "bikeStations")) {
+                    if (Objects.equals(layer.getName(), "bikeStation")) {
                         bikeStands.put(gc, new BikeStand(gc, player));
                         continue;
                     }
-                    if (Objects.equals(layer.getName(), "trainStations")) {
+                    if (Objects.equals(layer.getName(), "trainStation")) {
                         stations.put(gc, new Station(gc, player, this, true));
                         continue;
                     }
-                    if (Objects.equals(layer.getName(), "busStations")) {
+                    if (Objects.equals(layer.getName(), "busStation")) {
                         stations.put(gc, new Station(gc, player, this, false));
                     }
                 }

@@ -78,7 +78,8 @@ public class GameScreen extends GridLogic implements Screen {
     public Sound Train_exit = Gdx.audio.newSound(Gdx.files.internal("SFX/metro_chime.wav"));
     public Sound Train_moving = Gdx.audio.newSound(Gdx.files.internal("SFX/train_moving.wav"));
     public Music music_end = Gdx.audio.newMusic(Gdx.files.internal("SFX/10_Second_Track.mp3"));
-    public Sound Countdown = Gdx.audio.newSound(Gdx.files.internal("SFX/countdown.wav"));
+    public Music Countdown = Gdx.audio.newMusic(Gdx.files.internal("SFX/countdown.wav"));
+    public Sound Success = Gdx.audio.newSound(Gdx.files.internal("SFX/success.mp3"));
     //Use constructor instead of create here
     public GameScreen(String mapName, String metroName, float time) {
         stage = new Stage();
@@ -128,6 +129,15 @@ public class GameScreen extends GridLogic implements Screen {
             //track mouse movement for cell border
             int inputCellX = worldToCell(inputPos.x);
             int inputCellY = worldToCell(inputPos.y);
+
+            /////
+            System.out.println(inputCellX);
+            System.out.println(inputCellY);
+            System.out.println("--------");
+
+
+            ////
+
             GridCell inputCell = mapLoader.gridLayer.getCell(inputCellX, inputCellY);
 
             float borderX = cellToWorld(inputCellX) - (float) TILE_SIZE / 2; //find cell of where mouse is pointing
@@ -227,7 +237,7 @@ public class GameScreen extends GridLogic implements Screen {
                     return;
                 }
                 if (mapLoader.stationList.containsKey(inputCell)) {
-                    if (Objects.equals(mapLoader.stationList.get(inputCell), "bikeStations")) {
+                    if (Objects.equals(mapLoader.stationList.get(inputCell), "bikeStation")) {
                         mapLoader.bikeStands.get(inputCell).select();
                     } else {
                         mapLoader.stations.get(inputCell).select();
@@ -326,7 +336,11 @@ public class GameScreen extends GridLogic implements Screen {
                 @Override
                 protected void result(Object object) {
                     if ((Boolean) object) {
+
                         ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                        music_r.stop();
+                        Gdx.app.exit();
+
                     } else {
                         state = GAME_RUNNING;
                     }
@@ -394,6 +408,9 @@ public class GameScreen extends GridLogic implements Screen {
             worldTimer = (float) 200.00;
             ((Game) Gdx.app.getApplicationListener()).setScreen(new ScoreScreen());
             music_end.stop();
+
+            Success.play();
+
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
