@@ -24,7 +24,6 @@ public class Transit extends GridLogic implements Moving{
     public boolean letPlayerOff = false;
 
     public Texture img;
-    public Sound chime = Gdx.audio.newSound(Gdx.files.internal("SFX/train_moving.wav"));
 
 
     public Transit(Route r, int index, boolean t, int d) {
@@ -38,7 +37,7 @@ public class Transit extends GridLogic implements Moving{
             speed = 220;
             buffer = 5;
         } else {
-            img = new Texture(Gdx.files.internal("testShapes/bus_temp.png"));
+            img = new Texture(Gdx.files.internal("testShapes/bus_final.png"));
             speed = 170;
             buffer = 4;
         }

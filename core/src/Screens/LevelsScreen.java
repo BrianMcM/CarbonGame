@@ -6,6 +6,7 @@ import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -34,6 +35,7 @@ public class LevelsScreen implements Screen {
     private List list,list_;
     private java.lang.String[] highScore;
     private ScrollPane scrollPane_;
+    public Sound Button = Gdx.audio.newSound(Gdx.files.internal("SFX/button.mp3"));
 
     public LevelsScreen(CarbonGame g) {
         game = g;
@@ -76,6 +78,7 @@ public class LevelsScreen implements Screen {
         buttonExit.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                Button.play();
                 game.pickScreen(1);
             }
         });
@@ -84,6 +87,7 @@ public class LevelsScreen implements Screen {
         buttonHighScore.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                Button.play();
                 Dialog popup = new Dialog("HighScores", DialogPopup.skin) {
                     {
                         Json json = new Json();
@@ -109,8 +113,10 @@ public class LevelsScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (list.getSelected() == "      Level ONE") {
+                    Button.play();
                     game.pickScreen(5);
                 } else if (list.getSelected() == "      Tutorial") {
+                    Button.play();
                     game.pickScreen(4);
                 }
             }
@@ -214,5 +220,6 @@ public class LevelsScreen implements Screen {
         skin.dispose();
         white.dispose();
         black.dispose();
+        Button.dispose();
     }
 }
