@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
+import com.badlogic.gdx.audio.Sound;
 
 import java.util.Arrays;
 
@@ -23,7 +24,7 @@ public class Transit extends GridLogic implements Moving{
     public boolean letPlayerOff = false;
 
     public Texture img = new Texture(Gdx.files.internal("testShapes/bus_temp.png"));
-    public Texture img2 = new Texture(Gdx.files.internal("testShapes/train.png"));
+    public Sound chime = Gdx.audio.newSound(Gdx.files.internal("SFX/train_moving.wav"));
 
 
     public Transit(Route r, int index, boolean t, int d) {

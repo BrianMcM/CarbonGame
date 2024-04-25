@@ -76,7 +76,8 @@ public class GameScreen extends GridLogic implements Screen {
     public Sound Train_exit = Gdx.audio.newSound(Gdx.files.internal("SFX/metro_chime.wav"));
     public Sound Train_moving = Gdx.audio.newSound(Gdx.files.internal("SFX/train_moving.wav"));
     public Music music_end = Gdx.audio.newMusic(Gdx.files.internal("SFX/10_Second_Track.mp3"));
-    public Sound Countdown = Gdx.audio.newSound(Gdx.files.internal("SFX/countdown.wav"));
+    public Music Countdown = Gdx.audio.newMusic(Gdx.files.internal("SFX/countdown.wav"));
+    public Sound Success = Gdx.audio.newSound(Gdx.files.internal("SFX/success.mp3"));
     //Use constructor instead of create here
     public GameScreen(String mapName, String metroName, float time) {
         stage = new Stage();
@@ -234,7 +235,7 @@ public class GameScreen extends GridLogic implements Screen {
                     return;
                 }
                 if (mapLoader.stationList.containsKey(inputCell)) {
-                    if (Objects.equals(mapLoader.stationList.get(inputCell), "bikeStations")) {
+                    if (Objects.equals(mapLoader.stationList.get(inputCell), "bikeStation")) {
                         mapLoader.bikeStands.get(inputCell).select();
                     } else {
                         mapLoader.stations.get(inputCell).select();
@@ -304,6 +305,7 @@ public class GameScreen extends GridLogic implements Screen {
                 @Override
                 protected void result(Object object) {
                     if ((Boolean) object) {
+                        music_r.stop();
                         Gdx.app.exit();
                     } else {
                         state = GAME_RUNNING;
@@ -352,7 +354,7 @@ public class GameScreen extends GridLogic implements Screen {
             worldTimer = (float) 300.00;
             ((Game) Gdx.app.getApplicationListener()).setScreen(new ScoreScreen());
             music_end.stop();
-
+            Success.play();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.A)) {
             // Handle the 'A' key press event

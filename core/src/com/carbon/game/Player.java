@@ -117,9 +117,14 @@ public class Player extends FreeRoam {
         }
         if (energy <= 10) {
             exhausted = (float) 0.2;
+            if (!Exhausted_sound_played) {
+                Exhaustedsound.play();
+                Exhausted_sound_played = true;
+            }
         }
         if (exhausted < 1 && energy >= 10) {
             exhausted = 1;
+            Exhausted_sound_played = false;
         }
     }
 
