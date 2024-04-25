@@ -7,10 +7,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.carbon.game.GameScreen;
 import com.carbon.game.Player;
 
@@ -20,15 +23,18 @@ public class ScoreScreen implements Screen {
     private Table table;
     private TextButton buttonMain,buttonReplay;
     private BitmapFont white,black;
-    private Label heading,carbonStar,scoreStar,bonusStar;
+    private Label heading,carbonStar,scoreStar,bonusStar,totalStar;
     private Texture star,no_star;
     private Image star_carbon,star_no_carbon,star_energy,star_no_energy,star_gem,star_no_gem;
     @Override
     public void show() {
-        star = new Texture(Gdx.files.internal("ui/star_full.png"));
-        no_star = new Texture(Gdx.files.internal("ui/star_empty.png"));
+        black = new BitmapFont(Gdx.files.internal("fonts/a.fnt"),false);
+        star = new Texture(Gdx.files.internal("uiskin/red_checkmark.png"));
+        no_star = new Texture(Gdx.files.internal("uiskin/red_cross.png"));
+
         star_carbon = new Image(star);
         star_no_carbon = new Image(no_star);
+
 
         star_energy = new Image(star);
         star_no_energy = new Image(no_star);
@@ -41,61 +47,87 @@ public class ScoreScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         white = new BitmapFont();
-        white.setColor(256, 256, 256, 1);
-        black = new BitmapFont();
-        black.setColor(0, 0,0, 1);
+
+
 
         table = new Table(skin);
+        table.background(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("uiskin/screen_level_background.png")))));
+
         table.setBounds(0,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 
-        buttonMain = new TextButton("MainMenu",skin);
+
+        buttonMain = new TextButton("Level Selector",skin);
         buttonReplay = new TextButton("Replay",skin);
 
         buttonMain.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new LevelsScreen());
-//                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen());
             }
         });
         buttonReplay.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-//                ((Game) Gdx.app.getApplicationListener()).setScreen(new LevelsScreen());
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen("testMap/map_final.tmx","testMap/metro_final.tmx", 300));
+                Player.score = 0;
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen("testMap/map_final.tmx","testMap/metro_final.tmx", 200));
             }
         });
 
-        Label.LabelStyle headingStyle = new Label.LabelStyle(white, Color.WHITE);
+        Label.LabelStyle headingStyle = new Label.LabelStyle(white, new Color(91f/256f,75f/256f,58f/256f, 1));
+        Label.LabelStyle headingStyle2 = new Label.LabelStyle(black, new Color(91f/256f,75f/256f,58f/256f, 1));
 
-        heading = new Label("Score",headingStyle);
-        carbonStar = new Label("Carbon Score "+ String.format("%03d",Player.carbon),headingStyle);
 
-        scoreStar = new Label("Gem Score "+String.format("%04d", Player.score),headingStyle);
-        bonusStar = new Label("Bonus Star "+String.format("%03d",Player.energy),headingStyle);
-        heading.setFontScale(4);
+        heading = new Label("Score",headingStyle2);
+//        heading.setFontScale(4);
+        carbonStar = new Label("Carbon Score "+ String.format("%d",Player.carbon),headingStyle);
+        carbonStar.setAlignment(Align.center);
+        carbonStar.setFontScale(2);
+        scoreStar = new Label("Gem Score "+String.format("%d", Player.score),headingStyle);
+        scoreStar.setAlignment(Align.center);
+        scoreStar.setFontScale(2);
+        bonusStar = new Label("Bonus Score "+String.format("%03d",Player.energy),headingStyle);
+        bonusStar.setAlignment(Align.center);
+        bonusStar.setFontScale(2);
+        totalStar = new Label("Total Score "+String.format("%03d",Player.energy-Player.carbon/10),headingStyle);
+        totalStar.setAlignment(Align.center);
+        totalStar.setFontScale(2);
+
+
+
+
+
+
 
         table.add();
         table.add(heading);
         table.row();
-        table.add(carbonStar);
-        table.add(scoreStar);
-        table.add(bonusStar);
-        table.row();
-        if(Player.carbon>100){table.add(star_no_carbon);}else{table.add(star_carbon);}
-        if(Player.score<300){table.add(star_no_gem);}else{table.add(star_gem);}
-        if(Player.energy<50){table.add(star_no_energy);}else{table.add(star_energy);}
+
+        table.add(carbonStar).width(table.getWidth()/5);
+        table.add(scoreStar).width(table.getWidth()/5);
+        table.add(bonusStar).width(table.getWidth()/5);
 
         table.row();
+        table.add();
+        table.add(totalStar);
+
+        table.row();
+        table.add();
+        Table starTable = new Table(skin);
+        if(Player.carbon>100){starTable.add(star_no_carbon).pad(15);}else{starTable.add(star_carbon).pad(15);}
+        if(Player.score<300){starTable.add(star_no_gem).pad(15);}else{starTable.add(star_gem).pad(15);}
+        if(Player.energy<50){starTable.add(star_no_energy).pad(15);}else{starTable.add(star_energy).pad(15);}
+        table.add(starTable);
+        table.row();
+        table.padLeft(60);
         table.padBottom(50);
         table.add();
         table.add(buttonMain);
-        table.getCell(buttonMain).spaceBottom(10);
+        table.getCell(buttonMain).spaceTop(40);
         table.row();
         table.add();
         table.add(buttonReplay);
-
-        table.debug();
+        table.getCell(buttonReplay).spaceTop(40);
+//        table.debug();
         stage.addActor(table);
     }
 
@@ -104,7 +136,7 @@ public class ScoreScreen implements Screen {
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        table.setDebug(true);
+//        table.setDebug(true);
         stage.act(delta);
 
         stage.draw();

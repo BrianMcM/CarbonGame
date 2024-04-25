@@ -1,6 +1,7 @@
 package com.carbon.game;
 
 import Screens.MainMenu;
+import Screens.ScoreScreen;
 import Screens.Splash;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -10,6 +11,9 @@ public class CarbonGame extends Game {
 
 	public void create () {
 		setScreen(new Splash());
+//		setScreen(new MainMenu());
+//		setScreen(new ScoreScreen());
+
 	}
 
 	public void render () {

@@ -1,1 +1,5 @@
-[]
+{
+  "HighScores": {
+    "title": "example glossary", "score": 123
+  }
+}

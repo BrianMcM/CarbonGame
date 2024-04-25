@@ -37,11 +37,11 @@ public class Map extends GridLogic{
         this.player = player;
         //game_music.setVolume(0.2f);
         //game_music.play();
-        map = new TmxMapLoader().load("testMap/map_final2.tmx");//"testMap/map_final.tmx");
-        metro = new TmxMapLoader().load("testMap/metro_final2.tmx");
+//        map = new TmxMapLoader().load("testMap/map_final2.tmx");//"testMap/map_final.tmx");
+//        metro = new TmxMapLoader().load("testMap/metro_final2.tmx");
 
-//        map = new TmxMapLoader().load(mapname);
-//        metro = new TmxMapLoader().load(metroname);
+        map = new TmxMapLoader().load(mapname);
+        metro = new TmxMapLoader().load(metroname);
         TiledMapTileLayer navLayer = (TiledMapTileLayer) map.getLayers().get("navigation");
 
         width = navLayer.getWidth();
