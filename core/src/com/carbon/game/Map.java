@@ -41,8 +41,8 @@ public class Map extends GridLogic{
 //        map = new TmxMapLoader().load("testMap/map_final2.tmx");//"testMap/map_final.tmx");
 //        metro = new TmxMapLoader().load("testMap/metro_final2.tmx");
 
-        map = new TmxMapLoader().load("Maps/map.tmx");
-        metro = new TmxMapLoader().load("Maps/metro.tmx");
+//        map = new TmxMapLoader().load("Maps/map.tmx");
+//        metro = new TmxMapLoader().load("Maps/metro.tmx");
 
 
         map = new TmxMapLoader().load(mapname);

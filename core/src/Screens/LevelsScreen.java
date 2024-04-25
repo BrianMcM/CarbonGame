@@ -123,9 +123,9 @@ public class LevelsScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
 //                ((Game) Gdx.app.getApplicationListener()).setScreen(new Levels());
                 if (list.getSelected() == "      Level ONE") {
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen("testMap/map_final2.tmx", "testMap/metro_final2.tmx", 200));
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen("Maps/map.tmx", "Maps/metro.tmx", 200));
                 } else if (list.getSelected() == "      Tutorial") {
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen("testMap/map_tutorial.tmx", "testMap/metro_tutorial.tmx", 200));
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen("Maps/map_tutorial.tmx", "Maps/metro_tutorial.tmx", 200));
 
                 }
             }

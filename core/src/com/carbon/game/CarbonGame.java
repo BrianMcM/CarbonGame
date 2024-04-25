@@ -9,9 +9,9 @@ import Screens.Splash;
 public class CarbonGame extends Game {
 
 	public void create () {
-		setScreen(new Splash());
+//		setScreen(new Splash());
 //		setScreen(new MainMenu());
-//		setScreen(new ScoreScreen());
+		setScreen(new ScoreScreen());
 
 	}
 

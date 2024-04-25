@@ -69,7 +69,7 @@ public class ScoreScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Player.score = 0;
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen("testMap/map_final.tmx","testMap/metro_final.tmx", 200));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen("Maps/map.tmx", "Maps/metro.tmx", 200));
             }
         });
 
