@@ -11,16 +11,15 @@ import com.badlogic.gdx.audio.Sound;
 
 public class CarbonGame extends Game {
 
-	public static int SCREENNUMBER;
-
-	private Screen currentScreen = null;
+  public static int SCREENUMBER;
 
 	public void create () {
-		pickScreen(0);
+		pickScreen(3);
 	}
 
 	public void pickScreen(int screenNum) {
 		Screen newScreen;
+		SCREENUMBER = screenNum;
 		switch (screenNum) {
 			case 0:
 				newScreen = new Splash(this);
@@ -47,10 +46,6 @@ public class CarbonGame extends Game {
 
 	private void screenChange(Screen newScreen) {
 		setScreen(newScreen);
-//		if (currentScreen != null) {
-//			currentScreen.dispose();
-//		}
-//		currentScreen = newScreen;
 	}
 
 	public void render () {

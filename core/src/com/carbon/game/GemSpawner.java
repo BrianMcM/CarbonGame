@@ -11,14 +11,14 @@ public class GemSpawner {
     private int valueIndex = 0;
     private final Random rng = new Random();
     private final ArrayList<int[]> inUseCells = new ArrayList<>();
-    private final List<Integer> scores = new ArrayList<>(Arrays.asList(100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 200, 200, 200, 200, 200, 300, 300, 300, 400, 500));
+    private final List<Integer> scores = new ArrayList<>(Arrays.asList(100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 200, 200, 200, 200, 200, 300, 300, 300, 300, 300, 300, 300, 300, 300, 400, 500));
     public GemSpawner(Map map, GameScreen screen, int num) {
         this.map = map;
         this.screen = screen;
         timer.scheduleTask(new Timer.Task() {
             @Override
             public void run () {
-                spawn();
+                    spawn();
             }
         }, 0, 10, 18);
         Collections.shuffle(scores);
