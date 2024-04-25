@@ -26,7 +26,6 @@ import com.carbon.game.CarbonGame;
 public class MainMenu implements Screen {
     private TweenManager tweenManager;
     private Stage stage;
-    private Table table;
     private Skin skin;
     private BitmapFont white,black;
     private TextureAtlas atlas;
@@ -52,7 +51,7 @@ public class MainMenu implements Screen {
         atlas = new TextureAtlas("ui/new_buttons.txt");
         skin = new Skin(atlas);
 
-        table = new Table(skin);
+        Table table = new Table(skin);
         table.setBounds(0,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();

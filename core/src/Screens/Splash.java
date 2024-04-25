@@ -15,7 +15,7 @@ import com.carbon.game.CarbonGame;
 
 public class Splash implements Screen {
     private Sprite splash;
-    private SpriteBatch batch;
+    private final SpriteBatch batch;
     private TweenManager tweenManager;
     private final CarbonGame game;
 
@@ -55,8 +55,6 @@ public class Splash implements Screen {
             }
         }).start(tweenManager);
     }
-
-
 
     @Override
     public void resize(int width, int height) {

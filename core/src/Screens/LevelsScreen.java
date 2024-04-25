@@ -19,17 +19,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
 import com.carbon.game.CarbonGame;
-import com.carbon.game.GameScreen;
 import com.carbon.game.ScoreManager;
 
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.ArrayList;
-
+import java.util.Arrays;
 
 public class LevelsScreen implements Screen {
     private TweenManager tweenManager;
@@ -38,14 +32,13 @@ public class LevelsScreen implements Screen {
     private BitmapFont white,black;
     private TextureAtlas atlas;
     private final CarbonGame game;
-    private List.ListStyle listStyle_;
-    private List list,list_;
-    private java.lang.String[] highScore;
-    private ScrollPane scrollPane_;
+    private List list;
+    private final ScoreManager scoreManager;
     public Sound Button = Gdx.audio.newSound(Gdx.files.internal("SFX/button.mp3"));
 
     public LevelsScreen(CarbonGame g) {
         game = g;
+        scoreManager = new ScoreManager();
     }
     @Override
     public void show() {
@@ -58,9 +51,7 @@ public class LevelsScreen implements Screen {
 
         list.setItems(stringy);
 
-
         ScrollPane scrollPane = new ScrollPane(list);
-
 
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
@@ -97,14 +88,18 @@ public class LevelsScreen implements Screen {
                 Button.play();
                 Dialog popup = new Dialog("HighScores", DialogPopup.skin) {
                     {
-                        ScoreManager scoreManager = new ScoreManager();
-
-//                        Json json = new Json();
-////                        String text = json.toJson(, Object.class);
-//                        JsonValue root = new JsonReader().parse(Gdx.files.internal("Scores/scores.json"));
-////                        JsonValue base = json.parse();
-
-                        text(scoreManager.loadScoreArray().toString());
+                        ArrayList scoreArr = scoreManager.loadScoreArray();
+                        if (scoreArr != null && !scoreArr.isEmpty()) {
+                            for (Object obj : scoreArr) {
+                                if (obj instanceof java.util.ArrayList) {
+                                    java.util.ArrayList array = (java.util.ArrayList) obj;
+                                    System.out.println();
+                                    text("  " + array.get(0) + " : " + array.get(1) + "  ");
+                                } else {
+                                    System.out.println(obj.getClass());
+                                }
+                            }
+                        }
                         button("Continue", false);
                     }
                     @Override
