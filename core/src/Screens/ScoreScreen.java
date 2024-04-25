@@ -2,6 +2,7 @@ package Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -21,8 +22,10 @@ public class ScoreScreen implements Screen {
     private Skin skin;
     private Stage stage;
     private BitmapFont white,black;
+    public Sound Button = Gdx.audio.newSound(Gdx.files.internal("SFX/button.mp3"));
 
     public ScoreScreen(CarbonGame g) {
+        boolean levelselect = false;
         game = g;
     }
     @Override
@@ -60,14 +63,20 @@ public class ScoreScreen implements Screen {
         buttonMain.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                Button.play();
                 game.pickScreen(2);
             }
         });
         buttonReplay.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                Button.play();
                 Player.score = 0;
-                game.pickScreen(5);
+                if (CarbonGame.SCREENNUMBER==4) {
+                    game.pickScreen(4);
+                } else if (CarbonGame.SCREENNUMBER==5){
+                    game.pickScreen(5);
+                }
             }
         });
 
@@ -155,6 +164,6 @@ public class ScoreScreen implements Screen {
         skin.dispose();
         white.dispose();
         black.dispose();
-
+        Button.dispose();
     }
 }

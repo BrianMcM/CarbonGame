@@ -6,6 +6,7 @@ import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -31,6 +32,7 @@ public class MainMenu implements Screen {
     private TextureAtlas atlas;
     private final CarbonGame game;
     private Skin skinny;
+    public Sound Button = Gdx.audio.newSound(Gdx.files.internal("SFX/button.mp3"));
 
     public MainMenu(CarbonGame g) {
         game = g;
@@ -69,6 +71,7 @@ public class MainMenu implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 Dialog dialog = new Dialog("confirm exit",skinny){
                     {
+                        Button.play();
                         text("Are you sure you want to exit?");
                         button("Yes",true);
                         button("No",false);
@@ -96,9 +99,11 @@ public class MainMenu implements Screen {
         buttonPlay.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                Button.play();
                 game.pickScreen(2);
             }
         });
+
         Label.LabelStyle headingStyle = new Label.LabelStyle(white,Color.WHITE);
 
         Label heading = new Label("Carbon World", headingStyle);
@@ -171,5 +176,6 @@ public class MainMenu implements Screen {
         white.dispose();
         black.dispose();
         skinny.dispose();
+        Button.dispose();
     }
 }

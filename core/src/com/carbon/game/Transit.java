@@ -24,7 +24,6 @@ public class Transit extends GridLogic implements Moving{
     public boolean letPlayerOff = false;
 
     public Texture img;
-    public Sound chime = Gdx.audio.newSound(Gdx.files.internal("SFX/train_moving.wav"));
 
 
     public Transit(Route r, int index, boolean t, int d) {
