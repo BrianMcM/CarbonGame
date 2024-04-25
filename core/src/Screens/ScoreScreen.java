@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.Align;
 import com.carbon.game.CarbonGame;
 import com.carbon.game.GameScreen;
 import com.carbon.game.Player;
+import com.carbon.game.ScoreManager;
 
 public class ScoreScreen implements Screen {
     private CarbonGame game;
@@ -28,12 +29,16 @@ public class ScoreScreen implements Screen {
     private Label heading,carbonStar,scoreStar,bonusStar,totalStar;
     private Texture star,no_star;
     private Image star_carbon,star_no_carbon,star_energy,star_no_energy,star_gem,star_no_gem;
+    private ScoreManager scoreManager;
+    private TextField txtf;
+    private int i;
 
     public ScoreScreen(CarbonGame g) {
         game = g;
     }
     @Override
     public void show() {
+        scoreManager = new ScoreManager();
         black = new BitmapFont(Gdx.files.internal("fonts/a.fnt"),false);
         star = new Texture(Gdx.files.internal("uiskin/red_checkmark.png"));
         no_star = new Texture(Gdx.files.internal("uiskin/red_cross.png"));
@@ -69,6 +74,8 @@ public class ScoreScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.pickScreen(2);
+                i = ((Player.energy*10)- Player.carbon);
+                scoreManager.saveScore(txtf.getText(), String.valueOf(i));
             }
         });
         buttonReplay.addListener(new ClickListener(){
@@ -80,6 +87,8 @@ public class ScoreScreen implements Screen {
                 }else{
                     game.pickScreen(5);
                 }
+                i = ((Player.energy*10)- Player.carbon);
+                scoreManager.saveScore(txtf.getText(), String.valueOf(i));
 
             }
         });
@@ -87,7 +96,7 @@ public class ScoreScreen implements Screen {
         Label.LabelStyle headingStyle = new Label.LabelStyle(white, new Color(91f/256f,75f/256f,58f/256f, 1));
         Label.LabelStyle headingStyle2 = new Label.LabelStyle(black, new Color(91f/256f,75f/256f,58f/256f, 1));
 
-
+        txtf = new TextField("Enter Name", skin);
         heading = new Label("Score",headingStyle2);
 //        heading.setFontScale(4);
         carbonStar = new Label("Carbon Score "+ String.format("%d",Player.carbon),headingStyle);
@@ -131,6 +140,10 @@ public class ScoreScreen implements Screen {
         table.row();
         table.padLeft(60);
         table.padBottom(50);
+        table.row();
+        table.add();
+        table.add(txtf);
+        table.row();
         table.add();
         table.add(buttonMain);
         table.getCell(buttonMain).spaceTop(40);
