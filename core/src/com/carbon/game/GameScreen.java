@@ -71,7 +71,6 @@ public class GameScreen extends GridLogic implements Screen {
 
     public Music music_j = Gdx.audio.newMusic(Gdx.files.internal("SFX/Main_Music_City_Jazz.mp3"));
     public Sound Train_exit = Gdx.audio.newSound(Gdx.files.internal("SFX/metro_chime.wav"));
-    public Sound Train_moving = Gdx.audio.newSound(Gdx.files.internal("SFX/train_moving.wav"));
     public Music music_end = Gdx.audio.newMusic(Gdx.files.internal("SFX/10_Second_Track.mp3"));
     public Sound Success = Gdx.audio.newSound(Gdx.files.internal("SFX/success.mp3"));
     public Sound Popup = Gdx.audio.newSound(Gdx.files.internal("SFX/popup.mp3"));
@@ -475,7 +474,6 @@ public class GameScreen extends GridLogic implements Screen {
         mapLoader.dispose();
         music_end.dispose();
         music_j.dispose();
-        Train_moving.dispose();
         Popup.dispose();
         Success.dispose();
         Train_exit.dispose();
