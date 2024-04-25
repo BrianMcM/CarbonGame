@@ -1,11 +1,9 @@
 package Screens;
 
-
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
 import aurelienribon.tweenengine.TweenManager;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -14,8 +12,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import Screens.Tween.SpriteAccessor;
 import com.carbon.game.CarbonGame;
-//import com.carbon.game.MenuScreen;
-
 
 public class Splash implements Screen {
     private Sprite splash;

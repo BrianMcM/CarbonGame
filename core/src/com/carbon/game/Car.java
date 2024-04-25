@@ -1,6 +1,7 @@
 package com.carbon.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Timer;
 
@@ -13,9 +14,10 @@ public class Car extends FreeRoam {
     private final Player player;
     private final Map map;
     //texture
-    public Texture img = new Texture(Gdx.files.internal("testShapes/red_car_temp.png"));
+    public Texture img = new Texture(Gdx.files.internal("testShapes/car_final.png"));
     public boolean called = false;
     public boolean hidden = false;
+    public Sound Car_Horn = Gdx.audio.newSound(Gdx.files.internal("SFX/Bus_Horn.wav"));
 
     public Car(int x, int y, Player p, Map m) {
         super(x, y);
@@ -59,6 +61,7 @@ public class Car extends FreeRoam {
         player.car = this;
         player.img = this.img;
         player.carCalled = false;
+        Car_Horn.play();
     }
     public void dropOff() {
         setCell(player.cellX, player.cellY);
@@ -92,5 +95,6 @@ public class Car extends FreeRoam {
 
     public void dispose() {
         img.dispose();
+        Car_Horn.dispose();
     }
 }

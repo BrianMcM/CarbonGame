@@ -4,9 +4,9 @@ import Screens.Tween.ActorAccessor;
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -21,50 +21,23 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.carbon.game.CarbonGame;
-
-import java.awt.*;
-import java.sql.Time;
 
 public class MainMenu implements Screen {
     private TweenManager tweenManager;
     private Stage stage;
-    private Table table;//done
-    private TextButton buttonPlay,buttonExit;
-    private Label heading;
-    private Skin skin;//done
-    private BitmapFont white,black;//done
-    private TextureAtlas atlas;//done
+    private Table table;
+    private Skin skin;
+    private BitmapFont white,black;
+    private TextureAtlas atlas;
     private final CarbonGame game;
     private Skin skinny;
+    public Sound Button = Gdx.audio.newSound(Gdx.files.internal("SFX/button.mp3"));
 
     public MainMenu(CarbonGame g) {
         game = g;
     }
 
-//    public static class ExitDialog extends Dialog {
-//        public ExitDialog(String title, Skin skin, String windowStyleName) {
-//            super(title, skin, windowStyleName);
-//        }
-//        public ExitDialog(String title, Skin skin) {
-//            super(title, skin);
-//        }
-//        public ExitDialog(String title, WindowStyle windowStyle) {
-//            super(title, windowStyle);
-//        }
-//
-//        {
-//            text("Are you sure you want to exit?");
-//            button("Yes");
-//            button("No");
-//        }
-//        @Override
-//        protected void result(Object object) {
-//            super.result(object);
-//        }
-//
-//    }
     @Override
     public void show() {
         stage = new Stage();
@@ -90,7 +63,7 @@ public class MainMenu implements Screen {
         textButtonStyle.font = black;
         textButtonStyle.fontColor = new Color(84f/256f,116f/256f,20f/256f, 1);
 
-        buttonExit = new TextButton("Exit", textButtonStyle);
+        TextButton buttonExit = new TextButton("Exit", textButtonStyle);
         TextureAtlas atlas1 = new TextureAtlas(Gdx.files.internal("uiskin/uiskin.atlas"));
         skinny = new Skin(Gdx.files.internal("uiskin/uiskin.json"));
         buttonExit.addListener(new ClickListener(){
@@ -98,6 +71,7 @@ public class MainMenu implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 Dialog dialog = new Dialog("confirm exit",skinny){
                     {
+                        Button.play();
                         text("Are you sure you want to exit?");
                         button("Yes",true);
                         button("No",false);
@@ -121,18 +95,18 @@ public class MainMenu implements Screen {
         });
 
 
-
-
-        buttonPlay = new TextButton("Play", textButtonStyle);
+        TextButton buttonPlay = new TextButton("Play", textButtonStyle);
         buttonPlay.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                Button.play();
                 game.pickScreen(2);
             }
         });
+
         Label.LabelStyle headingStyle = new Label.LabelStyle(white,Color.WHITE);
 
-        heading = new Label("Carbon World",headingStyle);
+        Label heading = new Label("Carbon World", headingStyle);
         heading.setFontScale((float)0.7);
         buttonPlay.pad(15);
         buttonExit.pad(15);
@@ -160,24 +134,8 @@ public class MainMenu implements Screen {
         //create animation
         Timeline.createSequence().beginSequence()
                 .push(Tween.to(heading,ActorAccessor.RGB,3f).target(91f/256f,75f/256f,58f/256f))
-//                .push(Tween.to(heading,ActorAccessor.RGB,3f).target(199f/256f,147f/256f,104f/256f))
-//                .push(Tween.to(heading,ActorAccessor.RGB,3f).target(241f/256f,224f/256f,203f/256f))
-//                .push(Tween.to(heading,ActorAccessor.RGB,3f).target(223f/256f,181f/256f,133f/256f))
-//                .push(Tween.to(heading,ActorAccessor.RGB,3f).target(150f/256f,107f/256f,78f/256f))
                 .push(Tween.to(heading,ActorAccessor.RGB,3f).target(84f/256f,116f/256f,20f/256f))
-//                .push(Tween.to(heading,ActorAccessor.RGB,3f).target(118f/256f,110f/256f,95f/256f))
                 .end().start(tweenManager);
-
-
-//        Timeline.createSequence().beginSequence()
-//                .push(Tween.set(buttonPlay,ActorAccessor.Alpha).target(0))
-//                .push(Tween.set(buttonExit,ActorAccessor.Alpha).target(0))
-//                .push(Tween.from(heading,ActorAccessor.Alpha,.5f).target(0))
-//                .push(Tween.to(buttonPlay,ActorAccessor.Alpha,.5f).target(1))
-//                .push(Tween.to(buttonExit,ActorAccessor.Alpha,.5f).target(1))
-//                .end().start(tweenManager);
-//        Tween.from(table,ActorAccessor.Alpha,.5f).target(0).start(tweenManager);
-//        Tween.from(table,ActorAccessor.Y,.5f).target(Gdx.graphics.getHeight()/8).start(tweenManager);
     }
     @Override
     public void render(float delta) {
@@ -187,8 +145,6 @@ public class MainMenu implements Screen {
 //        table.setDebug(true);
         tweenManager.update(delta);
         stage.act(delta);
-
-
         stage.draw();
     }
 
@@ -220,6 +176,6 @@ public class MainMenu implements Screen {
         white.dispose();
         black.dispose();
         skinny.dispose();
-
+        Button.dispose();
     }
 }

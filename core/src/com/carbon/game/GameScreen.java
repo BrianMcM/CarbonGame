@@ -3,11 +3,8 @@ package com.carbon.game;
 import java.lang.Math;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.concurrent.CountDownLatch;
 
 import Screens.DialogPopup;
-import Screens.MainMenu;
-import Screens.ScoreScreen;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -20,7 +17,6 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -74,14 +70,13 @@ public class GameScreen extends GridLogic implements Screen {
 
 
     public Music music_j = Gdx.audio.newMusic(Gdx.files.internal("SFX/Main_Music_City_Jazz.mp3"));
-    public Music music_r = Gdx.audio.newMusic(Gdx.files.internal("SFX/Main_Music_Retro.mp3"));
     public Sound Train_exit = Gdx.audio.newSound(Gdx.files.internal("SFX/metro_chime.wav"));
     public Sound Train_moving = Gdx.audio.newSound(Gdx.files.internal("SFX/train_moving.wav"));
     public Music music_end = Gdx.audio.newMusic(Gdx.files.internal("SFX/10_Second_Track.mp3"));
-    public Music Countdown = Gdx.audio.newMusic(Gdx.files.internal("SFX/countdown.wav"));
     public Sound Success = Gdx.audio.newSound(Gdx.files.internal("SFX/success.mp3"));
+    public Sound Popup = Gdx.audio.newSound(Gdx.files.internal("SFX/popup.mp3"));
     //Use constructor instead of create here
-    public GameScreen(CarbonGame game, String mapName, String metroName, float time) {
+    public GameScreen(CarbonGame game, String mapName, String metroName, float time, String levelroutes) {
         this.game = game;
         stage = new Stage();
         batch = new SpriteBatch();
@@ -91,7 +86,7 @@ public class GameScreen extends GridLogic implements Screen {
         music_j.play();
 
         //Added the names of the map files here so different maps could be passed in the future
-        mapLoader = new Map(this, player,mapName,metroName);
+        mapLoader = new Map(this, player,mapName,metroName, levelroutes);
         gemSpawner = new GemSpawner(mapLoader, this, 5);
 
         float unitScale = 1f;
@@ -285,7 +280,6 @@ public class GameScreen extends GridLogic implements Screen {
                     }
                     setWidth(Float.parseFloat(string[1]));
                     setHeight(Float.parseFloat(string[2]));
-//                    out.println(Float.parseFloat(string[2]));
                 }
 
                 private String[] getString() {
@@ -344,7 +338,6 @@ public class GameScreen extends GridLogic implements Screen {
                 protected void result(Object object) {
                     if ((Boolean) object) {
                         game.pickScreen(1);
-                        music_r.stop();
                         Gdx.app.exit();
                     } else {
                         state = GAME_RUNNING;
@@ -357,16 +350,12 @@ public class GameScreen extends GridLogic implements Screen {
             stage.draw();
             Gdx.input.setInputProcessor(stage);
         }
-//        hud = new Hud();
+
+
         hud.update();
         hud.show();
-//        hud.dispose();
-//        InputMultiplexer ml = new InputMultiplexer();
-//        ml.addProcessor();
-//        ml.addProcessor(hud.stage);
-//        Gdx.input.setInputProcessor(ml);
-
-        //////PAUSING
+      
+        //PAUSING
         if (worldTimer < -5 && popuped) {
             popuped = false;
             state = GAME_PAUSED;
@@ -376,30 +365,36 @@ public class GameScreen extends GridLogic implements Screen {
         if (worldTimer <(float) 199.00 && popuped) {
             popuped = false;
             state = GAME_INITIAL_POP;
+            Popup.play();
         }
         if (worldTimer <(float) 100.00 && popuped_time) {
             popuped_time = false;
             state = GAME_TIME_POP;
+            Popup.play();
         }
         if (Player.carbon > 10 && popuped_carbon) {
             popuped_carbon = false;
             state = GAME_CARBON_POP;
             out.println("popup_carbon");
+            Popup.play();
         }
         if (Player.carbon > 500 && popuped_carbon_2) {
             popuped_carbon_2 = false;
             state = GAME_CARBON_POP_2;
+            Popup.play();
         }
 
         if (Player.score >= 100 && popuped_gems) {
             popuped_gems = false;
             state = GAME_GEM_POP;
             out.println("popup_gem");
+            Popup.play();
         }
         if (Player.energy < 30 && popuped_energy) {
             popuped_energy = false;
             state = GAME_ENERGY_POP;
             out.println("popup_energy");
+            Popup.play();
         }
         if (worldTimer <= 50) {
             music_j.stop();
@@ -411,13 +406,13 @@ public class GameScreen extends GridLogic implements Screen {
             Player.carbon = 0;
             game.pickScreen(3);
             music_end.stop();
+            Success.play();
         }
         if (Player.carbon > 1000) {
             worldTimer = (float) 200.00;
             Player.carbon = 0;
             game.pickScreen(3);
             music_end.stop();
-            Success.play();
 
         }
 
@@ -479,10 +474,10 @@ public class GameScreen extends GridLogic implements Screen {
         metroRenderer.dispose();
         mapLoader.dispose();
         music_end.dispose();
-        music_r.dispose();
         music_j.dispose();
-        Countdown.dispose();
         Train_moving.dispose();
+        Popup.dispose();
+        Success.dispose();
         Train_exit.dispose();
         border_img.dispose();
         for (Gem gem : gemList) {

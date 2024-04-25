@@ -15,7 +15,6 @@ public class Station implements Inside, Selectable{
     public Sound Error = Gdx.audio.newSound(Gdx.files.internal("SFX/Error.wav"));
     public Sound Metro_chime = Gdx.audio.newSound(Gdx.files.internal("SFX/metro_chime.wav"));
     public Sound Bus_Horn = Gdx.audio.newSound(Gdx.files.internal("SFX/Bus_Horn.wav"));
-    public Sound Train_moving = Gdx.audio.newSound(Gdx.files.internal("SFX/train_moving.wav"));
 
 
     public Station(GridCell c, Player p, Map m, boolean t) {
@@ -49,9 +48,6 @@ public class Station implements Inside, Selectable{
         map.screen.stationInside = this;
         if (isTrain) {
             map.screen.metroVision = true;
-            //Ambient train sounds
-            Train_moving.loop(1f);
-            Train_moving.stop();
         }
     }
 
@@ -75,7 +71,6 @@ public class Station implements Inside, Selectable{
     public void dispose() {
         Error.dispose();
         Metro_chime.dispose();
-        Train_moving.dispose();
         Bus_Horn.dispose();
     }
 }

@@ -4,9 +4,9 @@ import Screens.Tween.ActorAccessor;
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -30,17 +30,19 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 
+
 public class LevelsScreen implements Screen {
     private TweenManager tweenManager;
     private Stage stage;
-    private Skin skin;//done
-    private BitmapFont white,black;//done
-    private TextureAtlas atlas;//done
+    private Skin skin;
+    private BitmapFont white,black;
+    private TextureAtlas atlas;
     private final CarbonGame game;
     private List.ListStyle listStyle_;
     private List list,list_;
     private java.lang.String[] highScore;
     private ScrollPane scrollPane_;
+    public Sound Button = Gdx.audio.newSound(Gdx.files.internal("SFX/button.mp3"));
 
     public LevelsScreen(CarbonGame g) {
         game = g;
@@ -65,9 +67,6 @@ public class LevelsScreen implements Screen {
         white = new BitmapFont(Gdx.files.internal("fonts/a.fnt"),false);
         white.setColor(256, 256, 256, 1);
 
-//        black = new BitmapFont(Gdx.files.internal("fonts/earthair.fnt"),false);
-//        black.setColor(0, 0,0, 1);
-
         atlas = new TextureAtlas("ui/new_buttons.txt");
         skin = new Skin(atlas);
 
@@ -86,6 +85,7 @@ public class LevelsScreen implements Screen {
         buttonExit.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                Button.play();
                 game.pickScreen(1);
             }
         });
@@ -94,7 +94,7 @@ public class LevelsScreen implements Screen {
         buttonHighScore.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-//                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                Button.play();
                 Dialog popup = new Dialog("HighScores", DialogPopup.skin) {
                     {
                         ScoreManager scoreManager = new ScoreManager();
@@ -106,10 +106,6 @@ public class LevelsScreen implements Screen {
 
                         text(scoreManager.loadScoreArray().toString());
                         button("Continue", false);
-
-//                        setWidth(Float.parseFloat(string[1]));
-//                        setHeight(Float.parseFloat(string[2]));
-//                    out.println(Float.parseFloat(string[2]));
                     }
                     @Override
                     public Dialog show(Stage stage) {
@@ -125,10 +121,11 @@ public class LevelsScreen implements Screen {
         buttonPlay.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-//                ((Game) Gdx.app.getApplicationListener()).setScreen(new Levels());
                 if (list.getSelected() == "      Level ONE") {
+                    Button.play();
                     game.pickScreen(5);
                 } else if (list.getSelected() == "      Tutorial") {
+                    Button.play();
                     game.pickScreen(4);
                 }
             }
@@ -147,20 +144,12 @@ public class LevelsScreen implements Screen {
         table.add().width(table.getWidth()/3).row();
         table.add(scrollPane).size(600, 600).expandY().colspan(2).right().spaceRight(50);
         table.padBottom(50);
-//        table.add(buttonPlay);
         buttonTable.add(buttonPlay).spaceBottom(10);
         buttonTable.row();
         buttonTable.add(buttonExit).spaceBottom(10);
         buttonTable.row();
         buttonTable.add(buttonHighScore).spaceBottom(10);
         table.add(buttonTable).left();
-//        table.getCell(buttonPlay).spaceBottom(10);
-//        table.row();
-//        table.add();
-//        table.add();
-//        table.add(buttonExit).spaceBottom(10);
-
-//        table.debug();
         stage.addActor(table);
 
         //Creating animations
@@ -183,8 +172,6 @@ public class LevelsScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-//        table.setDebug(true);
         tweenManager.update(delta);
         stage.act(delta);
 
@@ -218,5 +205,6 @@ public class LevelsScreen implements Screen {
         skin.dispose();
         white.dispose();
         black.dispose();
+        Button.dispose();
     }
 }
