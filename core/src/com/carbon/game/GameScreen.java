@@ -102,7 +102,7 @@ public class GameScreen extends GridLogic implements Screen {
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
-        hud = new Hud(batch);
+        hud = new Hud();
         worldTimer = time;
     }
     public static void timer_world(Float t){
@@ -110,6 +110,8 @@ public class GameScreen extends GridLogic implements Screen {
     }
     @Override
     public void render(float delta) {
+
+//        hud.dispose();
         if (state == GAME_RUNNING) {
             timer_world(-delta);//update timer for world
 
@@ -355,8 +357,10 @@ public class GameScreen extends GridLogic implements Screen {
             stage.draw();
             Gdx.input.setInputProcessor(stage);
         }
-        hud = new Hud(batch);
-        hud.stage.draw();
+//        hud = new Hud();
+        hud.update();
+        hud.show();
+//        hud.dispose();
 //        InputMultiplexer ml = new InputMultiplexer();
 //        ml.addProcessor();
 //        ml.addProcessor(hud.stage);
@@ -423,6 +427,7 @@ public class GameScreen extends GridLogic implements Screen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
             state = GAME_PAUSED;
         }
+//dispose();
     }
     //end of render loop
         private void clickCoolDown() {
@@ -439,6 +444,8 @@ public class GameScreen extends GridLogic implements Screen {
             canClick = true;
         }
 
+
+
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
@@ -450,6 +457,7 @@ public class GameScreen extends GridLogic implements Screen {
 
     @Override
     public void hide() {
+        dispose();
     }
 
     @Override
@@ -462,6 +470,8 @@ public class GameScreen extends GridLogic implements Screen {
 
     @Override
     public void dispose() {
+//        popup.dispose();
+//        hud.dispose();
         batch.dispose();
         font.dispose();
         player.dispose();

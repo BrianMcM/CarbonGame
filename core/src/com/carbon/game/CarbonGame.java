@@ -9,7 +9,9 @@ import com.badlogic.gdx.Screen;
 
 public class CarbonGame extends Game {
 
+
 	private Screen currentScreen = null;
+
 
 	public void create () {
 		pickScreen(0);

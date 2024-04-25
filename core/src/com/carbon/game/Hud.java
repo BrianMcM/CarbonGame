@@ -19,25 +19,36 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import sun.jvm.hotspot.runtime.StaticBaseConstructor;
 
 public class Hud {
     public Stage stage;
+    private Image image;
+    private SpriteBatch batch;
+    private TextButton.TextButtonStyle textButtonStyle;
+    private Skin skin;
+    private BitmapFont black,white;
+    private TextureAtlas atlas;
+    private  Table table;
+    private Viewport viewport;
+    private OrthographicCamera camera;
 
     com.badlogic.gdx.scenes.scene2d.ui.Label countdownLabel;
     com.badlogic.gdx.scenes.scene2d.ui.Label scoreLabel;
     com.badlogic.gdx.scenes.scene2d.ui.Label carbonLabel;
     com.badlogic.gdx.scenes.scene2d.ui.Label energyLabel;
 
-    public Hud(SpriteBatch sb){
-        BitmapFont white = new BitmapFont();
+    public Hud(){
+        batch = new SpriteBatch();
+        white = new BitmapFont();
         white.setColor(256, 256, 256, 1);
 
-        BitmapFont black = new BitmapFont();
+        black = new BitmapFont();
         black.setColor(0, 0,0, 1);
-        TextureAtlas atlas = new TextureAtlas("ui/new_buttons.txt");
-        Skin skin = new Skin(atlas);
+        atlas = new TextureAtlas("ui/new_buttons.txt");
+        skin = new Skin(atlas);
 
-        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle = new TextButton.TextButtonStyle();
         textButtonStyle.font = black;
         textButtonStyle.up = skin.getDrawable("button_up");
         textButtonStyle.down = skin.getDrawable("button_down");
@@ -54,13 +65,13 @@ public class Hud {
 //        });
 //        buttonCab.pad(10);
 
-        OrthographicCamera camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        Viewport viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
-        stage = new Stage(viewport,sb);
+        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
+        stage = new Stage(viewport,batch);
 
-        Table table = new Table();
-        Image image = new Image(new TextureRegion(new Texture(Gdx.files.internal("uiskin/hud2.png"))));
+        table = new Table();
+        image = new Image(new TextureRegion(new Texture(Gdx.files.internal("uiskin/hud2.png"))));
         image.setHeight(20);
         image.setWidth(Gdx.graphics.getWidth());
         image.setPosition(0,Gdx.graphics.getHeight()-image.getHeight());
@@ -71,10 +82,23 @@ public class Hud {
         carbonLabel = new Label("Carbon: "+String.format("%d",Player.carbon), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
         energyLabel = new Label("Energy: "+String.format("%03d",Player.energy), new Label.LabelStyle(new BitmapFont(), Color.WHITE));
 
-//        Gdx.input.justTouched(buttonCab);
-//        if (Gdx.input.getX()>10000 && Gdx.input.getX()>10000) {
-//            Gdx.input.setInputProcessor(stage);
-//        }
+
+//        table.add(countdownLabel).expandX().top();
+//        table.add(scoreLabel).expand().top();
+//        table.add(carbonLabel).expand().top();//carbon label
+//        table.add(energyLabel).expand().top();
+////        table.add(buttonCab).top().right();
+//        stage.addActor(image);
+//        stage.addActor(table);
+    }
+    public void update() {
+        countdownLabel.setText("Time: "+String.format("%,.0f", (double) GameScreen.worldTimer));
+        scoreLabel.setText("Score: "+String.format("%d",Player.score));
+        carbonLabel.setText("Carbon: "+String.format("%d",Player.carbon));
+        energyLabel.setText("Energy: "+String.format("%03d",Player.energy));
+
+    }
+    public void show() {
         table.add(countdownLabel).expandX().top();
         table.add(scoreLabel).expand().top();
         table.add(carbonLabel).expand().top();//carbon label
@@ -82,5 +106,13 @@ public class Hud {
 //        table.add(buttonCab).top().right();
         stage.addActor(image);
         stage.addActor(table);
+        stage.draw();
     }
+    public void dispose() {
+        stage.dispose();
+        batch.dispose();
+        black.dispose();
+        white.dispose();
+    }
+
 }
