@@ -14,10 +14,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.carbon.game.CarbonGame;
 import com.carbon.game.GameScreen;
 import com.carbon.game.Player;
 
 public class ScoreScreen implements Screen {
+    private CarbonGame game;
     private Skin skin;
     private Stage stage;
     private Table table;
@@ -26,6 +28,10 @@ public class ScoreScreen implements Screen {
     private Label heading,carbonStar,scoreStar,bonusStar,totalStar;
     private Texture star,no_star;
     private Image star_carbon,star_no_carbon,star_energy,star_no_energy,star_gem,star_no_gem;
+
+    public ScoreScreen(CarbonGame g) {
+        game = g;
+    }
     @Override
     public void show() {
         black = new BitmapFont(Gdx.files.internal("fonts/a.fnt"),false);
@@ -62,14 +68,14 @@ public class ScoreScreen implements Screen {
         buttonMain.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new LevelsScreen());
+                game.pickScreen(2);
             }
         });
         buttonReplay.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Player.score = 0;
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen("Maps/map.tmx", "Maps/metro.tmx", 200));
+                game.pickScreen(5);
             }
         });
 

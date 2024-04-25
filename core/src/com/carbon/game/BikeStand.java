@@ -31,6 +31,10 @@ public class BikeStand implements Selectable{
             Bell.play();
             player.offBike();
         }
+    }
 
+    public void dispose() {
+        Error.dispose();
+        Bell.dispose();
     }
 }

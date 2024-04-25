@@ -7,7 +7,6 @@ import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -37,9 +36,12 @@ public class MainMenu implements Screen {
     private Skin skin;//done
     private BitmapFont white,black;//done
     private TextureAtlas atlas;//done
-//    private CarbonGame game;
+    private final CarbonGame game;
     private Skin skinny;
-    public Sound Button = Gdx.audio.newSound(Gdx.files.internal("SFX/button.mp3"));
+
+    public MainMenu(CarbonGame g) {
+        game = g;
+    }
 
 //    public static class ExitDialog extends Dialog {
 //        public ExitDialog(String title, Skin skin, String windowStyleName) {
@@ -125,8 +127,7 @@ public class MainMenu implements Screen {
         buttonPlay.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Button.play();
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new LevelsScreen());
+                game.pickScreen(2);
             }
         });
         Label.LabelStyle headingStyle = new Label.LabelStyle(white,Color.WHITE);
