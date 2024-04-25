@@ -4,7 +4,6 @@ import Screens.Tween.ActorAccessor;
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenManager;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -23,17 +22,13 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.carbon.game.CarbonGame;
-import com.carbon.game.GameScreen;
-
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 
 public class LevelsScreen implements Screen {
     private TweenManager tweenManager;
     private Stage stage;
-    private Skin skin;//done
-    private BitmapFont white,black;//done
-    private TextureAtlas atlas;//done
+    private Skin skin;
+    private BitmapFont white,black;
+    private TextureAtlas atlas;
     private final CarbonGame game;
     private List.ListStyle listStyle_;
     private List list,list_;
@@ -63,9 +58,6 @@ public class LevelsScreen implements Screen {
         white = new BitmapFont(Gdx.files.internal("fonts/a.fnt"),false);
         white.setColor(256, 256, 256, 1);
 
-//        black = new BitmapFont(Gdx.files.internal("fonts/earthair.fnt"),false);
-//        black.setColor(0, 0,0, 1);
-
         atlas = new TextureAtlas("ui/new_buttons.txt");
         skin = new Skin(atlas);
 
@@ -92,7 +84,6 @@ public class LevelsScreen implements Screen {
         buttonHighScore.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-//                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
                 Dialog popup = new Dialog("HighScores", DialogPopup.skin) {
                     {
                         Json json = new Json();
@@ -102,10 +93,6 @@ public class LevelsScreen implements Screen {
 
                         text(root.toString());
                         button("Continue", false);
-
-//                        setWidth(Float.parseFloat(string[1]));
-//                        setHeight(Float.parseFloat(string[2]));
-//                    out.println(Float.parseFloat(string[2]));
                     }
                     @Override
                     public Dialog show(Stage stage) {
@@ -121,7 +108,6 @@ public class LevelsScreen implements Screen {
         buttonPlay.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-//                ((Game) Gdx.app.getApplicationListener()).setScreen(new Levels());
                 if (list.getSelected() == "      Level ONE") {
                     game.pickScreen(5);
                 } else if (list.getSelected() == "      Tutorial") {

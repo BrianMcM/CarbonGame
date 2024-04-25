@@ -3,11 +3,8 @@ package com.carbon.game;
 import java.lang.Math;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.concurrent.CountDownLatch;
 
 import Screens.DialogPopup;
-import Screens.MainMenu;
-import Screens.ScoreScreen;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -20,7 +17,6 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -283,7 +279,6 @@ public class GameScreen extends GridLogic implements Screen {
                     }
                     setWidth(Float.parseFloat(string[1]));
                     setHeight(Float.parseFloat(string[2]));
-//                    out.println(Float.parseFloat(string[2]));
                 }
 
                 private String[] getString() {
@@ -357,10 +352,6 @@ public class GameScreen extends GridLogic implements Screen {
         }
         hud = new Hud(batch);
         hud.stage.draw();
-//        InputMultiplexer ml = new InputMultiplexer();
-//        ml.addProcessor();
-//        ml.addProcessor(hud.stage);
-//        Gdx.input.setInputProcessor(ml);
 
         //////PAUSING
         if (worldTimer < -5 && popuped) {
