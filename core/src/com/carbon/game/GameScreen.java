@@ -128,14 +128,6 @@ public class GameScreen extends GridLogic implements Screen {
             int inputCellX = worldToCell(inputPos.x);
             int inputCellY = worldToCell(inputPos.y);
 
-            /////
-            System.out.println(inputCellX);
-            System.out.println(inputCellY);
-            System.out.println("--------");
-
-
-            ////
-
             GridCell inputCell = mapLoader.gridLayer.getCell(inputCellX, inputCellY);
 
             float borderX = cellToWorld(inputCellX) - (float) TILE_SIZE / 2; //find cell of where mouse is pointing
@@ -146,7 +138,12 @@ public class GameScreen extends GridLogic implements Screen {
             batch.begin();
             //player sprite
             if (!player.hide) {
-                batch.draw(player.img, player.position.x - 8, player.position.y - 8, TILE_SIZE * 2, TILE_SIZE * 2);
+                if (player.xFlip) {
+                    batch.draw(player.img, player.position.x - 8, player.position.y - 8, TILE_SIZE * 2, TILE_SIZE * 2);
+                } else {
+                    batch.draw(player.img, player.position.x + 24, player.position.y - 8, TILE_SIZE * -2, TILE_SIZE * 2);
+                }
+
             } else {
                 if (stationInside != null) {
                     batch.setColor(Color.YELLOW);
@@ -229,16 +226,24 @@ public class GameScreen extends GridLogic implements Screen {
                     player.finishEarly();
                     return;
                 }
-                //if walkable start player movement
-                if (mapLoader.gridLayer.getCell(inputCellX, inputCellY).isWalkable()) {
-                    player.setPath(mapLoader.path(player.cellX, player.cellY, inputCellX, inputCellY));
-                    return;
-                }
-                if (mapLoader.stationList.containsKey(inputCell)) {
-                    if (Objects.equals(mapLoader.stationList.get(inputCell), "bikeStation")) {
-                        mapLoader.bikeStands.get(inputCell).select();
-                    } else {
-                        mapLoader.stations.get(inputCell).select();
+                if (player.mode == 3) {
+                    for (int[] coord : mapLoader.drivableTiles) {
+                        if (coord[0] == inputCellX && coord[1] == inputCellY) {
+                            player.setPath(mapLoader.carPath(player.cellX, player.cellY, inputCellX, inputCellY));
+                        }
+                    }
+                } else {
+                    //if walkable start player movement
+                    if (mapLoader.gridLayer.getCell(inputCellX, inputCellY).isWalkable()) {
+                        player.setPath(mapLoader.path(player.cellX, player.cellY, inputCellX, inputCellY));
+                        return;
+                    }
+                    if (mapLoader.stationList.containsKey(inputCell)) {
+                        if (Objects.equals(mapLoader.stationList.get(inputCell), "bikeStation")) {
+                            mapLoader.bikeStands.get(inputCell).select();
+                        } else {
+                            mapLoader.stations.get(inputCell).select();
+                        }
                     }
                 }
             }

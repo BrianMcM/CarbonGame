@@ -17,6 +17,8 @@ public class Player extends FreeRoam {
     public boolean hide = false;
     public int mode = 1; // 1-walking, 2-bike, 3-car
     public float exhausted = 1;
+
+    public boolean xFlip = true;
     //texture
     private final Texture idle_0 = new Texture(Gdx.files.internal("testShapes/idle_0.png"));
     private final Texture idle_1 = new Texture(Gdx.files.internal("testShapes/idle_1.png"));
@@ -78,6 +80,15 @@ public class Player extends FreeRoam {
             energy--;
         }
         super.arriveAtTarget();
+    }
+
+    public void setTargets() {
+        super.setTargets();
+        if (norm.x > 0) {
+            xFlip = false;
+        } else {
+            xFlip = true;
+        }
     }
 
     protected void arrived() {

@@ -28,9 +28,16 @@ public class Route {
 
     public void addTransit() {
         int pathSize = path.size();
-        transitList.add(new Transit(this, 0, train, direction));
-        transitList.add(new Transit(this, pathSize / 3, train, direction));
-        transitList.add(new Transit(this, 2 * pathSize / 3, train, direction));
+        int transitNum = 3;
+        //adding additional transit cars to the longer stations so theres less wait time
+        if (stations.keySet().size() > 6) {
+            transitNum = 5;
+        } else if (stations.keySet().size() > 5) {
+            transitNum = 4;
+        }
+        for (int n = 0; n < transitNum; n++) {
+            transitList.add(new Transit(this, n * pathSize / transitNum, train, direction));
+        }
     }
 
     public void setPath(int[] first, List<GridCell> p) {
