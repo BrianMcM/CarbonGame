@@ -24,9 +24,11 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.carbon.game.CarbonGame;
 import com.carbon.game.GameScreen;
+import com.carbon.game.ScoreManager;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
 
 public class LevelsScreen implements Screen {
     private TweenManager tweenManager;
@@ -95,12 +97,14 @@ public class LevelsScreen implements Screen {
 //                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
                 Dialog popup = new Dialog("HighScores", DialogPopup.skin) {
                     {
-                        Json json = new Json();
-//                        String text = json.toJson(, Object.class);
-                        JsonValue root = new JsonReader().parse(Gdx.files.internal("Scores/scores.json"));
-//                        JsonValue base = json.parse();
+                        ScoreManager scoreManager = new ScoreManager();
 
-                        text(root.toString());
+//                        Json json = new Json();
+////                        String text = json.toJson(, Object.class);
+//                        JsonValue root = new JsonReader().parse(Gdx.files.internal("Scores/scores.json"));
+////                        JsonValue base = json.parse();
+
+                        text(scoreManager.loadScoreArray().toString());
                         button("Continue", false);
 
 //                        setWidth(Float.parseFloat(string[1]));
@@ -167,26 +171,12 @@ public class LevelsScreen implements Screen {
         //create animation
         Timeline.createSequence().beginSequence()
                 .push(Tween.to(heading,ActorAccessor.RGB,.0001f).target(91f/256f,75f/256f,58f/256f))
-//                .push(Tween.to(heading,ActorAccessor.RGB,3f).target(91f/256f,75f/256f,58f/256f))
-//                .push(Tween.to(heading,ActorAccessor.RGB,3f).target(199f/256f,147f/256f,104f/256f))
-//                .push(Tween.to(heading,ActorAccessor.RGB,3f).target(241f/256f,224f/256f,203f/256f))
-//                .push(Tween.to(heading,ActorAccessor.RGB,3f).target(223f/256f,181f/256f,133f/256f))
-//                .push(Tween.to(heading,ActorAccessor.RGB,3f).target(150f/256f,107f/256f,78f/256f))
                 .push(Tween.to(heading,ActorAccessor.RGB,3f).target(84f/256f,116f/256f,20f/256f))
                 .push(Tween.to(heading,ActorAccessor.RGB,3f).target(91f/256f,75f/256f,58f/256f))
-//                .push(Tween.to(heading,ActorAccessor.RGB,3f).target(118f/256f,110f/256f,95f/256f))
                 .end().repeat(Tween.INFINITY,0).start(tweenManager);
 
 
-//        Timeline.createSequence().beginSequence()
-//                .push(Tween.set(buttonPlay,ActorAccessor.Alpha).target(0))
-//                .push(Tween.set(buttonExit,ActorAccessor.Alpha).target(0))
-//                .push(Tween.from(heading,ActorAccessor.Alpha,.5f).target(0))
-//                .push(Tween.to(buttonPlay,ActorAccessor.Alpha,.5f).target(1))
-//                .push(Tween.to(buttonExit,ActorAccessor.Alpha,.5f).target(1))
-//                .end().start(tweenManager);
-//        Tween.from(table,ActorAccessor.Alpha,.5f).target(0).start(tweenManager);
-//        Tween.from(table,ActorAccessor.Y,.5f).target((float) Gdx.graphics.getHeight() /8).start(tweenManager);
+
     }
 
     @Override

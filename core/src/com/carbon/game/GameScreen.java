@@ -296,37 +296,37 @@ public class GameScreen extends GridLogic implements Screen {
                     switch (state) {
                         case GAME_PAUSED:
                             string = popupText.gamePaused;
-                            widthBox = 600;
+                            widthBox = 700;
                             heightBox = 400;
                             break;
                         case GAME_CARBON_POP:
                             string = popupText.carbonPopup;
-                            widthBox = 600;
+                            widthBox = 700;
                             heightBox = 400;
                             break;
                         case GAME_CARBON_POP_2:
                             string = popupText.carbonPopup_2;
-                            widthBox = 600;
+                            widthBox = 700;
                             heightBox = 400;
                             break;
                         case GAME_GEM_POP:
                             string = popupText.gemPopup;
-                            widthBox = 600;
+                            widthBox = 700;
                             heightBox = 400;
                             break;
                         case GAME_ENERGY_POP:
                             string = popupText.energyPopup;
-                            widthBox = 600;
+                            widthBox = 700;
                             heightBox = 400;
                             break;
                         case GAME_TIME_POP:
                             string = popupText.timePopup;
-                            widthBox = 600;
+                            widthBox = 700;
                             heightBox = 400;
                             break;
                         case GAME_INITIAL_POP:
                             string = popupText.gameInitialised;
-                            widthBox = 600;
+                            widthBox = 700;
                             heightBox = 400;
                             break;
                     }

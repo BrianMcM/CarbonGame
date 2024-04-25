@@ -75,7 +75,12 @@ public class ScoreScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Player.score = 0;
-                game.pickScreen(5);
+                if (CarbonGame.SCREENUMBER==4){
+                    game.pickScreen(4);
+                }else{
+                    game.pickScreen(5);
+                }
+
             }
         });
 
@@ -94,7 +99,7 @@ public class ScoreScreen implements Screen {
         bonusStar = new Label("Bonus Score "+String.format("%03d",Player.energy),headingStyle);
         bonusStar.setAlignment(Align.center);
         bonusStar.setFontScale(2);
-        totalStar = new Label("Total Score "+String.format("%03d",Player.energy*10-Player.carbon),headingStyle);
+        totalStar = new Label("Total Score "+String.format("%03d", (Player.energy*10)- Player.carbon),headingStyle);
         totalStar.setAlignment(Align.center);
         totalStar.setFontScale(2);
 
