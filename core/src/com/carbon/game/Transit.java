@@ -120,7 +120,7 @@ public class Transit extends GridLogic implements Moving{
             public void run () {
                 arriveAtTarget();
             }
-        }, 1, 0, 0);
+        }, 2, 0, 0);
     }
 
     public void dispose() {

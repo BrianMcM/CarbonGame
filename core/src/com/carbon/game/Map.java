@@ -37,11 +37,16 @@ public class Map extends GridLogic{
         this.player = player;
         //game_music.setVolume(0.2f);
         //game_music.play();
-        map = new TmxMapLoader().load("Maps/map_tutorial.tmx");
-        metro = new TmxMapLoader().load("Maps/metro_tutorial.tmx");
 
-//        map = new TmxMapLoader().load(mapname);
-//        metro = new TmxMapLoader().load(metroname);
+//        map = new TmxMapLoader().load("testMap/map_final2.tmx");//"testMap/map_final.tmx");
+//        metro = new TmxMapLoader().load("testMap/metro_final2.tmx");
+
+//        map = new TmxMapLoader().load("Maps/map.tmx");
+//        metro = new TmxMapLoader().load("Maps/metro.tmx");
+
+
+        map = new TmxMapLoader().load(mapname);
+        metro = new TmxMapLoader().load(metroname);
         TiledMapTileLayer navLayer = (TiledMapTileLayer) map.getLayers().get("navigation");
 
         width = navLayer.getWidth();
@@ -69,12 +74,12 @@ public class Map extends GridLogic{
         finishGrid(trainLineGrid);
         NavigationTiledMapLayer trainGridLayer = new NavigationTiledMapLayer(trainLineGrid);
         //hard code each train line
-        //setTransitRoute(new int[]{45, 53}, new int[]{43, 53}, trainGridLayer, true, 1); //pink line
-        //setTransitRoute(new int[]{77, 41}, new int[]{75, 41}, trainGridLayer, true, 1); //purple line
-        //setTransitRoute(new int[]{13, 5}, new int[]{11, 5}, trainGridLayer, true, 1); //brown line
+        setTransitRoute(new int[]{45, 53}, new int[]{43, 53}, trainGridLayer, true, 1); //pink line
+        setTransitRoute(new int[]{77, 41}, new int[]{75, 41}, trainGridLayer, true, 1); //purple line
+        setTransitRoute(new int[]{13, 5}, new int[]{11, 5}, trainGridLayer, true, 1); //brown line
         //tutorial map trains
-        setTransitRoute(new int[]{64, 54}, new int[]{62, 54}, trainGridLayer, true, 1);
-        setTransitRoute(new int[]{40, 26}, new int[]{38, 26}, trainGridLayer, true,1);
+        /*setTransitRoute(new int[]{64, 54}, new int[]{62, 54}, trainGridLayer, true);
+        setTransitRoute(new int[]{40, 26}, new int[]{38, 26}, trainGridLayer, true);*/
 
 
         //bus section
@@ -84,13 +89,13 @@ public class Map extends GridLogic{
         finishGrid(BusRouteGrid);
         NavigationTiledMapLayer busGridLayer = new NavigationTiledMapLayer(BusRouteGrid);
         //hard code bus routes
-        //setTransitRoute(new int[]{13, 9}, new int[]{11, 9}, busGridLayer, false, 1);
-        //setTransitRoute(new int[]{33, 29}, new int[]{31, 29}, busGridLayer, false, 1);
-        //setTransitRoute(new int[]{93, 29}, new int[]{91, 29}, busGridLayer, false, 1);
-        //setTransitRoute(new int[]{9, 49}, new int[]{7, 49}, busGridLayer, false, 1);
+        setTransitRoute(new int[]{13, 9}, new int[]{11, 9}, busGridLayer, false, 1);
+        setTransitRoute(new int[]{33, 29}, new int[]{31, 29}, busGridLayer, false, 1);
+        setTransitRoute(new int[]{93, 29}, new int[]{91, 29}, busGridLayer, false, 1);
+        setTransitRoute(new int[]{9, 49}, new int[]{7, 49}, busGridLayer, false, 1);
         //tutorial bus
-        setTransitRoute(new int[]{50, 44}, new int[]{48, 44}, busGridLayer, false, 1);
-        setTransitRoute(new int[]{48, 41}, new int[]{46, 41}, busGridLayer, false, 1);
+        /*setTransitRoute(new int[]{50, 44}, new int[]{48, 44}, busGridLayer, false);
+        setTransitRoute(new int[]{50, 40}, new int[]{48, 40}, busGridLayer, false);*/
 
         //cars
         TiledMapTileLayer carLayer = (TiledMapTileLayer) map.getLayers().get("car");
@@ -125,7 +130,6 @@ public class Map extends GridLogic{
                     }
                     if (Objects.equals(layer.getName(), "busStation")) {
                         stations.put(gc, new Station(gc, player, this, false));
-                        System.out.println(gc);
                     }
                 }
             }

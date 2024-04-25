@@ -19,8 +19,14 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.carbon.game.CarbonGame;
 import com.carbon.game.GameScreen;
+
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 public class LevelsScreen implements Screen {
     private TweenManager tweenManager;
@@ -44,7 +50,7 @@ public class LevelsScreen implements Screen {
         texture = new Texture(Gdx.files.internal("ui/button_down.png"));
         listStyle = new List.ListStyle(black, new Color(84f/256f,116f/256f,20f/256f, 1), new Color(91f/256f,75f/256f,58f/256f, 1), new TextureRegionDrawable(new TextureRegion(texture)));
         list = new List(listStyle);
-        stringy = new java.lang.String[]{   "      Tutorial", "      Level ONE", "      Level TWO", "      Level THREE", "      Level 5", "      Level 6", "      Level 7", "      Level 8", "      Level 9", "      Level 10", "      Level 11", "      Level 12", "      Level 13"};
+        stringy = new java.lang.String[]{   "      Tutorial", "      Level ONE"};
 
         list.setItems(stringy);
 
@@ -86,7 +92,27 @@ public class LevelsScreen implements Screen {
         buttonHighScore.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+//                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                Dialog popup = new Dialog("HighScores", DialogPopup.skin) {
+                    {
+                        Json json = new Json();
+//                        String text = json.toJson(, Object.class);
+                        JsonValue root = new JsonReader().parse(Gdx.files.internal("Scores/scores.json"));
+//                        JsonValue base = json.parse();
+
+                        text(root.toString());
+                        button("Continue", false);
+
+//                        setWidth(Float.parseFloat(string[1]));
+//                        setHeight(Float.parseFloat(string[2]));
+//                    out.println(Float.parseFloat(string[2]));
+                    }
+                    @Override
+                    public Dialog show(Stage stage) {
+                        return super.show(stage);
+                    }
+                };
+                popup.show(stage);
             }
         });
 
@@ -96,7 +122,12 @@ public class LevelsScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 //                ((Game) Gdx.app.getApplicationListener()).setScreen(new Levels());
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen("testMap/map_final.tmx","testMap/metro_final.tmx", 300));
+                if (list.getSelected() == "      Level ONE") {
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen("Maps/map.tmx", "Maps/metro.tmx", 200));
+                } else if (list.getSelected() == "      Tutorial") {
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen("Maps/map_tutorial.tmx", "Maps/metro_tutorial.tmx", 200));
+
+                }
             }
         });
         Label.LabelStyle headingStyle = new Label.LabelStyle(white,Color.WHITE);
@@ -126,7 +157,7 @@ public class LevelsScreen implements Screen {
 //        table.add();
 //        table.add(buttonExit).spaceBottom(10);
 
-        table.debug();
+//        table.debug();
         stage.addActor(table);
 
         //Creating animations
@@ -164,7 +195,7 @@ public class LevelsScreen implements Screen {
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        table.setDebug(true);
+//        table.setDebug(true);
         tweenManager.update(delta);
         stage.act(delta);
 
