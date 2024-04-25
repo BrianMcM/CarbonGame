@@ -38,7 +38,7 @@ public class Transit extends GridLogic implements Moving{
             speed = 220;
             buffer = 5;
         } else {
-            img = new Texture(Gdx.files.internal("testShapes/bus_temp.png"));
+            img = new Texture(Gdx.files.internal("testShapes/bus_final.png"));
             speed = 170;
             buffer = 4;
         }
