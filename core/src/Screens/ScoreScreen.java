@@ -1,6 +1,5 @@
 package Screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -15,19 +14,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.carbon.game.CarbonGame;
-import com.carbon.game.GameScreen;
 import com.carbon.game.Player;
 
 public class ScoreScreen implements Screen {
-    private CarbonGame game;
+    private final CarbonGame game;
     private Skin skin;
     private Stage stage;
-    private Table table;
-    private TextButton buttonMain,buttonReplay;
     private BitmapFont white,black;
-    private Label heading,carbonStar,scoreStar,bonusStar,totalStar;
-    private Texture star,no_star;
-    private Image star_carbon,star_no_carbon,star_energy,star_no_energy,star_gem,star_no_gem;
 
     public ScoreScreen(CarbonGame g) {
         game = g;
@@ -35,18 +28,18 @@ public class ScoreScreen implements Screen {
     @Override
     public void show() {
         black = new BitmapFont(Gdx.files.internal("fonts/a.fnt"),false);
-        star = new Texture(Gdx.files.internal("uiskin/red_checkmark.png"));
-        no_star = new Texture(Gdx.files.internal("uiskin/red_cross.png"));
+        Texture star = new Texture(Gdx.files.internal("uiskin/red_checkmark.png"));
+        Texture no_star = new Texture(Gdx.files.internal("uiskin/red_cross.png"));
 
-        star_carbon = new Image(star);
-        star_no_carbon = new Image(no_star);
+        Image star_carbon = new Image(star);
+        Image star_no_carbon = new Image(no_star);
 
 
-        star_energy = new Image(star);
-        star_no_energy = new Image(no_star);
+        Image star_energy = new Image(star);
+        Image star_no_energy = new Image(no_star);
 
-        star_gem = new Image(star);
-        star_no_gem = new Image(no_star);
+        Image star_gem = new Image(star);
+        Image star_no_gem = new Image(no_star);
 
         stage = new Stage();
         skin = new Skin(Gdx.files.internal("uiskin/uiskin.json"));
@@ -55,15 +48,14 @@ public class ScoreScreen implements Screen {
         white = new BitmapFont();
 
 
-
-        table = new Table(skin);
+        Table table = new Table(skin);
         table.background(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("uiskin/screen_level_background.png")))));
 
         table.setBounds(0,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
 
 
-        buttonMain = new TextButton("Level Selector",skin);
-        buttonReplay = new TextButton("Replay",skin);
+        TextButton buttonMain = new TextButton("Level Selector", skin);
+        TextButton buttonReplay = new TextButton("Replay", skin);
 
         buttonMain.addListener(new ClickListener(){
             @Override
@@ -83,26 +75,19 @@ public class ScoreScreen implements Screen {
         Label.LabelStyle headingStyle2 = new Label.LabelStyle(black, new Color(91f/256f,75f/256f,58f/256f, 1));
 
 
-        heading = new Label("Score",headingStyle2);
-//        heading.setFontScale(4);
-        carbonStar = new Label("Carbon Score "+ String.format("%d",Player.carbon),headingStyle);
+        Label heading = new Label("Score", headingStyle2);
+        Label carbonStar = new Label("Carbon Score " + String.format("%d", Player.carbon), headingStyle);
         carbonStar.setAlignment(Align.center);
         carbonStar.setFontScale(2);
-        scoreStar = new Label("Gem Score "+String.format("%d", Player.score),headingStyle);
+        Label scoreStar = new Label("Gem Score " + String.format("%d", Player.score), headingStyle);
         scoreStar.setAlignment(Align.center);
         scoreStar.setFontScale(2);
-        bonusStar = new Label("Bonus Score "+String.format("%03d",Player.energy),headingStyle);
+        Label bonusStar = new Label("Bonus Score " + String.format("%03d", Player.energy), headingStyle);
         bonusStar.setAlignment(Align.center);
         bonusStar.setFontScale(2);
-        totalStar = new Label("Total Score "+String.format("%03d",Player.energy-Player.carbon/10),headingStyle);
+        Label totalStar = new Label("Total Score " + String.format("%03d", Player.energy - Player.carbon / 10), headingStyle);
         totalStar.setAlignment(Align.center);
         totalStar.setFontScale(2);
-
-
-
-
-
-
 
         table.add();
         table.add(heading);
@@ -133,7 +118,6 @@ public class ScoreScreen implements Screen {
         table.add();
         table.add(buttonReplay);
         table.getCell(buttonReplay).spaceTop(40);
-//        table.debug();
         stage.addActor(table);
     }
 
@@ -141,10 +125,7 @@ public class ScoreScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-//        table.setDebug(true);
         stage.act(delta);
-
         stage.draw();
     }
 
@@ -171,9 +152,7 @@ public class ScoreScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
-
         skin.dispose();
-
         white.dispose();
         black.dispose();
 

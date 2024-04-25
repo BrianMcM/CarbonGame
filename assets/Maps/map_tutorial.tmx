@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="100" height="56" tilewidth="16" tileheight="16" infinite="0" nextlayerid="13" nextobjectid="1">
- <tileset firstgid="1" source="urbanRPG.tsx"/>
- <tileset firstgid="487" source="City_3.tsx"/>
- <tileset firstgid="1523" source="Colours.tsx"/>
+ <tileset firstgid="1" source="TSX/urbanRPG.tsx"/>
+ <tileset firstgid="487" source="TSX/City_3.tsx"/>
+ <tileset firstgid="1523" source="TSX/Colours.tsx"/>
  <layer id="1" name="navigation" width="100" height="56">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,199,199,199,199,199,199,199,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,199,199,199,199,199,199,199,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,199,199,199,199,199,199,199,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,199,199,199,199,199,199,199,0,0,0,0,0,0,0,0,0,0,

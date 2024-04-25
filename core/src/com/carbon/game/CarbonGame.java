@@ -52,5 +52,6 @@ public class CarbonGame extends Game {
 	}
 
 	public void dispose () {
+		currentScreen.dispose();
 	}
 }
