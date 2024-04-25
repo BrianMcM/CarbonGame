@@ -94,7 +94,7 @@ public class ScoreScreen implements Screen {
         bonusStar = new Label("Bonus Score "+String.format("%03d",Player.energy),headingStyle);
         bonusStar.setAlignment(Align.center);
         bonusStar.setFontScale(2);
-        totalStar = new Label("Total Score "+String.format("%03d",Player.energy-Player.carbon/10),headingStyle);
+        totalStar = new Label("Total Score "+String.format("%03d",Player.energy*10-Player.carbon),headingStyle);
         totalStar.setAlignment(Align.center);
         totalStar.setFontScale(2);
 
@@ -165,7 +165,7 @@ public class ScoreScreen implements Screen {
 
     @Override
     public void hide() {
-
+dispose();
     }
 
     @Override

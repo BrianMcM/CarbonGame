@@ -148,6 +148,7 @@ public class MainMenu implements Screen {
         table.add(buttonExit);
         table.add();
         table.add();
+        table.background(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("uiskin/background_menu.png")))));
 
 //        table.debug();
         stage.addActor(table);
@@ -186,7 +187,6 @@ public class MainMenu implements Screen {
 //        table.setDebug(true);
         tweenManager.update(delta);
         stage.act(delta);
-        table.background(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("uiskin/background_menu.png")))));
 
 
         stage.draw();
@@ -220,5 +220,6 @@ public class MainMenu implements Screen {
         white.dispose();
         black.dispose();
         skinny.dispose();
+
     }
 }

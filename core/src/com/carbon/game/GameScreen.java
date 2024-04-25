@@ -471,7 +471,7 @@ public class GameScreen extends GridLogic implements Screen {
     @Override
     public void dispose() {
 //        popup.dispose();
-//        hud.dispose();
+        hud.dispose();
         batch.dispose();
         font.dispose();
         player.dispose();

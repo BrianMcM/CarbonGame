@@ -43,10 +43,10 @@ public class CarbonGame extends Game {
 
 	private void screenChange(Screen newScreen) {
 		setScreen(newScreen);
-		if (currentScreen != null) {
-			currentScreen.dispose();
-		}
-		currentScreen = newScreen;
+		//if (currentScreen != null) {
+		//	currentScreen.dispose();
+		//}
+		//currentScreen = newScreen;
 	}
 
 	public void render () {

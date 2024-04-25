@@ -25,6 +25,7 @@ public class Splash implements Screen {
 
     public Splash(CarbonGame g) {
         game = g;
+        batch = new SpriteBatch();
     }
 
     @Override
@@ -40,7 +41,7 @@ public class Splash implements Screen {
     }
     @Override
     public void show() {
-        batch = new SpriteBatch();
+
         tweenManager = new TweenManager();
         Tween.registerAccessor(Sprite.class, new SpriteAccessor());
         Texture splashTexture = new Texture("uiskin/CarbonWorld.png");

@@ -99,6 +99,8 @@ public class Hud {
 
     }
     public void show() {
+//        update();
+        table.clear();
         table.add(countdownLabel).expandX().top();
         table.add(scoreLabel).expand().top();
         table.add(carbonLabel).expand().top();//carbon label
