@@ -13,13 +13,19 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import Screens.Tween.SpriteAccessor;
+import com.carbon.game.CarbonGame;
 //import com.carbon.game.MenuScreen;
 
 
 public class Splash implements Screen {
-private Sprite splash;
-private SpriteBatch batch;
-private TweenManager tweenManager;
+    private Sprite splash;
+    private SpriteBatch batch;
+    private TweenManager tweenManager;
+    private final CarbonGame game;
+
+    public Splash(CarbonGame g) {
+        game = g;
+    }
 
     @Override
     public void render(float delta) {
@@ -48,11 +54,9 @@ private TweenManager tweenManager;
 
             @Override
             public void onEvent(int i, BaseTween<?> baseTween) {
-            ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                game.pickScreen(1);
             }
         }).start(tweenManager);
-
-
     }
 
 

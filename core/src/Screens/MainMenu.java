@@ -36,8 +36,12 @@ public class MainMenu implements Screen {
     private Skin skin;//done
     private BitmapFont white,black;//done
     private TextureAtlas atlas;//done
-//    private CarbonGame game;
+    private final CarbonGame game;
     private Skin skinny;
+
+    public MainMenu(CarbonGame g) {
+        game = g;
+    }
 
 //    public static class ExitDialog extends Dialog {
 //        public ExitDialog(String title, Skin skin, String windowStyleName) {
@@ -123,7 +127,7 @@ public class MainMenu implements Screen {
         buttonPlay.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new LevelsScreen());
+                game.pickScreen(2);
             }
         });
         Label.LabelStyle headingStyle = new Label.LabelStyle(white,Color.WHITE);

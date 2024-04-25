@@ -31,31 +31,31 @@ import java.nio.file.Files;
 public class LevelsScreen implements Screen {
     private TweenManager tweenManager;
     private Stage stage;
-    private Table table, buttonTable;
-    private TextButton buttonPlay,buttonExit,buttonHighScore;
-    private Label heading;
     private Skin skin;//done
     private BitmapFont white,black;//done
     private TextureAtlas atlas;//done
-    private CarbonGame game;
-    private List.ListStyle listStyle,listStyle_;
+    private final CarbonGame game;
+    private List.ListStyle listStyle_;
     private List list,list_;
-    private java.lang.String[] stringy, highScore;
-    private Texture texture;
-    private ScrollPane scrollPane,scrollPane_;
+    private java.lang.String[] highScore;
+    private ScrollPane scrollPane_;
+
+    public LevelsScreen(CarbonGame g) {
+        game = g;
+    }
     @Override
     public void show() {
         black = new BitmapFont(Gdx.files.internal("fonts/earthair.fnt"),false);
         int x = 54;
-        texture = new Texture(Gdx.files.internal("ui/button_down.png"));
-        listStyle = new List.ListStyle(black, new Color(84f/256f,116f/256f,20f/256f, 1), new Color(91f/256f,75f/256f,58f/256f, 1), new TextureRegionDrawable(new TextureRegion(texture)));
+        Texture texture = new Texture(Gdx.files.internal("ui/button_down.png"));
+        List.ListStyle listStyle = new List.ListStyle(black, new Color(84f / 256f, 116f / 256f, 20f / 256f, 1), new Color(91f / 256f, 75f / 256f, 58f / 256f, 1), new TextureRegionDrawable(new TextureRegion(texture)));
         list = new List(listStyle);
-        stringy = new java.lang.String[]{   "      Tutorial", "      Level ONE"};
+        String[] stringy = new String[]{"      Tutorial", "      Level ONE"};
 
         list.setItems(stringy);
 
 
-        scrollPane = new ScrollPane(list);
+        ScrollPane scrollPane = new ScrollPane(list);
 
 
         stage = new Stage();
@@ -69,8 +69,8 @@ public class LevelsScreen implements Screen {
         atlas = new TextureAtlas("ui/new_buttons.txt");
         skin = new Skin(atlas);
 
-        table = new Table(skin);
-        buttonTable = new Table(skin);
+        Table table = new Table(skin);
+        Table buttonTable = new Table(skin);
         table.setBounds(0,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         table.background(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("uiskin/screen_level_background.png")))));
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
@@ -80,15 +80,15 @@ public class LevelsScreen implements Screen {
         textButtonStyle.pressedOffsetY = -1;
         textButtonStyle.font = black;
         textButtonStyle.fontColor = new Color(84f/256f,116f/256f,20f/256f, 1);
-        buttonExit = new TextButton("Back", textButtonStyle);
+        TextButton buttonExit = new TextButton("Back", textButtonStyle);
         buttonExit.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                game.pickScreen(1);
             }
         });
 
-        buttonHighScore = new TextButton("HighScore", textButtonStyle);
+        TextButton buttonHighScore = new TextButton("HighScore", textButtonStyle);
         buttonHighScore.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -117,22 +117,21 @@ public class LevelsScreen implements Screen {
         });
 
 
-        buttonPlay = new TextButton("Play", textButtonStyle);
+        TextButton buttonPlay = new TextButton("Play", textButtonStyle);
         buttonPlay.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
 //                ((Game) Gdx.app.getApplicationListener()).setScreen(new Levels());
                 if (list.getSelected() == "      Level ONE") {
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen("Maps/map.tmx", "Maps/metro.tmx", 200));
+                    game.pickScreen(5);
                 } else if (list.getSelected() == "      Tutorial") {
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen("Maps/map_tutorial.tmx", "Maps/metro_tutorial.tmx", 200));
-
+                    game.pickScreen(4);
                 }
             }
         });
         Label.LabelStyle headingStyle = new Label.LabelStyle(white,Color.WHITE);
 
-        heading = new Label("Select Level",headingStyle);
+        Label heading = new Label("Select Level", headingStyle);
         heading.setFontScale((float)0.7);
 
         buttonPlay.pad(10);

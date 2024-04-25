@@ -30,7 +30,7 @@ import static java.lang.System.*;
 
 
 public class GameScreen extends GridLogic implements Screen {
-//    private final CarbonGame game;
+    private final CarbonGame game;
     private final OrthographicCamera camera;
     //class objects
     public Player player;
@@ -81,7 +81,8 @@ public class GameScreen extends GridLogic implements Screen {
     public Music Countdown = Gdx.audio.newMusic(Gdx.files.internal("SFX/countdown.wav"));
     public Sound Success = Gdx.audio.newSound(Gdx.files.internal("SFX/success.mp3"));
     //Use constructor instead of create here
-    public GameScreen(String mapName, String metroName, float time) {
+    public GameScreen(CarbonGame game, String mapName, String metroName, float time) {
+        this.game = game;
         stage = new Stage();
         batch = new SpriteBatch();
         font = new BitmapFont();
@@ -200,7 +201,6 @@ public class GameScreen extends GridLogic implements Screen {
                 }
             }
             batch.end();
-
             //click input movement
             if (Gdx.input.justTouched()) {
                 if (!canClick) {
@@ -341,11 +341,9 @@ public class GameScreen extends GridLogic implements Screen {
                 @Override
                 protected void result(Object object) {
                     if ((Boolean) object) {
-
-                        ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu());
+                        game.pickScreen(1);
                         music_r.stop();
                         Gdx.app.exit();
-
                     } else {
                         state = GAME_RUNNING;
                     }
@@ -406,27 +404,27 @@ public class GameScreen extends GridLogic implements Screen {
         }
         if (worldTimer < 0) {
             worldTimer = (float) 200.00;
-            ((Game) Gdx.app.getApplicationListener()).setScreen(new ScoreScreen());
+            Player.carbon = 0;
+            game.pickScreen(3);
             music_end.stop();
         }
-        if (Player.carbon>1000) {
+        if (Player.carbon > 1000) {
             worldTimer = (float) 200.00;
-            ((Game) Gdx.app.getApplicationListener()).setScreen(new ScoreScreen());
+            Player.carbon = 0;
+            game.pickScreen(3);
             music_end.stop();
-
             Success.play();
 
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            // Handle the 'A' key press event
             mapLoader.callCar();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
-            // Handle the 'A' key press event
             state = GAME_PAUSED;
         }
     }
+    //end of render loop
         private void clickCoolDown() {
             Timer timer = new Timer();
             timer.scheduleTask(new Timer.Task() {
@@ -440,11 +438,6 @@ public class GameScreen extends GridLogic implements Screen {
         public void allowClick () {
             canClick = true;
         }
-
-    private void endLvl() {
-//        setScoreScreen(Player.score, Player.carbon);
-        dispose();
-    }
 
     @Override
     public void resize(int width, int height) {

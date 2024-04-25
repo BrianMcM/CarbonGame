@@ -32,5 +32,9 @@ public class Button {
         stage.addActor(button);
     }
 
-
+    public void dispose() {
+        font.dispose();
+        skin.dispose();
+        buttonAtlas.dispose();
+    }
 }
