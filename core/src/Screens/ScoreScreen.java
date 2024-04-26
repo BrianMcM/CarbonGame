@@ -28,7 +28,6 @@ public class ScoreScreen implements Screen {
     private int finalScore;
     public Sound Button = Gdx.audio.newSound(Gdx.files.internal("SFX/button.mp3"));
 
-
     public ScoreScreen(CarbonGame g) {
         game = g;
     }
@@ -78,10 +77,9 @@ public class ScoreScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 Button.play();
                 Player.score = 0;
-
-                if (game.screenNumber == 4) {
+                if (game.screen_replay == 4) {
                     game.pickScreen(4);
-                } else if (game.screenNumber == 5){
+                } else if (game.screen_replay == 5){
                     game.pickScreen(5);
                 }
                 finalScore = ((Player.score) - Player.carbon);
