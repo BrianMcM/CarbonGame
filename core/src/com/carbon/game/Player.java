@@ -60,7 +60,7 @@ public class Player extends FreeRoam {
     }
 
     public void collectGem(Gem gem) {
-        score += gem.value;
+        score += gem.value * 2;
         gemCollectSound.play();
         gem.dispose();
         System.out.println("Gem Score +".concat(String.valueOf(gem.value)));

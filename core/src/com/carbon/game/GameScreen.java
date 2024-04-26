@@ -335,7 +335,6 @@ public class GameScreen extends GridLogic implements Screen {
                 protected void result(Object object) {
                     if ((Boolean) object) {
                         game.pickScreen(1);
-                        Gdx.app.exit();
                     } else {
                         state = GAME_RUNNING;
                     }
@@ -393,7 +392,7 @@ public class GameScreen extends GridLogic implements Screen {
             out.println("popup_energy");
             Popup.play();
         }
-        if (worldTimer <= 50) {
+        if (worldTimer <= 30) {
             music_j.stop();
             music_end.setVolume(0.2f);
             music_end.play();

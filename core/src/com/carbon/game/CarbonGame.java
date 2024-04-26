@@ -5,15 +5,13 @@ import com.badlogic.gdx.Game;
 import Screens.MainMenu;
 import Screens.ScoreScreen;
 import Screens.Splash;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
 
 public class CarbonGame extends Game {
   	public int screenNumber;
 	public int screen_replay;
 	public void create () {
-		pickScreen(1);
+		pickScreen(0);
 	}
 
 	public void pickScreen(int screenNum) {

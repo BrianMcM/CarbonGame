@@ -24,7 +24,6 @@ public static Skin skin = new Skin(Gdx.files.internal("uiskin/uiskin.json"));;
         }
 
         {
-            System.out.println("times up");
             text("Are you sure you want to exit?");
             button("Yes",true);
             button("No",false);
@@ -53,7 +52,6 @@ public static Skin skin = new Skin(Gdx.files.internal("uiskin/uiskin.json"));;
 //        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(delta);
         stage.draw();
-        System.out.println("asdasdasd");
     }
 
     @Override

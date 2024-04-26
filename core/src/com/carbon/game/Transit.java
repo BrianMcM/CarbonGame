@@ -27,7 +27,6 @@ public class Transit extends GridLogic implements Moving{
 
 
     public Transit(Route r, int index, boolean t, int d) {
-        System.out.println(index);
         isTrain = t;
         route = r;
         pathIndex = index - d;

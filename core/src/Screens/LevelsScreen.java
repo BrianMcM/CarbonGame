@@ -93,10 +93,7 @@ public class LevelsScreen implements Screen {
                             for (Object obj : scoreArr) {
                                 if (obj instanceof java.util.ArrayList) {
                                     java.util.ArrayList array = (java.util.ArrayList) obj;
-                                    System.out.println();
                                     text("  " + array.get(0) + " : " + array.get(1) + "  ");
-                                } else {
-                                    System.out.println(obj.getClass());
                                 }
                             }
                         }

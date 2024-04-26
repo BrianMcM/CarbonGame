@@ -104,7 +104,7 @@ public class ScoreScreen implements Screen {
         bonusStar.setAlignment(Align.center);
         bonusStar.setFontScale(2);
 
-        Label totalStar = new Label("Total Score " + String.format("%03d", (Player.score * 10) - Player.carbon), headingStyle);
+        Label totalStar = new Label("Total Score " + String.format("%03d", (Player.score) - Player.carbon), headingStyle);
 
         totalStar.setAlignment(Align.center);
         totalStar.setFontScale(2);
