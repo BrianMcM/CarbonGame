@@ -33,11 +33,11 @@ public class CarbonGame extends Game {
 				newScreen = new ScoreScreen(this);
 				break;
 			case 4:
-				newScreen = new GameScreen(this, "Maps/map_tutorial.tmx", "Maps/metro_tutorial.tmx", 20,"      Tutorial");
+				newScreen = new GameScreen(this, "Maps/map_tutorial.tmx", "Maps/metro_tutorial.tmx", 200,"      Tutorial");
 				screen_replay = screenNumber;
 				break;
 			default:
-				newScreen = new GameScreen(this, "Maps/map.tmx", "Maps/metro.tmx", 20, "      Level ONE");
+				newScreen = new GameScreen(this, "Maps/map.tmx", "Maps/metro.tmx", 200, "      Level ONE");
 				screen_replay = screenNumber;
 		}
 		screenChange(newScreen);
