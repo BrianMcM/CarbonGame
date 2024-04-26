@@ -71,7 +71,6 @@ public class GameScreen extends GridLogic implements Screen {
     public Music music_j = Gdx.audio.newMusic(Gdx.files.internal("SFX/Main_Music_City_Jazz.mp3"));
     public Sound Train_exit = Gdx.audio.newSound(Gdx.files.internal("SFX/metro_chime.wav"));
     public Music music_end = Gdx.audio.newMusic(Gdx.files.internal("SFX/10_Second_Track.mp3"));
-    public Sound Success = Gdx.audio.newSound(Gdx.files.internal("SFX/success.mp3"));
     public Sound Popup = Gdx.audio.newSound(Gdx.files.internal("SFX/popup.mp3"));
 
     public GameScreen(CarbonGame game, String mapName, String metroName, float time, String levelroutes) {
@@ -403,13 +402,11 @@ public class GameScreen extends GridLogic implements Screen {
             worldTimer = (float) 200.00;
             game.pickScreen(3);
             music_end.stop();
-            Success.play();
         }
         if (Player.carbon > 3000) {
             worldTimer = (float) 200.00;
             game.pickScreen(3);
             music_end.stop();
-
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
@@ -478,7 +475,6 @@ public class GameScreen extends GridLogic implements Screen {
         music_end.dispose();
         music_j.dispose();
         Popup.dispose();
-        Success.dispose();
         Train_exit.dispose();
         border_img.dispose();
         for (Gem gem : gemList) {

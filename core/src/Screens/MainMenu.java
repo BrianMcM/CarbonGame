@@ -100,6 +100,7 @@ public class MainMenu implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 Button.play();
                 game.pickScreen(2);
+
             }
         });
 
